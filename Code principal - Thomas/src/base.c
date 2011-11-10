@@ -1,18 +1,53 @@
 #include "base.h"
 
+/* Techniquement : la position min est limitée non pas par la butée,
+					mais par le servo qui n'est pas trop sensé tourner
+					
+voiture 1 : positions (min, moy, max) : ( 810,  1070,  1330)
+											 
+voiture 2 : positions (min, moy, max) : ( 420,   660,   900)
+											
+voiture 3 : positions (min, moy, max) : (1050,  1300,  1550)
+											
+
+ATTENTION : La syntaxe est VOITURE_1, VOITURE_2, VOITURE_3 */
+	
+	
+#define VOITURE_3
+
+#ifdef VOITURE_1
+	#define PAS_SYM 260
+	#define POS_MIN 810
+	#define POS_MOY 1070
+	#define POS_MAX 1330
+#endif
+
+#ifdef VOITURE_2
+	#define PAS_SYM 240
+	#define POS_MIN 420
+	#define POS_MOY 660
+	#define POS_MAX 900
+#endif
+	
+#ifdef VOITURE_3
+	#define PAS_SYM 250
+	#define POS_MIN 1050
+	#define POS_MOY 1300
+	#define POS_MAX 1550
+#endif
+
+
 void SERVO(void)
 {
 //	TransmitData("****Steering Servo Test****\n\r");
-	EMIOS_0.CH[4].CBDR.R = 1300;      	/* 1500 Middle */
-//	TransmitData("Middle\n\r");
+	EMIOS_0.CH[4].CBDR.R = POS_MOY;
 	Delaywait();
-	EMIOS_0.CH[4].CBDR.R = 1550;        /* 1750 Right Max,*/
-//	TransmitData("Right\n\r");
+	EMIOS_0.CH[4].CBDR.R = POS_MAX;
 	Delaywait();
-	EMIOS_0.CH[4].CBDR.R = 1050;        /* 1250 Left Max*/
-//	TransmitData("Left\n\r");
+	EMIOS_0.CH[4].CBDR.R = POS_MOY;
 	Delaywait();
-	EMIOS_0.CH[4].CBDR.R = 1300;      	/* 1500 Middle */
+	EMIOS_0.CH[4].CBDR.R = POS_MIN;
+	Delaywait();
 }
 
 void MOTOR_LEFT(void)

@@ -1,17 +1,9 @@
+/* IMPORTANT : Définir le numéro de la voiture pour tester le servomoteur dans base.c */
+
 #include "MPC5604B_M27V.h"
 #include "init.h"
 #include "base.h"
 
-/*
-voiture 1 : positions (min, moy, max) : (?,1264,?)
-											1342 ... ?
-
-voiture 2 : positions (min, moy, max) : (?,?,?)
-											688
-
-voiture 3 : positions (min, moy, max) : (?,?,?)
-											1296 ... ?
-*/
 
 int main(void) {
 	volatile int i = 0;
@@ -41,9 +33,8 @@ int main(void) {
 	/* Loop forever */
 	for (;;) {
 		
-			
-	
-	/* Code pour régler le servo : alignage des roues 
+	/*		
+	//Code pour régler le servo : alignage des roues 
 		ADC.MCR.B.NSTART=1;     			// Trigger normal conversions for ADC0
 		while (ADC.MSR.B.NSTART == 1) {};
 		resultat = ADC.CDR[4].B.CDATA;
@@ -54,7 +45,7 @@ int main(void) {
 		i++;
 	*/
 		
-		//boutonLed();
-		//SERVO();
+		// boutonLed();
+		SERVO();
 	}
 }
