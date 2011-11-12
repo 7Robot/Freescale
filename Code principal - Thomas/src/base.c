@@ -13,7 +13,7 @@ voiture 3 : positions (min, moy, max) : (1050,  1300,  1550)
 ATTENTION : La syntaxe est VOITURE_1, VOITURE_2, VOITURE_3 */
 	
 	
-#define VOITURE_3
+#define VOITURE_2
 
 #ifdef VOITURE_1
 	#define PAS_SYM 260
