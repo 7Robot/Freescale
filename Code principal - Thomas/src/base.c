@@ -24,9 +24,9 @@ ATTENTION : La syntaxe est VOITURE_1, VOITURE_2, VOITURE_3 */
 
 #ifdef VOITURE_2
 	#define PAS_SYM 240
-	#define POS_MIN 420
-	#define POS_MOY 660
-	#define POS_MAX 900
+	#define POS_MIN 440
+	#define POS_MOY 680
+	#define POS_MAX 920
 #endif
 	
 #ifdef VOITURE_3
@@ -48,6 +48,23 @@ void SERVO(void)
 	Delaywait();
 	EMIOS_0.CH[4].CBDR.R = POS_MIN;
 	Delaywait();
+}
+
+//Code pour régler le servo : alignage des roues
+void reglerPotentio()
+{
+	volatile uint32_t resultat=0;
+	
+	while(1)
+	{ 
+		ADC.MCR.B.NSTART=1;     	// Trigger normal conversions for ADC0
+		while (ADC.MSR.B.NSTART == 1) {};
+	
+		resultat = ADC.CDR[4].B.CDATA;
+		resultat = resultat*2;
+	
+		EMIOS_0.CH[4].CBDR.R = resultat;
+	}
 }
 
 void MOTOR_LEFT(void)

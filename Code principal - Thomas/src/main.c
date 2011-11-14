@@ -32,20 +32,8 @@ int main(void) {
 
 	/* Loop forever */
 	for (;;) {
-		
-	/*		
-	//Code pour régler le servo : alignage des roues 
-		ADC.MCR.B.NSTART=1;     			// Trigger normal conversions for ADC0
-		while (ADC.MSR.B.NSTART == 1) {};
-		resultat = ADC.CDR[4].B.CDATA;
-		resultat = resultat*2;
-	//	if (resultat > 1750) resultat=1750;
-	//	else if (resultat < 1250) resultat=1250;
-		EMIOS_0.CH[4].CBDR.R = resultat;
-		i++;
-	*/
-		
+		reglerPotentio();
 		// boutonLed();
-		SERVO();
+		// SERVO();
 	}
 }
