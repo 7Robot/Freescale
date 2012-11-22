@@ -33,7 +33,7 @@ int main(void) {
 	/* Loop forever */
 	for (;;) {
 		reglerPotentio();
-		// boutonLed();
-		// SERVO();
+		/*// boutonLed();
+		// SERVO();*/
 	}
 }
