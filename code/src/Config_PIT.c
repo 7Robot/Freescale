@@ -1,4 +1,5 @@
 #include "Config_PIT.h"
+#include "extern_globals.h"
 
 /***************************  Interruptions sur timer ***********************/
 void Init_PIT(int8_t Channel, uint32_t Clock_Freq, float ExpectedTimeBase)  
@@ -36,6 +37,12 @@ int8_t PIT_GetFlag(int8_t Channel)
 void PIT_ClearFlag(int8_t Channel)
 {
     PIT.CH[Channel].TFLG.R=1;
+}
+
+void Boucle_principale(void)
+{
+	 PIT.CH[0].TFLG.R=1;
+	 main_fin_boucle = 1;
 }
 
 void enableIrq(void) {

@@ -43,7 +43,7 @@ void milieu_ligne(uint8_t* milieu, uint16_t* incertitude)
 			pos_max = i;
 		if(valeurs[i] < valeurs[pos_min])
 			pos_min = i;
-		TransmitCharacter(valeurs[i] + 0x80);
+		TransmitCharacter(valeurs[i] + 0x40);
 	}
 	TransmitCharacter(0);
 	// recherche du plus gros pic en dehors de la ligne (incertitude)
@@ -65,7 +65,7 @@ void milieu_ligne(uint8_t* milieu, uint16_t* incertitude)
 	
 	*incertitude =
 		abs((int8_t)pos_min - (int8_t)pos_max - LARGEUR_LIGNE) < DELTA_LARGEUR_LIGNE
-		?  max_hors_ligne * 10 / max(valeurs[pos_max], -valeurs[pos_min])
+		? max(valeurs[pos_max], valeurs[pos_min]) * 10 / max_hors_ligne
 		: 127;
 	*incertitude = 0;
 }
