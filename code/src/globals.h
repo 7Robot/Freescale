@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 int8_t camera_valeurs[128];
 uint16_t objectif_vitesse;
 int32_t moteur_derniere_erreur;
@@ -10,3 +11,13 @@ uint8_t  interrupteur_balance_des_blancs;
 int8_t main_fin_boucle;
 float main_timer_period;
 uint8_t	Capteurs_resultat;
+=======
+int8_t camera_valeurs[128];
+uint16_t objectif_vitesse;
+int32_t moteur_derniere_erreur;
+int32_t moteur_integrale;
+uint16_t moteur_compteur;
+int8_t controle_derniere_erreur;
+int16_t controle_integrale;
+uint8_t controle_derniere_position;
+>>>>>>> 8cc3d4b7c04b365f75ff9ec34344faf004f2dc92

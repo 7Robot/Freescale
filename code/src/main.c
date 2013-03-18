@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #include "MPC5604B_M27V.h"
 #include "camera.h"
 #include "milieu_ligne.h"
@@ -86,3 +87,32 @@ int main(void) {
 
 
 
+=======
+#include "MPC5604B_M27V.h"
+//#include "camera.h"
+#include "milieu_ligne.h"
+#include "controle.h"
+#include "moteur.h"
+#include "delay.h"
+#include "globals.h"
+#include "extern_globals.h"
+
+int main(void) {
+
+  init();
+    
+  // moteurs
+   moteur_derniere_erreur = 0;
+   moteur_integrale = 0;
+
+  /* Loop forever */
+  for (;;) {
+  	//delay(5000);
+    interruptionCamera();
+    interruptionControle();
+  }
+}
+
+
+
+>>>>>>> 8cc3d4b7c04b365f75ff9ec34344faf004f2dc92
