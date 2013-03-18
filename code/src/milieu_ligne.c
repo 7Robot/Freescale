@@ -65,7 +65,7 @@ void milieu_ligne(uint8_t* milieu, uint16_t* incertitude)
 	
 	*incertitude =
 		abs((int8_t)pos_min - (int8_t)pos_max - LARGEUR_LIGNE) < DELTA_LARGEUR_LIGNE
-		? max(valeurs[pos_max], valeurs[pos_min]) * 10 / max_hors_ligne
+		?  max_hors_ligne * 10 / max(valeurs[pos_max], -valeurs[pos_min])
 		: 127;
 	*incertitude = 0;
 }
