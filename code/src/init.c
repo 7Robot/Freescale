@@ -3,6 +3,7 @@
 #include "init.h"
 #include "Config_PIT.h"
 #include "moteur.h"
+#include "extern_globals.h"
 
 void init()
 {
@@ -43,7 +44,7 @@ void init()
     
     init_camera();
 
-    Init_PIT(0,64000000, 0.06);
+    Init_PIT(0,64000000, main_timer_period); // Boucle principale
     INTC_InitINTCInterrupts();
     INTC_InstallINTCInterruptHandler(interruptionMoteur,59,1);
     INTC_InstallINTCInterruptHandler(interruptionCompteurMoteur,146,1);

@@ -6,10 +6,9 @@ void interruptionCamera(void)
 {
     uint8_t i;
     uint32_t adcdata;
-    int8_t balance_des_blancs = ! (SIU.PGPDI[2].R & 0x80000000);
     static int8_t camera_valeurs_blanc[128];
     
-    if(balance_des_blancs)
+    if(interrupteur_balance_des_blancs)
         SIU.PGPDO[2].R &= 0x07000000; // allumer la led
 
     SIU.PGPDO[0].R &= ~0x00000014;          /* All port line low */
@@ -30,7 +29,7 @@ void interruptionCamera(void)
         adcdata = ADC.CDR[0].B.CDATA;
         delay(250);
         SIU.PGPDO[0].R &= ~0x00000004;  /* Sensor Clock Low */
-        if(balance_des_blancs)
+        if(interrupteur_balance_des_blancs)
             *(camera_valeurs_blanc + i) = (int8_t)(adcdata >> 2);
         else
             *(camera_valeurs + i) = *(camera_valeurs_blanc + i) - (int8_t)(adcdata >> 2);

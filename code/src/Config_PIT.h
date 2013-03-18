@@ -15,3 +15,5 @@ void PIT_Disable_Channel(int8_t );
 int8_t PIT_GetFlag(int8_t );
 
 void PIT_ClearFlag(int8_t Channel);
+
+void Boucle_principale(void);
