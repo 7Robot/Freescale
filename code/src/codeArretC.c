@@ -30,20 +30,28 @@ void codeArret_Cam(void)
        }   
     
        // Detection des lignes d'arrivees intermediaires (au nombre de deux)
-       if (nbZero > 2) {
+       if (nbZero > 4) {
 		   nbLigneArrivee++;
 		   nbZero = 5;
+		   
+		   // Provisoire clignotte 2 fois
 		   SIU.GPDO[71].B.PDO = 0;
-		   delay(10000000); // delai d'une seconde
+		   delay(5000000); // delai d'une demi seconde
 		   SIU.GPDO[71].B.PDO = 1;
+		   delay(5000000); 		   
+		   SIU.GPDO[71].B.PDO = 0;
+		   delay(5000000); 
+		   SIU.GPDO[71].B.PDO = 1;		   
        }
        
        // Detection de LA ligne d'arrivee
        if (nbLigneArrivee >= 3) {
+		   nbLigneArrivee = 3;	
+		   	   
 		   SIU.GPDO[71].B.PDO = 0;
 		   delay(50000000); // delai de 5 secondes
 		   SIU.GPDO[71].B.PDO = 1;
-		   nbLigneArrivee = 3;
-	}
+	    }
+    delay(10000000); // delai d'une seconde	
     } 	
 }
