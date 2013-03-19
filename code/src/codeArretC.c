@@ -1,6 +1,7 @@
+#include "codeArretC.h"
+#include "extern_globals.h"
 
-
-void codeArret(uint8_t* milieu, uint16_t* incertitude)
+void codeArret_Cam(void)
 {
 
 	static uint8_t nbZero = 0;
