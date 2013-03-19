@@ -22,19 +22,23 @@ void moyenne_glissante(int8_t* valeurs)
 }
     
 
-void milieu_ligne(uint8_t* milieu, uint16_t* incertitude)
+void milieu_ligne(uint8_t* milieu, uint8_t* incertitude)
 {
     int8_t valeurs[126];
 	uint8_t pos_max = 0;
 	uint8_t pos_min = 0;
 	uint8_t max_hors_ligne = 0;
 	uint8_t i;
+	
 
+	
 	// calcul de la dérivée
     for(i = 0; i < 126; i++)
    	{
         valeurs[i] = (int8_t)camera_valeurs[i + 2] - (int8_t)camera_valeurs[i];
     }
+	
+	TransmitCharacter(0x42); // Délimiteur pour l'affichage en python
 	
 	// recherche du min / du max
 	for(i = 1; i < 126; i++)
@@ -43,31 +47,28 @@ void milieu_ligne(uint8_t* milieu, uint16_t* incertitude)
 			pos_max = i;
 		if(valeurs[i] < valeurs[pos_min])
 			pos_min = i;
-		TransmitCharacter(valeurs[i] + 0x40);
+		TransmitCharacter(valeurs[i]);
 	}
-	TransmitCharacter(0);
+
+	
+	*milieu =(pos_min + pos_max) / 2;
+	
 	// recherche du plus gros pic en dehors de la ligne (incertitude)
 	for(i = 0; i < 126; i++)
 	{
-		if(abs((int8_t)pos_max - (int8_t)i) > LARGEUR_LIGNE && abs(valeurs[i]) > max_hors_ligne)
+		if(abs((int8_t)(*milieu) - (int8_t)i) > LARGEUR_LIGNE && abs(valeurs[i]) > max_hors_ligne)
 			max_hors_ligne = abs(valeurs[i]);
 	}
+	
+	if(abs((int8_t)pos_min - (int8_t)pos_max - LARGEUR_LIGNE) < DELTA_LARGEUR_LIGNE)
+		*incertitude = 100 * max_hors_ligne / max(valeurs[pos_max], -valeurs[pos_min]);
+	else
+		*incertitude = 250;
+	TransmitCharacter(pos_min);
+		TransmitCharacter(pos_max);
+	TransmitCharacter(*incertitude);
+	TransmitCharacter(*milieu);
 
-	/*printhex8(pos_min);
-	TransmitCharacter('\n');
-	printhex8(pos_max);
-	TransmitCharacter('\n');
-	printhex8(*(valeurs + pos_max));
-	TransmitCharacter('\n');
-	TransmitCharacter('\n');*/
-	
-	*milieu = (pos_min + pos_max) / 2;
-	
-	*incertitude =
-		abs((int8_t)pos_min - (int8_t)pos_max - LARGEUR_LIGNE) < DELTA_LARGEUR_LIGNE
-		? max(valeurs[pos_max], valeurs[pos_min]) * 10 / max_hors_ligne
-		: 127;
-	*incertitude = 0;
 }
 
 /*

@@ -9,7 +9,7 @@
 
 int main(void) {
 
-   uint8_t reset = 1, Moteur_F = 0, Servo_F = 0, Moteur_ON = 0;
+   uint8_t reset = 1, Moteur_F = 0, Servo_F = 0, Moteur_ON = 0,i=0;
    uint32_t potentiometer = 0;
    
    /*******************************************
@@ -24,10 +24,19 @@ int main(void) {
    // moteurs
    moteur_derniere_erreur = 0;
    moteur_integrale = 0;
-
-
    
-  while(1)
+   while(1)
+   {
+    interrupteur_balance_des_blancs =  ! (SIU.PGPDI[2].R & 0x80000000); //Bouton 1
+    
+   	interruptionCamera(); 
+    
+    interruptionControle();
+   }
+   
+   /************ Scheduled algorithm **********/
+   
+  /*while(1)
   {
   
       SIU.PGPDO[2].R &= 0xf0ffffff; // Enable all leds
@@ -38,7 +47,7 @@ int main(void) {
   	  do
   	  {
 	  	/* Boutons de controle */
-		main_fin_boucle = 0;
+	/*	main_fin_boucle = 0;
 	  	interrupteur_balance_des_blancs =  ! (SIU.PGPDI[2].R & 0x80000000); //Bouton 1
 	  	Moteur_ON = ! (SIU.PGPDI[2].R & 0x40000000); // Bouton 2
 		reset = ! (SIU.PGPDI[2].R & 0x20000000);  // Bouton 3
@@ -48,17 +57,26 @@ int main(void) {
 			SIU.PGPDO[0].R = 0x0000C000;		// Active les 2 moteurs
             SIU.GPDO[69].B.PDO = 0;     // LED 2
 		}
-		if(interrupteur_balance_des_blancs) SIU.GPDO[68].B.PDO = 0; // LED 1
+		/*
+		EMIOS_0.CH[6].CBDR.R = EMIOS_0.CH[6].CADR.R + 300;
+		
+		for(i=0;i<10;i++)
+		{
+		delay(10000000);	
+		}
+		EMIOS_0.CH[6].CBDR.R = EMIOS_0.CH[6].CADR.R + 0;
+		*/
+	//	if(interrupteur_balance_des_blancs) SIU.GPDO[68].B.PDO = 0; // LED 1
 		
 		/* Execution des fonctions en fonction des flags */
 		
 			/* Caméra : A chaque passage dans la boucle */
 			
-			interruptionCamera(); 
+	//		interruptionCamera(); 
 			
 			/* Servo : On corrige le servo toutes les 2*main_timer_period secondes */
 			
-			if(Servo_F < 2) Servo_F += 1;
+	/*		if(Servo_F < 2) Servo_F += 1;
 			else 
 			{
 				Servo_F = 0;
@@ -67,21 +85,21 @@ int main(void) {
 			
 			/* Moteurs : On corrige les moteurs toutes les 8*main_timer_period secondes */
 			
-			if(Moteur_F < 8) Moteur_F +=1; // 
+		/*	if(Moteur_F < 8) Moteur_F +=1; // 
 			else 
 			{
 				Moteur_F = 0;
 				interruptionMoteur();
 			}
-			
+		*/	
 		/* Fin de la boucle, mise en attente */   
-	    do
+	/*    do
 	    {
 	       asm("wait");
 	    }while(! main_fin_boucle); // Evite de revenir dans la boucle quand il y a des interruptions sur le capteur de vitesse
 	    
 	  }while( ! reset);
-}	
+}	*/
 }
 
 

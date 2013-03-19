@@ -6,7 +6,7 @@
 void interruptionControle(void)
 {
     uint8_t pos_milieu;
-    uint16_t incertitude;
+    uint8_t incertitude;
 	int8_t erreur;
 	int8_t derivee;
 	int16_t commande;
