@@ -20,12 +20,27 @@ void codeArret(uint8_t* milieu, uint16_t* incertitude)
     
     moyenne /= 127;
     
-    if (camera_valeurs[posMax] > 3/2*moyenne) {
+    // Seuil de considération (algorithme) = k1 * moyenne => incertitude
+    /*
+      k1 = 
+          3/2 -> ?
+    */
+
+    if (camera_valeurs[posMax] > 3/2 * moyenne) {  
 		
-	   // Detection des pic de la derivee
+       // Detection des pics de la derivee
        for (i=0; i<126; i++) {
-		  if (abs(valeursDerivee[i]) > 3/4*valeursDerivee[posMax])
-			  nbZero++;			  
+		  
+		  // Seuil de considération (pic) = k2 * max => incertitude
+    		  /*
+		    k2 = 
+	                3/4 -> ?
+	          */ 
+
+		  if (abs(valeursDerivee[i]) > 3/4*valeursDerivee[posMax]) {
+			  nbZero++;	
+                          i =+ 4;	
+		  }	  
        }   
     
        // Detection des lignes d'arrivees intermediaires (au nombre de deux)
