@@ -18,11 +18,11 @@ void interruptionMoteur(void)
 	
 	
 	// On regarde si on appuie sur un bouton on/off
-	if(! (SIU.PGPDI[2].R & 0x40000000))
-		SIU.PGPDO[0].R = 0x0000C000;		// Active les 2 moteurs
+	//if(! (SIU.PGPDI[2].R & 0x40000000))
+	//	SIU.PGPDO[0].R = 0x0000C000;		// Active les 2 moteurs
 	// FIXME : Passe toujours dans le if
-	//if(! (SIU.PGPDI[2].R & 0x20000000))
-	//	SIU.PGPDO[0].R = 0x00000000;		// Éteint les 2 moteurs 
+	if(! (SIU.PGPDI[2].R & 0x20000000))
+		SIU.PGPDO[0].R = 0x00000000;		// Éteint les 2 moteurs 
 	
 	erreur = objectif_vitesse - moteur_compteur;
 		

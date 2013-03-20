@@ -9,7 +9,8 @@
 
 int main(void) {
 
-   uint8_t reset = 1, Moteur_F = 0, Servo_F = 0, Moteur_ON = 0,i=0;
+   uint8_t reset = 1, Moteur_F = 0, Servo_F = 0, Moteur_ON = 0,i=0, pot_enable=0;
+   uint16_t tempo = 0;
    uint32_t potentiometer = 0;
    
    /*******************************************
@@ -24,7 +25,7 @@ int main(void) {
    // moteurs
    moteur_derniere_erreur = 0;
    moteur_integrale = 0;
-   
+   /*
    while(1)
    {
     interrupteur_balance_des_blancs =  ! (SIU.PGPDI[2].R & 0x80000000); //Bouton 1
@@ -32,32 +33,78 @@ int main(void) {
    	interruptionCamera(); 
     
     interruptionControle();
-   }
+   }*/
    
    /************ Scheduled algorithm **********/
-   
-  /*while(1)
+  do
+  {
+  POS_MILIEU_SERVO = potent_entre(700, 1300);  
+  pot_enable = !(SIU.PGPDI[2].R & 0x10000000);  // Bouton 4
+  EMIOS_0.CH[4].CBDR.R = POS_MILIEU_SERVO;
+  }while(! pot_enable);
+ 
+ 
+  while(1)
   {
   
       SIU.PGPDO[2].R &= 0xf0ffffff; // Enable all leds
       delay(10000000);
   	  SIU.PGPDO[2].R |= 0x0f000000; // Disable all leds  	  
   	  SIU.PGPDO[0].R = 0x00000000;		// Desactive les 2 moteurs
-  	  
+
   	  do
   	  {
 	  	/* Boutons de controle */
-	/*	main_fin_boucle = 0;
+		main_fin_boucle = 0;
 	  	interrupteur_balance_des_blancs =  ! (SIU.PGPDI[2].R & 0x80000000); //Bouton 1
 	  	Moteur_ON = ! (SIU.PGPDI[2].R & 0x40000000); // Bouton 2
 		reset = ! (SIU.PGPDI[2].R & 0x20000000);  // Bouton 3
+		tempo++;
+	
+		if(interrupteur_balance_des_blancs) SIU.GPDO[68].B.PDO = 0; // LED 1
 		
 		if(Moteur_ON)
 		{
 			SIU.PGPDO[0].R = 0x0000C000;		// Active les 2 moteurs
+            SIU.GPDO[69].B.PDO = 0;     // LED 2		
+	    	EMIOS_0.CH[6].CBDR.R = EMIOS_0.CH[6].CADR.R + 900;
+		}
+		interruptionCamera();
+		
+		interruptionControle();
+		
+		if(tempo == 0xFFFE) 
+		{
+		 EMIOS_0.CH[6].CBDR.R = EMIOS_0.CH[6].CADR.R + 0; // Arrêt de la commande -> Option 1
+		 tempo = 0;
+		}
+		//SIU.GPDO[42].B.PDO = 1; // Freinage acif, activation de IN1 sur les Ponts-en-H cf schematique carte de puissance
+		/*delay(100);
+		SIU.GPDO[42].B.PDO = 1;*/
+		/*if(Servo_F < 3) Servo_F += 1;
+			else 
+			{
+				Servo_F = 0;
+				interruptionControle();	
+			}
+		
+		do
+	    {
+	       asm("wait");
+	    }while(! main_fin_boucle); // Evite de revenir dans la boucle quand il y a des interruptions sur le capteur de vitesse
+	    */
+	   }while(! reset );
+	}	
+}
+
+
+
+	/*
+		if(Moteur_ON)
+		{
+			//SIU.PGPDO[0].R = 0x0000C000;		// Active les 2 moteurs
             SIU.GPDO[69].B.PDO = 0;     // LED 2
 		}
-		/*
 		EMIOS_0.CH[6].CBDR.R = EMIOS_0.CH[6].CADR.R + 300;
 		
 		for(i=0;i<10;i++)
@@ -93,14 +140,3 @@ int main(void) {
 			}
 		*/	
 		/* Fin de la boucle, mise en attente */   
-	/*    do
-	    {
-	       asm("wait");
-	    }while(! main_fin_boucle); // Evite de revenir dans la boucle quand il y a des interruptions sur le capteur de vitesse
-	    
-	  }while( ! reset);
-}	*/
-}
-
-
-

@@ -3,7 +3,7 @@
 // 672 --> gauche à fond
 // 1000 --> un peu à gauche
 // 1200 --> un peu à droite
-#define POS_MILIEU_SERVO 1160
+//#define POS_MILIEU_SERVO 1160
 
 #define CONTROLE_INCERTITUDE_PALIER 30
 
