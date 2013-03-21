@@ -33,6 +33,8 @@ int main(void) {
     while(1)
     {
   
+        // Ici est le code d'init
+        // FIXME: Appeler proprement une fonction de reset dans son fichier, qui permetta de régler les choses qui devront être réglées (comme le focus)
         do
         {
             POS_MILIEU_SERVO = potent_entre(700, 1300);  
