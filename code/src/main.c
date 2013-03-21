@@ -9,9 +9,7 @@
 
 int main(void) {
 
-    uint8_t reset = 1, Moteur_F = 0, Servo_F = 0, Moteur_ON = 0,i=0, pot_enable=0;
-    uint16_t tempo = 0;
-    uint32_t potentiometer = 0;
+    uint8_t reset = 1, Moteur_F = 0, Servo_F = 0, Moteur_ON = 0;
    
     /*******************************************
     Tps acquisition cam + traitement = 4,2 ms
@@ -35,13 +33,7 @@ int main(void) {
   
         // Ici est le code d'init
         // FIXME: Appeler proprement une fonction de reset dans son fichier, qui permetta de régler les choses qui devront être réglées (comme le focus)
-        /*do
-        {
-            POS_MILIEU_SERVO = potent_entre(700, 1300);  
-            pot_enable = !(SIU.PGPDI[2].R & 0x10000000);  // Bouton 4
-            EMIOS_0.CH[4].CBDR.R = POS_MILIEU_SERVO; 
-        }
-        while(! pot_enable);*/
+
         
         SIU.PGPDO[2].R &= 0xf0ffffff; // Enable all leds
         delay(10000000);
@@ -55,7 +47,6 @@ int main(void) {
             interrupteur_balance_des_blancs =  ! (SIU.PGPDI[2].R & 0x80000000); //Bouton 1
             Moteur_ON = ! (SIU.PGPDI[2].R & 0x40000000); // Bouton 2
             reset = ! (SIU.PGPDI[2].R & 0x20000000);  // Bouton 3
-            tempo++;
         
             if(interrupteur_balance_des_blancs)
                 SIU.GPDO[68].B.PDO = 0; // LED 1
@@ -85,8 +76,7 @@ int main(void) {
                     Servo_F = 0;
                     interruptionControle();	
                 }
-		
-            do
+		    do
             {
             asm("wait");
             }while(! main_fin_boucle); // Evite de revenir dans la boucle quand il y a des interruptions sur le capteur de vitesse
