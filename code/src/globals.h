@@ -6,8 +6,6 @@ uint16_t moteur_compteur;
 int8_t controle_derniere_erreur;
 int16_t controle_integrale;
 uint8_t controle_derniere_position;
-uint8_t  interrupteur_balance_des_blancs;
 int8_t main_fin_boucle;
 float main_timer_period;
 uint8_t	Capteurs_resultat;
-//uint32_t POS_MILIEU_SERVO;test potentiomètre
