@@ -46,6 +46,6 @@ void interruptionControle(void)
 	printserialsigned(pos_milieu);
 	TransmitCharacter('\n');*/
 	
-	//EMIOS_0.CH[4].CBDR.R = POS_MILIEU_SERVO + commande * AMPLITUDE_SERVO / 64;  // Via la carte de puissance 
-	EMIOS_0.CH[3].CBDR.R = POS_MILIEU_SERVO + commande * AMPLITUDE_SERVO / 64;    // Via PA[3]
+	EMIOS_0.CH[4].CBDR.R = POS_MILIEU_SERVO + commande * AMPLITUDE_SERVO / 64;  // Via la carte de puissance 
+	//EMIOS_0.CH[3].CBDR.R = POS_MILIEU_SERVO + commande * AMPLITUDE_SERVO / 64;    // Via PA[3]
 }

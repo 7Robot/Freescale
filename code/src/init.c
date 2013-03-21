@@ -26,7 +26,7 @@ void init()
 	initEMIOS_0ch8();
 	initEMIOS_0ch16();
 	initEMIOS_0ch23(); 					
-    initEMIOS_0ch3();                   /* Initialize eMIOS 0 channel 3 as OPWM, servo moteur sans passer par la carte de puissance */
+    //initEMIOS_0ch3();                   /* Initialize eMIOS 0 channel 3 as OPWM, servo moteur sans passer par la carte de puissance */
 	initEMIOS_0ch4(); 					/* Initialize eMIOS 0 channel 4 as OPWM, Servo moteur  */
 	initEMIOS_0ch6(); 					/* Initialize eMIOS 0 channel 6 as OPWM, Moteur Gauche */
 	initEMIOS_0ch7(); 					/* Initialize eMIOS 0 channel 7 as OPWM, Motuer Droit  */
@@ -45,9 +45,10 @@ void init()
     init_camera();
 
     Init_PIT(0,64000000, main_timer_period); // Boucle principale
+    Init_PIT(1,64000000, 0.060);// Mesure de la vitesse toutes les 60 ms
     INTC_InitINTCInterrupts();
-    //INTC_InstallINTCInterruptHandler(interruptionMoteur,59,1);
-    //INTC_InstallINTCInterruptHandler(interruptionCompteurMoteur,146,1);
+    INTC_InstallINTCInterruptHandler(interruptionMoteur,59,1);
+    INTC_InstallINTCInterruptHandler(interruptionCompteurMoteur,146,1);
     INTC_InstallINTCInterruptHandler(Boucle_principale,59,1);
     enableIrq();
     PIT_EnableINTC(0);
@@ -243,7 +244,7 @@ void initEMIOS_0ch11(void) // capteur de vitesse
   	//EMIOS_0.CH[11].CCR.B.IF = 1;
 	EMIOS_0.CH[11].CCR.B.DMA = 0;					 // generate interrupt
 	EMIOS_0.CH[11].CCR.B.FEN = 1;                   /* 0 -> pas d'interruption, pas de trigger */
-	SIU.PCR[11].R = 0x0500;
+	SIU.PCR[11].R = 0x0500;                         /* PA[11] initialisée en entrée */ 
 }
 
 
