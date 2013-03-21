@@ -34,8 +34,13 @@ void interruptionMoteur(void)
 
     // objectif_vitesse
     commande = commande < 0 ? 0 : commande;
-	EMIOS_0.CH[6].CBDR.R = EMIOS_0.CH[6].CADR.R + commande;
-	EMIOS_0.CH[7].CBDR.R = EMIOS_0.CH[7].CADR.R + commande;
+    //Moteurs en série:
+    //EMIOS_0.CH[6].CBDR.R = EMIOS_0.CH[6].CADR.R + 800;// Moteurs en serie
+    //Moteurs en parallèle : 
+    EMIOS_0.CH[6].CBDR.R = EMIOS_0.CH[6].CADR.R + commande;//HBridge gauche
+    EMIOS_0.CH[7].CBDR.R = EMIOS_0.CH[7].CADR.R + commande;//HBridge Droit
+
+	
 
 	// port série
 	/*printhex32(commande);
@@ -53,6 +58,6 @@ void interruptionMoteur(void)
 	moteur_compteur = 0;
 
 	// on indique que l'interruption est finie
-	PIT_ClearFlag(0); // FIXME Pourquoi le PIT arrive ICI ?!!!!
+	PIT_ClearFlag(1); 
 
 }

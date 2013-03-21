@@ -3,10 +3,9 @@
 #include "controle.h"
 #include "moteur.h"
 #include "delay.h"
-#include "globals.h"
-#include "extern_globals.h"
+#include "reset.h"
 
-void reset(void) {  
+void reload(void) {  
 	  
     uint8_t milieu, incertitude;
 	
