@@ -3,12 +3,11 @@
 #include "controle.h"
 #include "moteur.h"
 #include "delay.h"
-#include "globals.h"
-#include "extern_globals.h"
+#include "reset.h"
 
-void reset(void)
+void reload(void)
 {    
-    interruptionCamera(true);  // on fait la balance des blancs
+    interruptionCamera(1);  // on fait la balance des blancs
     //SIU.PGPD0[2].R & = 0xf0f
 
     do

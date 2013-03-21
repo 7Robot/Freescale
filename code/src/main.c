@@ -33,38 +33,26 @@ int main(void) {
     {
   
         // Ici est le code de reset
-        reset();
+        reload();
 
         do
         {
             /* Boutons de controle */
             main_fin_boucle = 0;
-            interrupteur_balance_des_blancs =  ! (SIU.PGPDI[2].R & 0x80000000); //Bouton 1
+            
             Moteur_ON = ! (SIU.PGPDI[2].R & 0x40000000); // Bouton 2
             reset = ! (SIU.PGPDI[2].R & 0x20000000);  // Bouton 3
-        
-            if(interrupteur_balance_des_blancs)
-                SIU.GPDO[68].B.PDO = 0; // LED 1
             
             if(Moteur_ON) 
             {
                 SIU.PGPDO[0].R = 0x0000C000;		// Active les 2 moteurs
                 SIU.GPDO[69].B.PDO = 0;     // LED 2		
-<<<<<<< HEAD
-=======
-                //Moteurs en série:
-                //EMIOS_0.CH[6].CBDR.R = EMIOS_0.CH[6].CADR.R + 800;// Moteurs en serie
-                //Moteurs en parallèle : 
-                //EMIOS_0.CH[6].CBDR.R = EMIOS_0.CH[6].CADR.R + 350;//HBridge gauche
-                //EMIOS_0.CH[7].CBDR.R = EMIOS_0.CH[7].CADR.R + 350;//HBridge Droit
->>>>>>> 1be41b8831ef494f2fddd0eaca1613c7267e8a9d
                 Moteur_ON =0;
             }
             
-            interruptionCamera(false);
+            interruptionCamera(0);
             
-            interruptionControle();
-            
+
             //SIU.GPDO[42].B.PDO = 1; // Freinage acif, activation de IN1 sur les Ponts-en-H cf schematique carte de puissance
             /*delay(100);
             SIU.GPDO[42].B.PDO = 1;*/
@@ -78,9 +66,10 @@ int main(void) {
 		
             do
             {
-            asm("wait");
-            }while(! main_fin_boucle); // Evite de revenir dans la boucle quand il y a des interruptions sur le capteur de vitesse
-            */
+                asm("wait");
+            }
+            while(! main_fin_boucle); // Evite de revenir dans la boucle quand il y a des interruptions sur le capteur de vitesse
+            
 
         }
         while(! reset );
