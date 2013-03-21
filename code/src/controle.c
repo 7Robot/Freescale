@@ -23,12 +23,10 @@ void interruptionControle(void)
     }
 
 	// vitesse    
-    if(pos_milieu < 52 || pos_milieu > 76)
-        objectif_vitesse = 1;
-    else
-       	objectif_vitesse = 1;
+    objectif_vitesse = 1;
     
-    commande = ((int8_t)pos_milieu - 64) / objectif_vitesse;
+    commande = (64 - (int8_t)pos_milieu) / objectif_vitesse;
+
     /*
     // PID pour la direction
     // zieger-nicols
@@ -41,11 +39,6 @@ void interruptionControle(void)
     controle_derniere_erreur = erreur;
     */
     
-	/*printserialsigned(incertitude);
-	TransmitCharacter(' ');
-	printserialsigned(pos_milieu);
-	TransmitCharacter('\n');*/
+	EMIOS_0.CH[4].CBDR.R = POS_MILIEU_SERVO + commande * AMPLITUDE_SERVO;
 	
-	EMIOS_0.CH[4].CBDR.R = POS_MILIEU_SERVO + commande * AMPLITUDE_SERVO / 64;  // Via la carte de puissance 
-	//EMIOS_0.CH[3].CBDR.R = POS_MILIEU_SERVO + commande * AMPLITUDE_SERVO / 64;    // Via PA[3]
 }
