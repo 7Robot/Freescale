@@ -39,7 +39,7 @@ int main(void) {
         {
             POS_MILIEU_SERVO = potent_entre(700, 1300);  
             pot_enable = !(SIU.PGPDI[2].R & 0x10000000);  // Bouton 4
-            EMIOS_0.CH[4].CBDR.R = POS_MILIEU_SERVO;
+            EMIOS_0.CH[4].CBDR.R = POS_MILIEU_SERVO; // Euh, la position de milieu des servos est modifiée quand on appelle interruptionControle...
         }
         while(! pot_enable);
         SIU.PGPDO[2].R &= 0xf0ffffff; // Enable all leds
