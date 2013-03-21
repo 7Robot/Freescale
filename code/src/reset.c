@@ -7,7 +7,7 @@
 
 void reload(void)
 {    
-    interruptionCamera(1);  // on fait la balance des blancs
+    Acquisition_Camera(1);  // on fait la balance des blancs
     //SIU.PGPD0[2].R & = 0xf0f
 
     do

@@ -3,7 +3,7 @@
 #include "milieu_ligne.h"
 #include "liaison_serie.h"
 
-void interruptionControle(void)
+void Controle_Direction(void)
 {
     uint8_t pos_milieu;
     uint8_t incertitude;

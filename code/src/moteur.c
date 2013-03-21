@@ -4,13 +4,13 @@
 #include "extern_globals.h"
 #include "Config_PIT.h"
 
-void interruptionCompteurMoteur(void)
+void Compteur_Moteur(void)
 {
 	moteur_compteur++;
 	EMIOS_0.CH[11].CSR.B.FLAG = 0x1;
 }
 
-void interruptionMoteur(void)
+void Controle_Vitesse(void)
 {
 	int32_t erreur;
 	int32_t derivee;

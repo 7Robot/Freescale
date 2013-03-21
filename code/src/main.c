@@ -57,7 +57,7 @@ int main(void) {
                 Moteur_ON =0;
             }
             
-            interruptionCamera(0);
+            Acquisition_Camera(0);
             
 
             //SIU.GPDO[42].B.PDO = 1; // Freinage acif, activation de IN1 sur les Ponts-en-H cf schematique carte de puissance
@@ -68,13 +68,13 @@ int main(void) {
                 else 
                 {
                     Servo_F = 0;
-                    interruptionControle();	
+                    Controle_Direction();	
                 }
 		    if(Moteur_F < 7) Moteur_F++;
     		    else
     		    {
     		        Moteur_F = 0;
-    		        interruptionMoteur();
+    		        Controle_Vitesse();
     		    }
             do
             {

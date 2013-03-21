@@ -86,7 +86,7 @@ Link map of __start
           9] _d_dtoi (func,global) found in Runtime.PPCEABI.VS.UC.a E:\CW_Dev\eppc_support\Do_Not_Distribute\zen_fpemu\Src\vle_ppcsfpe.o
            10] d_unpack_1 (func,local) found in Runtime.PPCEABI.VS.UC.a E:\CW_Dev\eppc_support\Do_Not_Distribute\zen_fpemu\Src\vle_ppcsfpe.o
            10] Xtoshort_common (notype,local) found in Runtime.PPCEABI.VS.UC.a E:\CW_Dev\eppc_support\Do_Not_Distribute\zen_fpemu\Src\vle_ppcsfpe.o
-     4] interruptionCompteurMoteur (func,global) found in moteur.o 
+     4] Compteur_Moteur (func,global) found in moteur.o 
       5] moteur_compteur (object,global) found in main.o 
      4] INTC_InstallINTCInterruptHandler (func,global) found in IntcInterrupts.o 
      4] Boucle_principale (func,global) found in Config_PIT.o 
@@ -96,17 +96,17 @@ Link map of __start
     3] moteur_derniere_erreur (object,global) found in main.o 
     3] moteur_integrale (object,global) found in main.o 
     3] reload (func,global) found in reset.o 
-     4] interruptionCamera (func,global) found in camera.o 
+     4] Acquisition_Camera (func,global) found in camera.o 
       5] delay (func,global) found in delay.o 
-      5] @LOCAL@interruptionCamera__FUc@camera_valeurs_blanc (object,local) found in camera.o 
+      5] @LOCAL@Acquisition_Camera__FUc@camera_valeurs_blanc (object,local) found in camera.o 
       5] camera_valeurs (object,global) found in main.o 
-    3] interruptionControle (func,global) found in controle.o 
+    3] Controle_Direction (func,global) found in controle.o 
      4] milieu_ligne (func,global) found in milieu_ligne.o 
       5] TransmitCharacter (func,global) found in liaison_serie.o 
       5] abs (func,global) found in MSL_C.PPCEABI.bare.VS.UC.a arith.o
      4] controle_derniere_position (object,global) found in main.o 
      4] objectif_vitesse (object,global) found in main.o 
-    3] interruptionMoteur (func,global) found in moteur.o 
+    3] Controle_Vitesse (func,global) found in moteur.o 
      4] PIT_ClearFlag (func,global) found in Config_PIT.o 
    2] exit (func,weak) found in __ppc_eabi_init.o 
     3] _ExitProcess (func,weak) found in __ppc_eabi_init.o 
@@ -282,7 +282,7 @@ Link map of __start
   00000170 000030 00002170 00000990  2 INTC_InstallINTCInterruptHandler 	IntcInterrupts.o 
   000001a0 000030 000021a0 000009c0  2 INTC_InitINTCInterrupts 	IntcInterrupts.o 
   000001d0 00015c 000021d0 000009f0  1 .text 	camera.o 
-  000001d0 00015c 000021d0 000009f0  2 interruptionCamera 	camera.o 
+  000001d0 00015c 000021d0 000009f0  2 Acquisition_Camera 	camera.o 
   0000032c 000000 0000232c 00000b4c  1 .text.30 	camera.o 
   0000032c 000016 0000232c 00000b4c  1 .text 	delay.o 
   0000032c 000016 0000232c 00000b4c  2 delay 	delay.o 
@@ -323,11 +323,11 @@ Link map of __start
   00000a58 0001e6 00002a58 00001278  2 milieu_ligne 	milieu_ligne.o 
   00000c3e 000000 00002c3e 0000145e  1 .text.72 	milieu_ligne.o 
   00000c3e 000068 00002c3e 0000145e  1 .text 	controle.o 
-  00000c3e 000068 00002c3e 0000145e  2 interruptionControle 	controle.o 
+  00000c3e 000068 00002c3e 0000145e  2 Controle_Direction 	controle.o 
   00000ca6 000000 00002ca6 000014c6  1 .text.29 	controle.o 
   00000ca6 0000c8 00002ca6 000014c6  1 .text 	moteur.o 
-  00000ca6 000020 00002ca6 000014c6  2 interruptionCompteurMoteur 	moteur.o 
-  00000cc6 0000a8 00002cc6 000014e6  2 interruptionMoteur 	moteur.o 
+  00000ca6 000020 00002ca6 000014c6  2 Compteur_Moteur 	moteur.o 
+  00000cc6 0000a8 00002cc6 000014e6  2 Controle_Vitesse 	moteur.o 
   00000d6e 000000 00002d6e 0000158e  1 .text.32 	moteur.o 
   00000d6e 0000ea 00002d6e 0000158e  1 .text 	Config_PIT.o 
   00000d6e 00006c 00002d6e 0000158e  2 Init_PIT 	Config_PIT.o 
@@ -772,7 +772,7 @@ extabindex section layout
   00000000 000080 40001360 00002008  1 .bss 	main.o 
   00000000 000080 40001360 00002008  8 camera_valeurs 	main.o 
   00000080 000080 400013e0 00002088  1 .bss 	camera.o 
-  00000080 000080 400013e0 00002088  8 @LOCAL@interruptionCamera__FUc@camera_valeurs_blanc 	camera.o 
+  00000080 000080 400013e0 00002088  8 @LOCAL@Acquisition_Camera__FUc@camera_valeurs_blanc 	camera.o 
   00000100 00000c 40001460 00002108  1 .bss 	Runtime.PPCEABI.VS.UC.a ExceptionPPC.o
   00000100 00000c 40001460 00002108  4 fragmentinfo 	Runtime.PPCEABI.VS.UC.a ExceptionPPC.o
   0000010c 000004 40001470 00002118  8 *fill*
@@ -845,12 +845,12 @@ Memory map:
                .sdata2 4000135c 00000000 00002008 00003808 00003808          0
                 .sbss2 4000135c 00000000 00002008 00003808 00003808          0
                   .bss 40001360 00000114 00002008 00003808 00003808          0
-      .PPC.EMB.apuinfo 0000998c 00000000 0000b9a0 0000d194 0000d194          0
+      .PPC.EMB.apuinfo 000099bc 00000000 0000b9d0 0000d1c4 0000d1c4          0
          .debug_abbrev          0000014d 00002008
-           .debug_info          0000248a 00002155
-           .debug_line          00003676 0000457f
-            .debug_loc          00000a75 00007bf5
-       .debug_pubnames          000007b8 0000866a
+           .debug_info          0000247b 00002155
+           .debug_line          000036b1 000045d0
+            .debug_loc          00000a75 00007c81
+       .debug_pubnames          000007a9 000086f6
 
 
 Linker generated symbols:

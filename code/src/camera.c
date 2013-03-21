@@ -2,7 +2,7 @@
 #include "delay.h"
 #include "camera.h"
 
-void interruptionCamera(uint8_t balance_des_blancs)
+void Acquisition_Camera(uint8_t balance_des_blancs)
 {
     uint8_t i;
     uint32_t adcdata;
