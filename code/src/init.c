@@ -47,12 +47,14 @@ void init()
     Init_PIT(0,64000000, main_timer_period); // Boucle principale
     Init_PIT(1,64000000, 0.060);// Mesure de la vitesse toutes les 60 ms
     INTC_InitINTCInterrupts();
-    INTC_InstallINTCInterruptHandler(interruptionMoteur,59,1);
-    INTC_InstallINTCInterruptHandler(interruptionCompteurMoteur,146,1);
+    INTC_InstallINTCInterruptHandler(interruptionMoteur,60,2);
+    INTC_InstallINTCInterruptHandler(interruptionCompteurMoteur,146,3);
     INTC_InstallINTCInterruptHandler(Boucle_principale,59,1);
     enableIrq();
     PIT_EnableINTC(0);
     PIT_Enable_Channel(0);
+    PIT_EnableINTC(1);
+    PIT_Enable_Channel(1);
 
 }
 
