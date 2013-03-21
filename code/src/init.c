@@ -26,7 +26,7 @@ void init()
 	initEMIOS_0ch8();
 	initEMIOS_0ch16();
 	initEMIOS_0ch23(); 					
-
+    initEMIOS_0ch3();                   /* Initialize eMIOS 0 channel 3 as OPWM, servo moteur sans passer par la carte de puissance */
 	initEMIOS_0ch4(); 					/* Initialize eMIOS 0 channel 4 as OPWM, Servo moteur  */
 	initEMIOS_0ch6(); 					/* Initialize eMIOS 0 channel 6 as OPWM, Moteur Gauche */
 	initEMIOS_0ch7(); 					/* Initialize eMIOS 0 channel 7 as OPWM, Motuer Droit  */
@@ -46,8 +46,9 @@ void init()
 
     Init_PIT(0,64000000, main_timer_period); // Boucle principale
     INTC_InitINTCInterrupts();
-    INTC_InstallINTCInterruptHandler(interruptionMoteur,59,1);
-    INTC_InstallINTCInterruptHandler(interruptionCompteurMoteur,146,1);
+    //INTC_InstallINTCInterruptHandler(interruptionMoteur,59,1);
+    //INTC_InstallINTCInterruptHandler(interruptionCompteurMoteur,146,1);
+    INTC_InstallINTCInterruptHandler(Boucle_principale,59,1);
     enableIrq();
     PIT_EnableINTC(0);
     PIT_Enable_Channel(0);
@@ -107,9 +108,12 @@ void initPads (void) {
 	SIU.PCR[20].R = 0x2000;          	/* MPC56xxB: Initialize PB[4] as ANP0 */
 	SIU.PCR[21].R = 0x2000;          	/* MPC56xxB: Initialize PB[5] as ANP1 */
 	SIU.PCR[22].R = 0x2000;          	/* MPC56xxB: Initialize PB[6] as ANP2 */
-	SIU.PCR[48].R = 0x2000;          	/* MPC56xxB: Initialize PD[0] as ANP4 */
+	SIU.PCR[42].R = 0x0200;				/* Initialise la pin de contr�le du freinage en sortie -> PC[10]*/
+	SIU.PCR[57].R = 0x2000;          	/* MPC56xxB: Initialize PD[9] as ANP4 -> potentiom�tre */
 	SIU.PCR[64].R = 0x0100;				/* Initialise PE[0] (S1) en entrée */
 	SIU.PCR[65].R = 0x0100;				/* Initialise PE[1] (S2) en entrée */
+	SIU.PCR[66].R = 0x0100;				/* Initialise PE[1] (S2) en entrée */
+	SIU.PCR[67].R = 0x0100;				/* Initialise PE[1] (S2) en entrée */
 	SIU.PCR[68].R = 0x0200;				/* Initialise la LED 1 en sortie */
 	SIU.PCR[69].R = 0x0200;				/* Initialise la LED 2 en sortie */
 	SIU.PCR[70].R = 0x0200;				/* Initialise la LED 3 en sortie */
@@ -120,7 +124,7 @@ void initPads (void) {
 void initADC(void) {
 	//ADC.MCR.R = 0x20020000;         	/* Initialize ADC scan mode*/
 	ADC.MCR.R = 0x00000000;         	/* Initialize ADC one shot mode*/
-	ADC.NCMR[0].R = 0x00000017;      	/* Select ANP0:2 and 4 inputs for normal conversion */
+	ADC.NCMR[0].R = 0x00002017;      	/* Select ANP0:2 and 4 inputs for normal conversion */
 	ADC.CTR[0].R = 0x00008606;       	/* Conversion times for 32MHz ADClock */
 	ADC.CTR[0].B.INPSAMP=25;
 }
@@ -144,10 +148,18 @@ void initEMIOS_0(void) {
 }
 
 void initEMIOS_0ch3(void) { // servo
-	EMIOS_0.CH[3].CADR.R = 250;      	/* Ch 3: Match "A" is 250 */
-	EMIOS_0.CH[3].CBDR.R = 500;      	/* Ch 3: Match "B" is 500 */
-	EMIOS_0.CH[3].CCR.R= 0x000000E0; 	/* Ch 3: Mode is OPWMB, time base = ch 23 */
-	EMIOS_0.CH[2].CCR.R= 0x01020082; 	/* Ch 2: Mode is SAIC, time base = ch 23 */
+	EMIOS_0.CH[3].CADR.R = 0;     		/* Leading edge when channel counter bus=0*/
+	EMIOS_0.CH[3].CBDR.R = POS_MILIEU_SERVO;  /* Trailing edge when channel counter bus=1400 Middle, 1650 Right Max, 1150 Left Max*/
+	EMIOS_0.CH[3].CCR.B.BSL = 0x01;  	/* Use counter bus B -> Time base channel 0*/
+	EMIOS_0.CH[3].CCR.B.EDPOL = 1;  	/* Polarity-leading edge sets output */
+	EMIOS_0.CH[3].CCR.B.MODE = 0x60; 	/* Mode is OPWM Buffered */
+	SIU.PCR[3].R = 0x0600;           	/* MPC56xxS: Assign EMIOS_0 ch 3 to pad PA[3]*/
+	
+	// Ancienne version inutile
+	//EMIOS_0.CH[3].CADR.R = 250;      	/* Ch 3: Match "A" is 250 */
+	//EMIOS_0.CH[3].CBDR.R = 500;      	/* Ch 3: Match "B" is 500 */
+	//EMIOS_0.CH[3].CCR.R= 0x000000E0; 	/* Ch 3: Mode is OPWMB, time base = ch 23 */
+	//EMIOS_0.CH[2].CCR.R= 0x01020082; 	/* Ch 2: Mode is SAIC, time base = ch 23 */
 }
 
 
@@ -202,8 +214,8 @@ void initEMIOS_0ch4(void) {        		/* EMIOS 0 CH 4: Servo-moteur */
 }
 
 void initEMIOS_0ch6(void) {        		/* EMIOS 0 CH 6: Motor Left*/
-	EMIOS_0.CH[6].CADR.R = 500;     	/* Leading edge when channel counter bus=0*/
-	EMIOS_0.CH[6].CBDR.R = 680;//785;   /* Trailing edge when channel counter bus=500*/
+	EMIOS_0.CH[6].CADR.R = 0;     	/* Leading edge when channel counter bus=0*/
+	EMIOS_0.CH[6].CBDR.R = 500;//785;   /* Trailing edge when channel counter bus=500*/
 	EMIOS_0.CH[6].CCR.B.BSL = 0x0;  	/* Use counter bus A -> Time base channel 23 */
 	EMIOS_0.CH[6].CCR.B.EDPOL = 1;  	/* Polarity-leading edge sets output */
 	EMIOS_0.CH[6].CCR.B.MODE = 0x60; 	/* Mode is OPWM Buffered */

@@ -43,7 +43,7 @@ class MovingGraph():
             surface = self.font.render(str(i), True, pygame.Color(100,100,100,0))
             self.screen.blit(surface, (0, self.convert_y(i)))
             pygame.draw.line(self.screen, pygame.Color(60,60,60,0), (0, self.convert_y(i)), (self.width, self.convert_y(i)))
-            i += (self.max - self.min) / 20.
+            i += (self.max - self.min) / 25.
 
         # points
         for i, (name, points) in enumerate(self.points.items()):
