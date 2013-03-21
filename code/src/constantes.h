@@ -1,4 +1,4 @@
-#define AMPLITUDE_SERVO 10
+#define AMPLITUDE_SERVO 6
 
 // 672 --> gauche à fond
 // 1000 --> un peu à gauche
