@@ -54,7 +54,7 @@ int main(void) {
             {
                 SIU.PGPDO[0].R = 0x0000C000;		// Active les 2 moteurs
                 SIU.GPDO[69].B.PDO = 0;     // LED 2 ON	
-                Moteur_ON =0;
+                Moteur_ON = 0;
             }
             
             Acquisition_Camera(0);
@@ -63,19 +63,22 @@ int main(void) {
             //SIU.GPDO[42].B.PDO = 1; // Freinage acif, activation de IN1 sur les Ponts-en-H cf schematique carte de puissance
             /*delay(100);
             SIU.GPDO[42].B.PDO = 1;*/
+
            
-            if(Servo_F < 2) Servo_F++;
-                else 
-                {
-                    Servo_F = 0;
-                    Controle_Direction();	
-                }
-		    if(Moteur_F < 7) Moteur_F++;
-    		    else
-    		    {
-    		        Moteur_F = 0;
-    		        Controle_Vitesse();
-    		    }
+            if(Servo_F < 2)
+                Servo_F++;
+            else 
+            {
+                Controle_Direction();
+                Servo_F = 0;
+            }
+		    if(Moteur_F < 7)
+                Moteur_F++;
+            else
+            {
+                Moteur_F = 0;
+                Controle_Vitesse();
+            }
             do
             {
                 asm("wait");

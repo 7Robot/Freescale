@@ -16,14 +16,6 @@ void Controle_Vitesse(void)
 	int32_t derivee;
 	int32_t commande;
 	
-	
-	// On regarde si on appuie sur un bouton on/off
-	//if(! (SIU.PGPDI[2].R & 0x40000000))
-	//	SIU.PGPDO[0].R = 0x0000C000;		// Active les 2 moteurs
-	// FIXME : Passe toujours dans le if
-	if(! (SIU.PGPDI[2].R & 0x20000000))
-		SIU.PGPDO[0].R = 0x00000000;		// Éteint les 2 moteurs 
-	
 	erreur = objectif_vitesse - moteur_compteur;
 		
 	derivee = erreur - moteur_derniere_erreur;
@@ -39,21 +31,6 @@ void Controle_Vitesse(void)
     //Moteurs en parallèle : 
     EMIOS_0.CH[6].CBDR.R = EMIOS_0.CH[6].CADR.R + commande;//HBridge gauche
     EMIOS_0.CH[7].CBDR.R = EMIOS_0.CH[7].CADR.R + commande;//HBridge Droit
-
-	
-
-	// port série
-	/*printhex32(commande);
-	TransmitCharacter('\n');
-	printhex32(erreur);
-	TransmitCharacter('\n');
-	printhex32(moteur_integrale);
-	TransmitCharacter('\n');
-	printhex32(derivee);
-	TransmitCharacter('\n');
-	printhex32(moteur_compteur);
-	TransmitCharacter('\n');
-	TransmitCharacter('\n');*/
 
 	moteur_compteur = 0;
 
