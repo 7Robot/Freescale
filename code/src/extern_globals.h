@@ -12,4 +12,4 @@ extern uint8_t  interrupteur_balance_des_blancs;
 extern int8_t main_fin_boucle;
 extern float main_timer_period;
 extern uint8_t	Capteurs_resultat;
-extern uint32_t POS_MILIEU_SERVO;
+//extern uint32_t POS_MILIEU_SERVO; test potentiomètre

@@ -35,13 +35,14 @@ int main(void) {
   
         // Ici est le code d'init
         // FIXME: Appeler proprement une fonction de reset dans son fichier, qui permetta de régler les choses qui devront être réglées (comme le focus)
-        do
+        /*do
         {
             POS_MILIEU_SERVO = potent_entre(700, 1300);  
             pot_enable = !(SIU.PGPDI[2].R & 0x10000000);  // Bouton 4
-            EMIOS_0.CH[4].CBDR.R = POS_MILIEU_SERVO; // Euh, la position de milieu des servos est modifiée quand on appelle interruptionControle...
+            EMIOS_0.CH[4].CBDR.R = POS_MILIEU_SERVO; 
         }
-        while(! pot_enable);
+        while(! pot_enable);*/
+        
         SIU.PGPDO[2].R &= 0xf0ffffff; // Enable all leds
         delay(10000000);
         SIU.PGPDO[2].R |= 0x0f000000; // Disable all leds  	  
@@ -59,21 +60,26 @@ int main(void) {
             if(interrupteur_balance_des_blancs)
                 SIU.GPDO[68].B.PDO = 0; // LED 1
             
-            if(Moteur_ON) // FIXME: Pourquoi on exécute ce code à chaque tour quand les moteurs sont allumés ?
+            if(Moteur_ON) 
             {
                 SIU.PGPDO[0].R = 0x0000C000;		// Active les 2 moteurs
                 SIU.GPDO[69].B.PDO = 0;     // LED 2		
-                EMIOS_0.CH[6].CBDR.R = EMIOS_0.CH[6].CADR.R + 900;
+                //Moteurs en s�rie:
+                //EMIOS_0.CH[6].CBDR.R = EMIOS_0.CH[6].CADR.R + 800;// Moteurs en serie
+                //Moteurs en parall�le : 
+                //EMIOS_0.CH[6].CBDR.R = EMIOS_0.CH[6].CADR.R + 350;//HBridge gauche
+                //EMIOS_0.CH[7].CBDR.R = EMIOS_0.CH[7].CADR.R + 350;//HBridge Droit
+                Moteur_ON =0;
             }
             
             interruptionCamera();
             
-            interruptionControle();
-            
+                   
             //SIU.GPDO[42].B.PDO = 1; // Freinage acif, activation de IN1 sur les Ponts-en-H cf schematique carte de puissance
             /*delay(100);
             SIU.GPDO[42].B.PDO = 1;*/
-            /*if(Servo_F < 3) Servo_F += 1;
+           
+            if(Servo_F < 2) Servo_F += 1;
                 else 
                 {
                     Servo_F = 0;
@@ -84,8 +90,6 @@ int main(void) {
             {
             asm("wait");
             }while(! main_fin_boucle); // Evite de revenir dans la boucle quand il y a des interruptions sur le capteur de vitesse
-            */
-
         }
         while(! reset );
 
