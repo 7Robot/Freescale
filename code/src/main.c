@@ -50,11 +50,14 @@ int main(void) {
             {
                 SIU.PGPDO[0].R = 0x0000C000;		// Active les 2 moteurs
                 SIU.GPDO[69].B.PDO = 0;     // LED 2		
+<<<<<<< HEAD
+=======
                 //Moteurs en série:
                 //EMIOS_0.CH[6].CBDR.R = EMIOS_0.CH[6].CADR.R + 800;// Moteurs en serie
                 //Moteurs en parallèle : 
                 //EMIOS_0.CH[6].CBDR.R = EMIOS_0.CH[6].CADR.R + 350;//HBridge gauche
                 //EMIOS_0.CH[7].CBDR.R = EMIOS_0.CH[7].CADR.R + 350;//HBridge Droit
+>>>>>>> 1be41b8831ef494f2fddd0eaca1613c7267e8a9d
                 Moteur_ON =0;
             }
             
