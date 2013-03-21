@@ -56,7 +56,7 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude)
 	// recherche du plus gros pic en dehors de la ligne (incertitude)
 	for(i = 0; i < 126; i++)
 	{
-		if(abs((int8_t)(*milieu) - (int8_t)i) > LARGEUR_LIGNE && abs(valeurs[i]) > max_hors_ligne)
+		if(abs((int8_t)(*milieu) - (int8_t)i) > LARGEUR_LIGNE + DELTA_LARGEUR_LIGNE && abs(valeurs[i]) > max_hors_ligne)
 			max_hors_ligne = abs(valeurs[i]);
 	}
 	
