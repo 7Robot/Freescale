@@ -1,7 +1,6 @@
-#include "codeArretC.h"
-#include "extern_globals.h"
 
-void codeArret_Cam(void)
+
+void codeArret(uint8_t* milieu, uint16_t* incertitude)
 {
 
 	static uint8_t nbZero = 0;
@@ -21,27 +20,12 @@ void codeArret_Cam(void)
     
     moyenne /= 127;
     
-    // Seuil de considération (algorithme) = k1 * moyenne => incertitude
-    /*
-      k1 = 
-          3/2 -> ?
-    */
-
-    if (camera_valeurs[posMax] > 3/2 * moyenne) {  
+    if (camera_valeurs[posMax] > 3/2*moyenne) {
 		
-       // Detection des pics de la derivee
+	   // Detection des pic de la derivee
        for (i=0; i<126; i++) {
-		  
-		  // Seuil de considération (pic) = k2 * max => incertitude
-    		  /*
-		    k2 = 
-	                3/4 -> ?
-	          */ 
-
-		  if (abs(valeursDerivee[i]) > 3/4*valeursDerivee[posMax]) {
-			  nbZero++;	
-                          i =+ 4;	
-		  }	  
+		  if (abs(valeursDerivee[i]) > 3/4*valeursDerivee[posMax])
+			  nbZero++;			  
        }   
     
        // Detection des lignes d'arrivees intermediaires (au nombre de deux)

@@ -53,6 +53,6 @@ void interruptionMoteur(void)
 	moteur_compteur = 0;
 
 	// on indique que l'interruption est finie
-	PIT_ClearFlag(0);
+	PIT_ClearFlag(0); // FIXME Pourquoi le PIT arrive ICI ?!!!!
 
 }

@@ -26,7 +26,7 @@ void init()
 	initEMIOS_0ch8();
 	initEMIOS_0ch16();
 	initEMIOS_0ch23(); 					
-
+    //initEMIOS_0ch3();                   /* Initialize eMIOS 0 channel 3 as OPWM, servo moteur sans passer par la carte de puissance */
 	initEMIOS_0ch4(); 					/* Initialize eMIOS 0 channel 4 as OPWM, Servo moteur  */
 	initEMIOS_0ch6(); 					/* Initialize eMIOS 0 channel 6 as OPWM, Moteur Gauche */
 	initEMIOS_0ch7(); 					/* Initialize eMIOS 0 channel 7 as OPWM, Motuer Droit  */
@@ -44,14 +44,17 @@ void init()
     
     init_camera();
 
-    //Init_PIT(0,64000000, main_timer_period); // Boucle principale
+    Init_PIT(0,64000000, main_timer_period); // Boucle principale
+    Init_PIT(1,64000000, 0.060);// Mesure de la vitesse toutes les 60 ms
     INTC_InitINTCInterrupts();
-    //INTC_InstallINTCInterruptHandler(interruptionMoteur,59,1);
-    //INTC_InstallINTCInterruptHandler(interruptionCompteurMoteur,146,1);
+    INTC_InstallINTCInterruptHandler(interruptionMoteur,60,2);
+    INTC_InstallINTCInterruptHandler(interruptionCompteurMoteur,146,3);
     INTC_InstallINTCInterruptHandler(Boucle_principale,59,1);
     enableIrq();
     PIT_EnableINTC(0);
     PIT_Enable_Channel(0);
+    PIT_EnableINTC(1);
+    PIT_Enable_Channel(1);
 
 }
 
@@ -148,10 +151,18 @@ void initEMIOS_0(void) {
 }
 
 void initEMIOS_0ch3(void) { // servo
-	EMIOS_0.CH[3].CADR.R = 250;      	/* Ch 3: Match "A" is 250 */
-	EMIOS_0.CH[3].CBDR.R = 500;      	/* Ch 3: Match "B" is 500 */
-	EMIOS_0.CH[3].CCR.R= 0x000000E0; 	/* Ch 3: Mode is OPWMB, time base = ch 23 */
-	EMIOS_0.CH[2].CCR.R= 0x01020082; 	/* Ch 2: Mode is SAIC, time base = ch 23 */
+	EMIOS_0.CH[3].CADR.R = 0;     		/* Leading edge when channel counter bus=0*/
+	EMIOS_0.CH[3].CBDR.R = POS_MILIEU_SERVO;  /* Trailing edge when channel counter bus=1400 Middle, 1650 Right Max, 1150 Left Max*/
+	EMIOS_0.CH[3].CCR.B.BSL = 0x01;  	/* Use counter bus B -> Time base channel 0*/
+	EMIOS_0.CH[3].CCR.B.EDPOL = 1;  	/* Polarity-leading edge sets output */
+	EMIOS_0.CH[3].CCR.B.MODE = 0x60; 	/* Mode is OPWM Buffered */
+	SIU.PCR[3].R = 0x0600;           	/* MPC56xxS: Assign EMIOS_0 ch 3 to pad PA[3]*/
+	
+	// Ancienne version inutile
+	//EMIOS_0.CH[3].CADR.R = 250;      	/* Ch 3: Match "A" is 250 */
+	//EMIOS_0.CH[3].CBDR.R = 500;      	/* Ch 3: Match "B" is 500 */
+	//EMIOS_0.CH[3].CCR.R= 0x000000E0; 	/* Ch 3: Mode is OPWMB, time base = ch 23 */
+	//EMIOS_0.CH[2].CCR.R= 0x01020082; 	/* Ch 2: Mode is SAIC, time base = ch 23 */
 }
 
 
@@ -235,7 +246,7 @@ void initEMIOS_0ch11(void) // capteur de vitesse
   	//EMIOS_0.CH[11].CCR.B.IF = 1;
 	EMIOS_0.CH[11].CCR.B.DMA = 0;					 // generate interrupt
 	EMIOS_0.CH[11].CCR.B.FEN = 1;                   /* 0 -> pas d'interruption, pas de trigger */
-	SIU.PCR[11].R = 0x0500;
+	SIU.PCR[11].R = 0x0500;                         /* PA[11] initialisée en entrée */ 
 }
 
 

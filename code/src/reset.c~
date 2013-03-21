@@ -1,0 +1,11 @@
+#include "camera.h"
+#include "milieu_ligne.h"
+#include "controle.h"
+#include "moteur.h"
+#include "delay.h"
+#include "globals.h"
+#include "extern_globals.h"
+
+int reset(void) {    
+     
+
