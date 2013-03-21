@@ -18,6 +18,7 @@ int main(void) {
    	  Tps de mise Ã  jour du servo = 20 ms
       Tps de la boucle principale: main_timer_period 
     *******************************************/
+   
    main_timer_period = 0.01; // Boucle principale: 0.010 s
   
    init();
@@ -36,13 +37,13 @@ int main(void) {
    }*/
    
    /************ Scheduled algorithm **********/
-  do
+  /*do
   {
   POS_MILIEU_SERVO = potent_entre(700, 1300);  
   pot_enable = !(SIU.PGPDI[2].R & 0x10000000);  // Bouton 4
   EMIOS_0.CH[4].CBDR.R = POS_MILIEU_SERVO;
   }while(! pot_enable);
- 
+  */
  
   while(1)
   {
@@ -69,15 +70,11 @@ int main(void) {
             SIU.GPDO[69].B.PDO = 0;     // LED 2		
 	    	EMIOS_0.CH[6].CBDR.R = EMIOS_0.CH[6].CADR.R + 900;
 		}
+		
 		interruptionCamera();
 		
 		interruptionControle();
 		
-		if(tempo == 0xFFFE) 
-		{
-		 EMIOS_0.CH[6].CBDR.R = EMIOS_0.CH[6].CADR.R + 0; // Arrêt de la commande -> Option 1
-		 tempo = 0;
-		}
 		//SIU.GPDO[42].B.PDO = 1; // Freinage acif, activation de IN1 sur les Ponts-en-H cf schematique carte de puissance
 		/*delay(100);
 		SIU.GPDO[42].B.PDO = 1;*/
