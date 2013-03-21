@@ -45,16 +45,12 @@ void init()
     init_camera();
 
     Init_PIT(0,64000000, main_timer_period); // Boucle principale
-    Init_PIT(1,64000000, 0.060);// Mesure de la vitesse toutes les 60 ms
     INTC_InitINTCInterrupts();
-    INTC_InstallINTCInterruptHandler(interruptionMoteur,60,2);
     INTC_InstallINTCInterruptHandler(interruptionCompteurMoteur,146,3);
     INTC_InstallINTCInterruptHandler(Boucle_principale,59,1);
     enableIrq();
     PIT_EnableINTC(0);
     PIT_Enable_Channel(0);
-    PIT_EnableINTC(1);
-    PIT_Enable_Channel(1);
 
 }
 
@@ -115,8 +111,8 @@ void initPads (void) {
 	SIU.PCR[57].R = 0x2000;          	/* MPC56xxB: Initialize PD[9] as ANP4 -> potentiom�tre */
 	SIU.PCR[64].R = 0x0100;				/* Initialise PE[0] (S1) en entrée */
 	SIU.PCR[65].R = 0x0100;				/* Initialise PE[1] (S2) en entrée */
-	SIU.PCR[66].R = 0x0100;				/* Initialise PE[1] (S2) en entrée */
-	SIU.PCR[67].R = 0x0100;				/* Initialise PE[1] (S2) en entrée */
+	SIU.PCR[66].R = 0x0100;				/* Initialise PE[2] (S2) en entrée */
+	SIU.PCR[67].R = 0x0100;				/* Initialise PE[3] (S2) en entrée */
 	SIU.PCR[68].R = 0x0200;				/* Initialise la LED 1 en sortie */
 	SIU.PCR[69].R = 0x0200;				/* Initialise la LED 2 en sortie */
 	SIU.PCR[70].R = 0x0200;				/* Initialise la LED 3 en sortie */
@@ -218,7 +214,7 @@ void initEMIOS_0ch4(void) {        		/* EMIOS 0 CH 4: Servo-moteur */
 
 void initEMIOS_0ch6(void) {        		/* EMIOS 0 CH 6: Motor Left*/
 	EMIOS_0.CH[6].CADR.R = 0;     	/* Leading edge when channel counter bus=0*/
-	EMIOS_0.CH[6].CBDR.R = 500;//785;   /* Trailing edge when channel counter bus=500*/
+	EMIOS_0.CH[6].CBDR.R = 250;//785;   /* Trailing edge when channel counter bus=500*/
 	EMIOS_0.CH[6].CCR.B.BSL = 0x0;  	/* Use counter bus A -> Time base channel 23 */
 	EMIOS_0.CH[6].CCR.B.EDPOL = 1;  	/* Polarity-leading edge sets output */
 	EMIOS_0.CH[6].CCR.B.MODE = 0x60; 	/* Mode is OPWM Buffered */
@@ -226,8 +222,8 @@ void initEMIOS_0ch6(void) {        		/* EMIOS 0 CH 6: Motor Left*/
 }
 
 void initEMIOS_0ch7(void) {        		/* EMIOS 0 CH 7: Motor Right*/
-	EMIOS_0.CH[7].CADR.R = 0;    		/* Leading edge when channel counter bus=0*/
-	EMIOS_0.CH[7].CBDR.R = 180;//285;   /* Trailing edge when channel's counter bus=999*/
+	EMIOS_0.CH[7].CADR.R = 500;    		/* Leading edge when channel counter bus=0*/
+	EMIOS_0.CH[7].CBDR.R = 750;//285;   /* Trailing edge when channel's counter bus=999*/
 	EMIOS_0.CH[7].CCR.B.BSL = 0x0; 		/* Use counter bus A -> Time base channel 23 */
 	EMIOS_0.CH[7].CCR.B.EDPOL = 1; 		/* Polarity-leading edge sets output*/
 	EMIOS_0.CH[7].CCR.B.MODE = 0x60; 	/* Mode is OPWM Buffered */

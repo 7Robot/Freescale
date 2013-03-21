@@ -16,6 +16,13 @@ int main(void) {
     Tps acquisition cam + traitement = 4,2 ms
     Tps de mise à jour du servo = 20 ms
     Tps de la boucle principale: main_timer_period 
+    
+    Sources d'interruption:
+    
+        PIT: Channel 0 -> Boucle principale (10ms)
+        
+        EMIOS: Emios0.Channel 11 -> Compteur de front montant
+                            
     *******************************************/
    
     main_timer_period = 0.01; // Boucle principale: 0.010 s
@@ -44,20 +51,12 @@ int main(void) {
             reset = ! (SIU.PGPDI[2].R & 0x20000000);  // Bouton 3
         
             if(interrupteur_balance_des_blancs)
-                SIU.GPDO[68].B.PDO = 0; // LED 1
+                SIU.GPDO[68].B.PDO = 0; // LED 1 ON
             
             if(Moteur_ON) 
             {
                 SIU.PGPDO[0].R = 0x0000C000;		// Active les 2 moteurs
-                SIU.GPDO[69].B.PDO = 0;     // LED 2		
-<<<<<<< HEAD
-=======
-                //Moteurs en série:
-                //EMIOS_0.CH[6].CBDR.R = EMIOS_0.CH[6].CADR.R + 800;// Moteurs en serie
-                //Moteurs en parallèle : 
-                //EMIOS_0.CH[6].CBDR.R = EMIOS_0.CH[6].CADR.R + 350;//HBridge gauche
-                //EMIOS_0.CH[7].CBDR.R = EMIOS_0.CH[7].CADR.R + 350;//HBridge Droit
->>>>>>> 1be41b8831ef494f2fddd0eaca1613c7267e8a9d
+                SIU.GPDO[69].B.PDO = 0;     // LED 2 ON	
                 Moteur_ON =0;
             }
             
@@ -69,13 +68,18 @@ int main(void) {
             /*delay(100);
             SIU.GPDO[42].B.PDO = 1;*/
            
-            if(Servo_F < 2) Servo_F += 1;
+            if(Servo_F < 2) Servo_F++;
                 else 
                 {
                     Servo_F = 0;
                     interruptionControle();	
                 }
-		
+		    if(Moteur_F < 7) Moteur_F++;
+    		    else
+    		    {
+    		        Moteur_F = 0;
+    		        interruptionMoteur();
+    		    }
             do
             {
             asm("wait");
