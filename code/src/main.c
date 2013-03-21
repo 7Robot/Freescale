@@ -6,13 +6,13 @@
 #include "delay.h"
 #include "globals.h"
 #include "extern_globals.h"
+#include "reset.h"
 
 int main(void) {
 
     uint8_t reset = 1, Moteur_F = 0, Servo_F = 0, Moteur_ON = 0,i=0, pot_enable=0;
     uint16_t tempo = 0;
-    uint32_t potentiometer = 0;
-   
+
     /*******************************************
     Tps acquisition cam + traitement = 4,2 ms
     Tps de mise à jour du servo = 20 ms
@@ -33,19 +33,8 @@ int main(void) {
     while(1)
     {
   
-        // Ici est le code d'init
-        // FIXME: Appeler proprement une fonction de reset dans son fichier, qui permetta de régler les choses qui devront être réglées (comme le focus)
-        do
-        {
-            POS_MILIEU_SERVO = potent_entre(700, 1300);  
-            pot_enable = !(SIU.PGPDI[2].R & 0x10000000);  // Bouton 4
-            EMIOS_0.CH[4].CBDR.R = POS_MILIEU_SERVO; // Euh, la position de milieu des servos est modifiée quand on appelle interruptionControle...
-        }
-        while(! pot_enable);
-        SIU.PGPDO[2].R &= 0xf0ffffff; // Enable all leds
-        delay(10000000);
-        SIU.PGPDO[2].R |= 0x0f000000; // Disable all leds  	  
-        SIU.PGPDO[0].R = 0x00000000;		// Desactive les 2 moteurs
+        // Ici est le code de reset
+        reset();
 
         do
         {
@@ -66,7 +55,7 @@ int main(void) {
                 EMIOS_0.CH[6].CBDR.R = EMIOS_0.CH[6].CADR.R + 900;
             }
             
-            interruptionCamera();
+            interruptionCamera(false);
             
             interruptionControle();
             
