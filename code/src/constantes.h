@@ -17,7 +17,7 @@
 #define CONTROLE_KD 0
 #define CONTROLE_KI 0.1
 
-#define LARGEUR_LIGNE 16
+#define LARGEUR_LIGNE 15
 #define DELTA_LARGEUR_LIGNE 8
 
 #define DERIVEE_MIN 5
