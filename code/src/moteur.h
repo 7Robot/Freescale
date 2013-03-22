@@ -1,4 +1,4 @@
 #include "MPC5604B_M27V.h"
 
-void interruptionMoteur(void);
-void interruptionCompteurMoteur(void);
+void Controle_Vitesse(void);
+void Compteur_Moteur(void);

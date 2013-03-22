@@ -1,11 +1,11 @@
-#define AMPLITUDE_SERVO 6
+#define AMPLITUDE_SERVO 14 // 7
 
 // 672 --> gauche à fond
 // 1000 --> un peu à gauche
 // 1200 --> un peu à droite
-#define POS_MILIEU_SERVO 1160
+#define POS_MILIEU_SERVO 1168
 
-#define CONTROLE_INCERTITUDE_PALIER 30
+#define CONTROLE_INCERTITUDE_PALIER 40
 
 #define CONTROLE_DIFFERENCE_POS_MAX 30
 
@@ -17,8 +17,8 @@
 #define CONTROLE_KD 0
 #define CONTROLE_KI 0.1
 
-#define LARGEUR_LIGNE 10
-#define DELTA_LARGEUR_LIGNE 6
+#define LARGEUR_LIGNE 15
+#define DELTA_LARGEUR_LIGNE 8
 
 #define DERIVEE_MIN 5
 #define DIFFERENCE_DERIVEES 5

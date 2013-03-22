@@ -2,7 +2,7 @@
 #include "delay.h"
 #include "camera.h"
 
-void interruptionCamera(uint8_t balance_des_blancs)
+void Acquisition_Camera(uint8_t balance_des_blancs)
 {
     uint8_t i;
     uint32_t adcdata;
@@ -29,6 +29,6 @@ void interruptionCamera(uint8_t balance_des_blancs)
         if(balance_des_blancs)
             camera_valeurs_blanc[i] = (adcdata >> 2);
         else
-            camera_valeurs[i] = (int16_t)camera_valeurs_blanc[i] - (int16_t)(adcdata >> 2);
+            camera_valeurs[i] = ((int16_t)camera_valeurs_blanc[i] - (int16_t)(adcdata >> 2)) / 2; // je divise par deux pour éviter un overflow
     }
 }

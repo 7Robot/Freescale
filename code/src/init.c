@@ -46,7 +46,7 @@ void init()
 
     Init_PIT(0,64000000, main_timer_period); // Boucle principale
     INTC_InitINTCInterrupts();
-    INTC_InstallINTCInterruptHandler(interruptionCompteurMoteur,146,3);
+    INTC_InstallINTCInterruptHandler(Compteur_Moteur,146,3);
     INTC_InstallINTCInterruptHandler(Boucle_principale,59,1);
     enableIrq();
     PIT_EnableINTC(0);

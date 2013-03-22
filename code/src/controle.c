@@ -3,7 +3,9 @@
 #include "milieu_ligne.h"
 #include "liaison_serie.h"
 
-void interruptionControle(void)
+#define max(x,y) (x<y?y:x)
+ 
+void Controle_Direction(void)
 {
     uint8_t pos_milieu;
     uint8_t incertitude;
@@ -19,13 +21,13 @@ void interruptionControle(void)
     }
     else
     {
-    	pos_milieu = controle_derniere_position;
+    	pos_milieu = controle_derniere_position < 64 ? 0 : 127;
     }
 
-	// vitesse    
-    objectif_vitesse = 1;
+	// vitesse
+    objectif_vitesse = max(6-abs((int16_t)(pos_milieu)-64)/10, 2);
     
-    commande = (64 - (int8_t)pos_milieu) / objectif_vitesse;
+    commande = (64 - (int16_t)pos_milieu) / (objectif_vitesse);
 
     /*
     // PID pour la direction
