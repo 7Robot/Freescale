@@ -24,7 +24,11 @@ void Controle_Direction(void)
     	pos_milieu = controle_derniere_position < 64 ? 0 : 127;
     }
 
+<<<<<<< HEAD
 	// vitesse
+=======
+	// vitesse    
+>>>>>>> 311fd79fbee8d3f024c6b5dad09a37d731afe289
     objectif_vitesse = max(6-abs((int16_t)(pos_milieu)-64)/10, 2);
     
     commande = (64 - (int16_t)pos_milieu) / (objectif_vitesse);
