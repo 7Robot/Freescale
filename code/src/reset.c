@@ -23,18 +23,30 @@ void reload(void) {
         {
             Acquisition_Camera(0);
 		    milieu_ligne(&milieu, &incertitude);
-			if(incertitude < 10 )
-   	            SIU.GPDO[70].B.PDO = 0;
+			if (incertitude < 10 )
+   	                    SIU.GPDO[70].B.PDO = 0;
 			else SIU.GPDO[70].B.PDO = 1;
-			if(incertitude < 14 )
+			if (incertitude < 14 )
 			    SIU.GPDO[69].B.PDO = 0;
 			else SIU.GPDO[69].B.PDO = 1;   
-			if(incertitude < 18 )
+			if (incertitude < 18 )
 			    SIU.GPDO[68].B.PDO = 0;
 			else SIU.GPDO[68].B.PDO = 1; 
-  	    }
-  	    
-  	    asm("wait");
+  	}
+        // Detection ligne d'arrivé (Bouton3 enfonce):
+        else if ((SIU.PGPDI[2].R & 0x20000000) == 0x00000000)
+        {
+            Acquisition_Camera(0);
+            if (code_arret_cam())
+   	        SIU.GPDO[70].B.PDO = 0;                
+  	 }  	
+    
+  	 asm("wait");
+         SIU.GPDO[68].B.PDO = 1;
+         SIU.GPDO[69].B.PDO = 1;
+         SIU.GPDO[70].B.PDO = 1;
+         SIU.GPDO[71].B.PDO = 1;
+
     }
     while(SIU.PGPDI[2].R & 0x10000000);
         
