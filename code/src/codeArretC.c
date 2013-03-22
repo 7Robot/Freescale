@@ -14,7 +14,7 @@ int code_arret_cam(void)
 	
 	// Calcul de la dérivée, du maximum et de la moyenne
     for (i=0; i<126; i++) {
-		 valeursDerivee[i] = camera_valeurs[i+1] - camera_valeurs[i];
+		 valeursDerivee[i] = camera_valeurs[i+2] - camera_valeurs[i];
 		 posMax = (abs(valeursDerivee[i]) > abs(valeursDerivee[posMax]) ? i : posMax);
 		 moyenne += camera_valeurs[i];		 
     }
@@ -22,23 +22,12 @@ int code_arret_cam(void)
     moyenne /= 127;
     
     // Seuil de considération (algorithme) = k1 * moyenne => incertitude
-    /*
-      k1 = 
-          3/2 -> ?
-    */
-
-    if (camera_valeurs[posMax] > 3/2 * moyenne) {  
-		
+    if (camera_valeurs[posMax] > 3/2 * moyenne) { 		
        // Detection des pics de la derivee
        for (i=0; i<126; i++) {
 		  
 		  // Seuil de considération (pic) = k2 * max => incertitude
-    		  /*
-		    k2 = 
-	                3/4 -> ?
-	          */ 
-
-		  if (abs(valeursDerivee[i]) > 3/4*abs(valeursDerivee[posMax])) {
+		  if (abs(valeursDerivee[i]) > 5/6*abs(valeursDerivee[posMax])) {
 			  nbZero++;	
                           i =+ 4;	
 		  }	  
