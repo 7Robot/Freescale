@@ -24,15 +24,19 @@ void reload(void) {
         {
             Acquisition_Camera(0);
 		    milieu_ligne(&milieu, &incertitude);
-			if(incertitude < 20 )
+			if(incertitude < 10 )
    	            SIU.GPDO[70].B.PDO = 0;
 			else SIU.GPDO[70].B.PDO = 1;
-			if(incertitude < 100 )
+			if(incertitude < 15 )
 			    SIU.GPDO[69].B.PDO = 0;
 			else SIU.GPDO[69].B.PDO = 1;   
+			if(incertitude < 20 )
+			    SIU.GPDO[68].B.PDO = 0;
+			else SIU.GPDO[68].B.PDO = 1; 
   	    }
+  	    
+  	    SIU.GPDO[68].B.PDO = SIU.PGPDI[2].R & 0x80000000;
   	    asm("wait");
-        SIU.GPDO[68].B.PDO = 1; //LED1 OFF
     }
     while(SIU.PGPDI[2].R & 0x10000000);
         
