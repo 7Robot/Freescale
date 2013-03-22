@@ -3,6 +3,8 @@
 #include "milieu_ligne.h"
 #include "liaison_serie.h"
 
+#define max(x,y) (x<y?y:x)
+ 
 void Controle_Direction(void)
 {
     uint8_t pos_milieu;
@@ -23,9 +25,9 @@ void Controle_Direction(void)
     }
 
 	// vitesse    
-    objectif_vitesse = 1;
+    objectif_vitesse = max(4-abs((int16_t)(pos_milieu)-64)/10, 1);
     
-    commande = (64 - (int8_t)pos_milieu) / objectif_vitesse;
+    commande = (64 - (int8_t)pos_milieu)/ objectif_vitesse;
 
     /*
     // PID pour la direction

@@ -17,7 +17,6 @@ void reload(void) {
         if ((SIU.PGPDI[2].R & 0x80000000) == 0x00000000)
         {
 	    	Acquisition_Camera(1); // on fait la balance des blancs
-   	        SIU.GPDO[68].B.PDO = 0;
         }        
         // Reglage du focus de la camera (Bouton2 enfonce):
         else if ((SIU.PGPDI[2].R & 0x40000000) == 0x00000000)
@@ -27,15 +26,14 @@ void reload(void) {
 			if(incertitude < 10 )
    	            SIU.GPDO[70].B.PDO = 0;
 			else SIU.GPDO[70].B.PDO = 1;
-			if(incertitude < 15 )
+			if(incertitude < 14 )
 			    SIU.GPDO[69].B.PDO = 0;
 			else SIU.GPDO[69].B.PDO = 1;   
-			if(incertitude < 20 )
+			if(incertitude < 18 )
 			    SIU.GPDO[68].B.PDO = 0;
 			else SIU.GPDO[68].B.PDO = 1; 
   	    }
   	    
-  	    SIU.GPDO[68].B.PDO = SIU.PGPDI[2].R & 0x80000000;
   	    asm("wait");
     }
     while(SIU.PGPDI[2].R & 0x10000000);
