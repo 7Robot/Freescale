@@ -14,25 +14,25 @@ void reload(void) {
     do
     {
 		// Balance des blancs (Bouton1 enfonce):
-        while ((SIU.PGPDI[2].R & 0x80000000) == 0x00000000)
+        if ((SIU.PGPDI[2].R & 0x80000000) == 0x00000000)
         {
 	    	Acquisition_Camera(1); // on fait la balance des blancs
    	        SIU.GPDO[68].B.PDO = 0;
-   	        delay(5000000);
-   	        SIU.GPDO[68].B.PDO = 1;
-        }
-        
+        }        
         // Reglage du focus de la camera (Bouton2 enfonce):
-        while ((SIU.PGPDI[2].R & 0x40000000) == 0x00000000)
+        else if ((SIU.PGPDI[2].R & 0x40000000) == 0x00000000)
         {
             Acquisition_Camera(0);
 		    milieu_ligne(&milieu, &incertitude);
-			    
-   	        SIU.GPDO[69].B.PDO = 0;
-   	        delay(1000000 * incertitude);
-   	        SIU.GPDO[69].B.PDO = 1;
-		    delay(1000000 * incertitude);		        
-	    }
+			if(incertitude < 20 )
+   	            SIU.GPDO[70].B.PDO = 0;
+			else SIU.GPDO[70].B.PDO = 1;
+			if(incertitude < 100 )
+			    SIU.GPDO[69].B.PDO = 0;
+			else SIU.GPDO[69].B.PDO = 1;   
+  	    }
+  	    asm("wait");
+        SIU.GPDO[68].B.PDO = 1; //LED1 OFF
     }
     while(SIU.PGPDI[2].R & 0x10000000);
         
