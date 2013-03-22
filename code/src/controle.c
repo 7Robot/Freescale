@@ -27,7 +27,7 @@ void Controle_Direction(void)
 	// vitesse    
     objectif_vitesse = max(4-abs((int16_t)(pos_milieu)-64)/10, 1);
     
-    commande = (64 - (int8_t)pos_milieu)/ objectif_vitesse;
+    commande = (64 - (int8_t)pos_milieu) / objectif_vitesse;
 
     /*
     // PID pour la direction
