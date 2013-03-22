@@ -1,7 +1,7 @@
 #include "codeArretC.h"
 #include "extern_globals.h"
 
-void codeArret_Cam(void)
+int code_arret_cam(void)
 {
 
 	static uint8_t nbZero = 0;
@@ -14,59 +14,37 @@ void codeArret_Cam(void)
 	
 	// Calcul de la dérivée, du maximum et de la moyenne
     for (i=0; i<126; i++) {
-		 valeursDerivee[i] = camera_valeurs[i+1] - camera_valeurs[i];
-		 posMax = (valeursDerivee[i] > valeursDerivee[posMax] ? i : posMax);
+		 valeursDerivee[i] = camera_valeurs[i+2] - camera_valeurs[i];
+		 posMax = (abs(valeursDerivee[i]) > abs(valeursDerivee[posMax]) ? i : posMax);
 		 moyenne += camera_valeurs[i];		 
     }
     
     moyenne /= 127;
     
     // Seuil de considération (algorithme) = k1 * moyenne => incertitude
-    /*
-      k1 = 
-          3/2 -> ?
-    */
-
-    if (camera_valeurs[posMax] > 3/2 * moyenne) {  
-		
+    if (camera_valeurs[posMax] > 3/2 * moyenne) { 		
        // Detection des pics de la derivee
        for (i=0; i<126; i++) {
 		  
 		  // Seuil de considération (pic) = k2 * max => incertitude
-    		  /*
-		    k2 = 
-	                3/4 -> ?
-	          */ 
-
-		  if (abs(valeursDerivee[i]) > 3/4*valeursDerivee[posMax]) {
+		  if (abs(valeursDerivee[i]) > 5/6*abs(valeursDerivee[posMax])) {
 			  nbZero++;	
                           i =+ 4;	
 		  }	  
        }   
     
        // Detection des lignes d'arrivees intermediaires (au nombre de deux)
-       if (nbZero > 4) {
-		   nbLigneArrivee++;
-		   nbZero = 5;
-		   
-		   // Provisoire clignotte 2 fois
-		   SIU.GPDO[71].B.PDO = 0;
-		   delay(5000000); // delai d'une demi seconde
-		   SIU.GPDO[71].B.PDO = 1;
-		   delay(5000000); 		   
-		   SIU.GPDO[71].B.PDO = 0;
-		   delay(5000000); 
-		   SIU.GPDO[71].B.PDO = 1;		   
+       if (nbZero >= 6) {
+	   // nbLigneArrivee++;
+           nbZero = 0;
+           return 1; // provisoire   
        }
-       
+       /*
        // Detection de LA ligne d'arrivee
        if (nbLigneArrivee >= 3) {
-		   nbLigneArrivee = 3;	
-		   	   
-		   SIU.GPDO[71].B.PDO = 0;
-		   delay(50000000); // delai de 5 secondes
-		   SIU.GPDO[71].B.PDO = 1;
-	    }
-    delay(10000000); // delai d'une seconde	
+	   nbLigneArrivee = 0;
+           return 1;		   	   
+       }
+       */
     } 	
 }

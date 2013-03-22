@@ -21,13 +21,12 @@ void Controle_Direction(void)
     }
     else
     {
-    	pos_milieu = controle_derniere_position;
+    	pos_milieu = controle_derniere_position < 64 ? 0 : 127;
     }
 
-	// vitesse    
-    objectif_vitesse = max(4-abs((int16_t)(pos_milieu)-64)/10, 1);
+    objectif_vitesse = max(6-abs((int16_t)(pos_milieu)-64)/10, 2);
     
-    commande = (64 - (int8_t)pos_milieu)/ objectif_vitesse;
+    commande = (64 - (int16_t)pos_milieu) / (objectif_vitesse);
 
     /*
     // PID pour la direction

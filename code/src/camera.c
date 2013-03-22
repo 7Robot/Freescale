@@ -29,6 +29,6 @@ void Acquisition_Camera(uint8_t balance_des_blancs)
         if(balance_des_blancs)
             camera_valeurs_blanc[i] = (adcdata >> 2);
         else
-            camera_valeurs[i] = (int16_t)camera_valeurs_blanc[i] - (int16_t)(adcdata >> 2);
+            camera_valeurs[i] = ((int16_t)camera_valeurs_blanc[i] - (int16_t)(adcdata >> 2)) / 2; // je divise par deux pour éviter un overflow
     }
 }
