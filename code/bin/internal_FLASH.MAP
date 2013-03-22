@@ -861,12 +861,12 @@ Memory map:
                .sdata2 40001364 00000000 00002808 00004008 00004008          0
                 .sbss2 40001364 00000000 00002808 00004008 00004008          0
                   .bss 40001368 00000114 00002808 00004008 00004008          0
-      .PPC.EMB.apuinfo 0000a104 00000000 0000c910 0000e10c 0000e10c          0
+      .PPC.EMB.apuinfo 00009ed4 00000000 0000c6e0 0000dedc 0000dedc          0
          .debug_abbrev          0000014d 00002808
-           .debug_info          00002612 00002955
-           .debug_line          0000399b 00004f67
-            .debug_loc          00000b14 00008902
-       .debug_pubnames          000007ce 00009416
+           .debug_info          0000249c 00002955
+           .debug_line          000038e0 00004df1
+            .debug_loc          00000b14 000086d1
+       .debug_pubnames          000007ce 000091e5
 
 
 Linker generated symbols:

@@ -9,7 +9,7 @@ void reload(void) {
 	  
     uint8_t milieu, incertitude;
 	
-    SIU.GPDO[71].B.PDO = 0; // LED4 ON   
+    SIU.GPDO[71].B.PDO = 0; // LED4 ON
 
     do
     {
@@ -24,7 +24,7 @@ void reload(void) {
             Acquisition_Camera(0);
 		    milieu_ligne(&milieu, &incertitude);
 			if (incertitude < 10 )
-   	                    SIU.GPDO[70].B.PDO = 0;
+   	            SIU.GPDO[70].B.PDO = 0;
 			else SIU.GPDO[70].B.PDO = 1;
 			if (incertitude < 14 )
 			    SIU.GPDO[69].B.PDO = 0;
