@@ -4,9 +4,9 @@
 // 1000 --> un peu à gauche
 // 1200 --> un peu à droite
 
-#define POS_MILIEU_SERVO 1072
-#define POS_MIN_SERVO 751
-#define POS_MAX_SERVO 1367
+#define POS_MILIEU_SERVO 1172
+#define POS_MIN_SERVO 870
+#define POS_MAX_SERVO 1488
 
 
 

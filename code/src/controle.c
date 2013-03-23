@@ -15,9 +15,9 @@ void Controle_Direction(void)
 	int16_t commande;
 	uint16_t commande_bornee;
     
-    controle_kp = 10;
-    controle_kd = 1;
-    objectif_vitesse = 5; 
+    controle_kp = 5;
+    controle_kd = 0;    
+    objectif_vitesse = 2; 
     milieu_ligne(&pos_milieu, &incertitude);
 
     if(incertitude < CONTROLE_INCERTITUDE_PALIER)
@@ -36,7 +36,7 @@ void Controle_Direction(void)
     
     // PID pour la direction
     // zieger-nicols
-        erreur = 62 - ((int16_t)pos_milieu);
+    erreur = 62 - ((int16_t)pos_milieu);
 
 	derivee = erreur - controle_derniere_erreur;
 	/*controle_integrale +=  erreur;
@@ -44,7 +44,7 @@ void Controle_Direction(void)
     controle_derniere_erreur = erreur;
     
     //commande = POS_MILIEU_SERVO + CONTROLE_KP * erreur;
-    commande = (uint16_t) (POS_MILIEU_SERVO + controle_kp * erreur + controle_kd*derivee);
+    commande = (uint16_t) (POS_MILIEU_SERVO + controle_kp * erreur + controle_kd*derivee );
     if(commande < POS_MIN_SERVO) commande_bornee = POS_MIN_SERVO;
     else if (commande > POS_MAX_SERVO) commande_bornee = POS_MAX_SERVO;
     else commande_bornee = commande; 

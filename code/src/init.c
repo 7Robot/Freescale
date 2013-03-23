@@ -50,7 +50,7 @@ void init()
     INTC_InitINTCInterrupts();
     INTC_InstallINTCInterruptHandler(Compteur_Moteur,146,3);
     INTC_InstallINTCInterruptHandler(Boucle_principale,59,1);
-//    INTC_InstallINTCInterruptHandler(Data_uart,79,1);
+    INTC_InstallINTCInterruptHandler(Data_uart,79,1);
     enableIrq();
     PIT_EnableINTC(0);
     PIT_Enable_Channel(0);
@@ -279,7 +279,7 @@ void init_LinFLEX_0_UART (void)
 	/* enter NORMAL mode */
 	LINFLEX_0.LINCR1.R = 0x0080; /* INIT=0 */	
 	
-//	LINFLEX_0.LINIER.R = 0x0004; // Interruption sur donnée reçue
+	LINFLEX_0.LINIER.R = 0x0004; // Interruption sur donnée reçue
 }
 
 /**************************** Camera *****************************************/
