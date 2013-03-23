@@ -22,18 +22,11 @@ void reload(void) {
         if ((SIU.PGPDI[2].R & 0x80000000) == 0x00000000)
         {
 	    	Acquisition_Camera(1); // on fait la balance des blancs
-<<<<<<< HEAD
+
             /* REGLAGE DU SERVO */
             /*pos_servo = potent_entre(700,1500);
             EMIOS_0.CH[4].CBDR.R = pos_servo;
-            printhex32(pos_servo);
-            */
-=======
-            /* REGLAGE DU SERVO
-            pos_servo = potent_entre(700,1500);
-            EMIOS_0.CH[4].CBDR.R = pos_servo;
             printhex32(pos_servo);*/
->>>>>>> 49e7255378f7e4992292c815fad3a8d73e79183f
         }        
         // Reglage du focus de la camera (Bouton2 enfonce):
         else if ((SIU.PGPDI[2].R & 0x40000000) == 0x00000000)

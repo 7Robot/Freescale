@@ -11,9 +11,6 @@ extern uint8_t controle_derniere_position;
 extern int8_t main_fin_boucle;
 extern float main_timer_period;
 extern uint8_t	Capteurs_resultat;
-<<<<<<< HEAD
-extern uint8_t controle_kp;
-extern uint8_t controle_kd;
-=======
-extern uint8_t controle_kp;
->>>>>>> 49e7255378f7e4992292c815fad3a8d73e79183f
+
+extern float controle_kp;
+extern float controle_kd;
