@@ -4,6 +4,8 @@
 #include "Config_PIT.h"
 #include "moteur.h"
 #include "extern_globals.h"
+#include "liaison_serie.h"
+
 
 void init()
 {
@@ -48,6 +50,7 @@ void init()
     INTC_InitINTCInterrupts();
     INTC_InstallINTCInterruptHandler(Compteur_Moteur,146,3);
     INTC_InstallINTCInterruptHandler(Boucle_principale,59,1);
+//    INTC_InstallINTCInterruptHandler(Data_uart,79,1);
     enableIrq();
     PIT_EnableINTC(0);
     PIT_Enable_Channel(0);
@@ -108,7 +111,8 @@ void initPads (void) {
 	SIU.PCR[21].R = 0x2000;          	/* MPC56xxB: Initialize PB[5] as ANP1 */
 	SIU.PCR[22].R = 0x2000;          	/* MPC56xxB: Initialize PB[6] as ANP2 */
 	SIU.PCR[42].R = 0x0200;				/* Initialise la pin de contrÙle du freinage en sortie -> PC[10]*/
-	SIU.PCR[57].R = 0x2000;          	/* MPC56xxB: Initialize PD[9] as ANP4 -> potentiomËtre */
+	SIU.PCR[57].R = 0x2000;          	/* MPC56xxB: Initialize PD[9] as ANP13 -> potentiomËtre */
+	SIU.PCR[58].R = 0x2000;          	/* MPC56xxB: Initialize PD[10] as ANP14 -> Camera */
 	SIU.PCR[64].R = 0x0100;				/* Initialise PE[0] (S1) en entr√©e */
 	SIU.PCR[65].R = 0x0100;				/* Initialise PE[1] (S2) en entr√©e */
 	SIU.PCR[66].R = 0x0100;				/* Initialise PE[2] (S2) en entr√©e */
@@ -123,7 +127,7 @@ void initPads (void) {
 void initADC(void) {
 	//ADC.MCR.R = 0x20020000;         	/* Initialize ADC scan mode*/
 	ADC.MCR.R = 0x00000000;         	/* Initialize ADC one shot mode*/
-	ADC.NCMR[0].R = 0x00002017;      	/* Select ANP0:2 and 4 inputs for normal conversion */
+	ADC.NCMR[0].R = 0x00006017;      	/* Select ANP0:2 and 4 inputs for normal conversion */
 	ADC.CTR[0].R = 0x00008606;       	/* Conversion times for 32MHz ADClock */
 	ADC.CTR[0].B.INPSAMP=25;
 }
@@ -274,6 +278,8 @@ void init_LinFLEX_0_UART (void)
 		
 	/* enter NORMAL mode */
 	LINFLEX_0.LINCR1.R = 0x0080; /* INIT=0 */	
+	
+//	LINFLEX_0.LINIER.R = 0x0004; // Interruption sur donnÈe reÁue
 }
 
 /**************************** Camera *****************************************/

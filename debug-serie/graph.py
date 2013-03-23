@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 import serial
 import struct
@@ -22,7 +23,7 @@ output = (
     ('Graph', set('graph%s' % i for i in range(125))),
     #('MovingGraph', set(['incertitude', 'milieu_ligne'])),
     ('Stdout', ['incertitude', 'milieu_ligne', 'pos_min', 'pos_max'])
-    )
+  )
 
 s = serial.Serial(
     port=port,

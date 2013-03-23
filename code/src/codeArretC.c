@@ -22,14 +22,14 @@ int code_arret_cam(void)
     moyenne /= 127;
     
     // Seuil de considération (algorithme) = k1 * moyenne => incertitude
-    if (camera_valeurs[posMax] > 3/2 * moyenne) { 		
+//    if (camera_valeurs[posMax] > 3/2 * moyenne) { 		
        // Detection des pics de la derivee
        for (i=0; i<126; i++) {
 		  
 		  // Seuil de considération (pic) = k2 * max => incertitude
-		  if (abs(valeursDerivee[i]) > 5/6*abs(valeursDerivee[posMax])) {
+		  if (abs(valeursDerivee[i]) > (6/10)*abs(valeursDerivee[posMax])) {
 			  nbZero++;	
-                          i =+ 4;	
+              i += 5;	
 		  }	  
        }   
     
@@ -39,6 +39,7 @@ int code_arret_cam(void)
            nbZero = 0;
            return 1; // provisoire   
        }
+       else return 0;
        /*
        // Detection de LA ligne d'arrivee
        if (nbLigneArrivee >= 3) {
@@ -46,5 +47,5 @@ int code_arret_cam(void)
            return 1;		   	   
        }
        */
-    } 	
+        	
 }
