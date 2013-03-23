@@ -9,3 +9,4 @@ uint8_t controle_derniere_position;
 int8_t main_fin_boucle;
 float main_timer_period;
 uint8_t	Capteurs_resultat;
+uint8_t controle_kp;

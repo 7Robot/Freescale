@@ -1,4 +1,6 @@
 #include "liaison_serie.h"
+#include "extern_globals.h" 
+#include "MPC5604B_M27V.h"
 
 /*************************  Fonctions de transmission de données ******************************/
 
@@ -108,4 +110,10 @@ void printserialsigned(uint16_t innum) {
   TransmitCharacter(p2);
   TransmitCharacter(p1);  
   TransmitCharacter(0x09);
+}
+
+void Data_uart(void)
+{
+    controle_kp = ReadData();
+    TransmitData("\n KP modified \n");
 }

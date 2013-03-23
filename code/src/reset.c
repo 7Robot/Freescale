@@ -13,7 +13,7 @@ void reload(void) {
     SIU.GPDO[71].B.PDO = 0; // LED4 ON
     
     // On coupe les moteurs:
-    SIU.PGPDO[0].R = 0x00000000;		// Active les 2 moteurs
+    //SIU.PGPDO[0].R = 0x00000000;		// Eteint les 2 moteurs
     
 
     do

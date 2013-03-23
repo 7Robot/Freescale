@@ -5,7 +5,7 @@
 // 1200 --> un peu à droite
 #define POS_MILIEU_SERVO 1114
 #define POS_MIN_SERVO 840
-#define POS_MAX_SERVO 1425
+#define POS_MAX_SERVO 1410
 
 #define CONTROLE_INCERTITUDE_PALIER 40
 

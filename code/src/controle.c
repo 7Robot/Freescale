@@ -41,7 +41,8 @@ void Controle_Direction(void)
     controle_derniere_erreur = erreur;
     */
     
-    commande = POS_MILIEU_SERVO + CONTROLE_KP * erreur;
+    //commande = POS_MILIEU_SERVO + CONTROLE_KP * erreur;
+    commande = POS_MILIEU_SERVO + controle_kp * erreur;
     if(commande < POS_MIN_SERVO) commande_bornee = POS_MIN_SERVO;
     else if (commande > POS_MAX_SERVO) commande_bornee = POS_MAX_SERVO;
     else commande_bornee = commande; 

@@ -31,7 +31,7 @@ int code_arret_cam(void)
 			  nbZero++;	
               i += 5;	
 		  }	  
-//       }   
+       }   
     
        // Detection des lignes d'arrivees intermediaires (au nombre de deux)
        if (nbZero >= 6) {
@@ -47,6 +47,5 @@ int code_arret_cam(void)
            return 1;		   	   
        }
        */
-       
-    } 	
+        	
 }

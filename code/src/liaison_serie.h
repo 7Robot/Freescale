@@ -13,5 +13,6 @@ void printhex8(uint8_t innum);
 void printhex16(uint16_t innum);
 void printhex32(uint32_t innum);
 void printserialsigned(uint16_t innum);
+void Data_uart(void);
 
 #endif
