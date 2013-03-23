@@ -2,6 +2,7 @@
 #include "constantes.h"
 #include "milieu_ligne.h"
 #include "liaison_serie.h"
+#include "extern_globals.h"
 
 #define max(x,y) (x<y?y:x)
  
@@ -13,7 +14,9 @@ void Controle_Direction(void)
 	int8_t derivee;
 	int16_t commande;
 	uint16_t commande_bornee;
-
+    
+    controle_kp = 5;
+    
     milieu_ligne(&pos_milieu, &incertitude);
 
     if(incertitude < CONTROLE_INCERTITUDE_PALIER)
@@ -27,8 +30,8 @@ void Controle_Direction(void)
 
     /*objectif_vitesse = max(6-abs((int16_t)(pos_milieu)-64)/10, 2);
     
-    commande = (64 - (int16_t)pos_milieu) / (objectif_vitesse);*/
-    
+    commande = (64 - (int16_t)pos_milieu) / (objectif_vitesse);
+    */
     
     // PID pour la direction
     // zieger-nicols

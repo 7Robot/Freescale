@@ -41,7 +41,7 @@ int main(void) {
   
         // Ici est le code de reset
         reload();
-
+    SIU.PGPDO[0].R = 0x00000000;		// Desactive les 2 moteurs
         do
         {
             /* Boutons de controle */
@@ -63,7 +63,7 @@ int main(void) {
             //SIU.GPDO[42].B.PDO = 1; // Freinage acif, activation de IN1 sur les Ponts-en-H cf schematique carte de puissance
             /*delay(100);
             SIU.GPDO[42].B.PDO = 1;*/
-
+            
             if(Servo_F < 2)
                 Servo_F++;
             else 
@@ -71,18 +71,20 @@ int main(void) {
                 Controle_Direction();
                 Servo_F = 0;
             }
+            /*
 		    if(Moteur_F < 7)
                 Moteur_F++;
             else
             {
-                Moteur_F = 0;
                 Controle_Vitesse();
-            }
+                Moteur_F = 0;
+            }*/           
             do
             {
                 asm("wait");
             }
             while(! main_fin_boucle); // Evite de revenir dans la boucle quand il y a des interruptions sur le capteur de vitesse
+            
             
 
         }
