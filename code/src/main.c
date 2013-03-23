@@ -64,7 +64,6 @@ int main(void) {
             /*delay(100);
             SIU.GPDO[42].B.PDO = 1;*/
 
-           
             if(Servo_F < 2)
                 Servo_F++;
             else 
