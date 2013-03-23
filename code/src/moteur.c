@@ -17,6 +17,10 @@ void Controle_Vitesse(void)
 	int32_t derivee;
 	int32_t commande;
     
+<<<<<<< HEAD
+=======
+    objectif_vitesse = 5;
+>>>>>>> 49e7255378f7e4992292c815fad3a8d73e79183f
     erreur = objectif_vitesse - moteur_compteur;
 		
 	derivee = erreur - moteur_derniere_erreur;

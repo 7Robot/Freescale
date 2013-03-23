@@ -3,9 +3,15 @@
 // 672 --> gauche à fond
 // 1000 --> un peu à gauche
 // 1200 --> un peu à droite
+<<<<<<< HEAD
 #define POS_MILIEU_SERVO 1072
 #define POS_MIN_SERVO 751
 #define POS_MAX_SERVO 1367
+=======
+#define POS_MILIEU_SERVO 1114
+#define POS_MIN_SERVO 840
+#define POS_MAX_SERVO 1410
+>>>>>>> 49e7255378f7e4992292c815fad3a8d73e79183f
 
 #define CONTROLE_INCERTITUDE_PALIER 40
 

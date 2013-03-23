@@ -40,9 +40,14 @@ int main(void) {
     {
   
         // Ici est le code de reset
+<<<<<<< HEAD
 
         SIU.PGPDO[0].R = 0x00000000;		// Desactive les 2 moteurs
         reload();
+=======
+        reload();
+    SIU.PGPDO[0].R = 0x00000000;		// Desactive les 2 moteurs
+>>>>>>> 49e7255378f7e4992292c815fad3a8d73e79183f
         do
         {
             /* Boutons de controle */
@@ -71,15 +76,23 @@ int main(void) {
                 Controle_Direction();
                 Servo_F = 0;
             }
+<<<<<<< HEAD
             
+=======
+            /*
+>>>>>>> 49e7255378f7e4992292c815fad3a8d73e79183f
 		    if(Moteur_F < 7)
                 Moteur_F++;
             else
             {
                 Controle_Vitesse();
                 Moteur_F = 0;
+<<<<<<< HEAD
             }
                       
+=======
+            }*/           
+>>>>>>> 49e7255378f7e4992292c815fad3a8d73e79183f
             do
             {
                 asm("wait");
