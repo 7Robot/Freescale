@@ -27,9 +27,9 @@ int code_arret_cam(void)
        for (i=0; i<126; i++) {
 		  
 		  // Seuil de considération (pic) = k2 * max => incertitude
-		  if (abs(valeursDerivee[i]) > 5/6*abs(valeursDerivee[posMax])) {
+		  if (abs(valeursDerivee[i]) > (8/10)*abs(valeursDerivee[posMax])) {
 			  nbZero++;	
-                          i =+ 4;	
+              i =+ 5;	
 		  }	  
        }   
     
