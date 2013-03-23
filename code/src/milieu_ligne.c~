@@ -38,7 +38,7 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude)
         valeurs[i] = (int8_t)camera_valeurs[i + 2] - (int8_t)camera_valeurs[i];
     }
 	
-	//TransmitCharacter(0x42); // Délimiteur pour l'affichage en python
+	TransmitCharacter(0x42); // Délimiteur pour l'affichage en python
 	
 	// recherche du min / du max
 	for(i = 1; i < 126; i++)
