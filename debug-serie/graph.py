@@ -10,22 +10,20 @@ baudrate = 115200
 
 fields = OrderedDict()
 
-#fields.update(
-#    ('graph%s' % i, 'b') for i in range(125)
-#)
+fields.update(
+    ('graph%s' % i, 'b') for i in range(125)
+)
 
-#fields['pos_min'] = 'B'
-#fields['pos_max'] = 'B'
-#fields['incertitude'] = 'B'
-#fields['milieu_ligne'] = 'B'
-fields['moteur_compteur'] = 'B'
+fields['pos_min'] = 'B'
+fields['pos_max'] = 'B'
+fields['incertitude'] = 'B'
+fields['milieu_ligne'] = 'B'
 
 output = (
-#    ('Graph', set('graph%s' % i for i in range(125))),
+    ('Graph', set('graph%s' % i for i in range(125))),
     #('MovingGraph', set(['incertitude', 'milieu_ligne'])),
-#    ('Stdout', ['incertitude', 'milieu_ligne', 'pos_min', 'pos_max'])
-    ('MovingGraph', set(['moteur_compteur'])) 
-   )
+    ('Stdout', ['incertitude', 'milieu_ligne', 'pos_min', 'pos_max'])
+  )
 
 s = serial.Serial(
     port=port,
