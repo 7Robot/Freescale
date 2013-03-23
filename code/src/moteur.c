@@ -7,6 +7,7 @@
 void Compteur_Moteur(void)
 {
 	moteur_compteur++;
+	
 	EMIOS_0.CH[11].CSR.B.FLAG = 0x1;
 }
 
@@ -16,10 +17,7 @@ void Controle_Vitesse(void)
 	int32_t derivee;
 	int32_t commande;
 
-        TransmitCharacter(0x42); // Délimiteur pour l'affichage en python	
-        TransmitCharacter((uint8_t) moteur_compteur);
-
-	erreur = objectif_vitesse - moteur_compteur;
+        erreur = objectif_vitesse - moteur_compteur;
 		
 	derivee = erreur - moteur_derniere_erreur;
 	moteur_integrale +=  erreur;
