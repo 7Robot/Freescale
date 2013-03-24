@@ -41,7 +41,7 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude)
 	TransmitCharacter(0x42); // Délimiteur pour l'affichage en python
 	
 	// recherche du min / du max
-	for(i = 1; i < 126; i++)
+	for(i = 0; i < 126; i++)
 	{
 		if(valeurs[i] > valeurs[pos_max])
 			pos_max = i;

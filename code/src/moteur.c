@@ -11,13 +11,11 @@ void Compteur_Moteur(void)
 	EMIOS_0.CH[11].CSR.B.FLAG = 0x1;
 }
 
-void Controle_Vitesse(void)
+void Asserv_Vitesse(void)
 {
 	int32_t erreur;
 	int32_t derivee;
 	int32_t commande;
-    
-    objectif_vitesse = 6;
     
     erreur = objectif_vitesse - moteur_compteur;
 		

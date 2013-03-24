@@ -112,7 +112,17 @@ void initPads (void) {
 	SIU.PCR[22].R = 0x2000;          	/* MPC56xxB: Initialize PB[6] as ANP2 */
 	SIU.PCR[42].R = 0x0200;				/* Initialise la pin de contrÙle du freinage en sortie -> PC[10]*/
 	SIU.PCR[57].R = 0x2000;          	/* MPC56xxB: Initialize PD[9] as ANP13 -> potentiomËtre */
-	SIU.PCR[58].R = 0x2000;          	/* MPC56xxB: Initialize PD[10] as ANP14 -> Camera */
+	/*Camera:*/
+	SIU.PCR[58].R = 0x2000;          	/* MPC56xxB: Initialize PD[10] as ANP14 -> Camera AO*/
+	SIU.PCR[60].R = 0x0200;             /* PD[12] -> Sortie: Signal SI */
+	SIU.PCR[61].R = 0x0200;             /* PD[13] -> Sortie: Signal CLK */
+	SIU.PCR[62].R = 0x0200;             /* PD[14] -> Sortie: VCC */
+	SIU.PCR[63].R = 0x0200;             /* PD[15] -> Sortie: Masse */
+	/* Alimentation Camera */ 
+	SIU.GPDO[62].R = 1; /* VCC */
+	SIU.GPDO[63].R = 0; /* Masse */
+	/* Fin Camera */
+	
 	SIU.PCR[64].R = 0x0100;				/* Initialise PE[0] (S1) en entr√©e */
 	SIU.PCR[65].R = 0x0100;				/* Initialise PE[1] (S2) en entr√©e */
 	SIU.PCR[66].R = 0x0100;				/* Initialise PE[2] (S2) en entr√©e */
