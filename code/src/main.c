@@ -71,12 +71,11 @@ int main(void) {
                 Controle_Direction();
                 Servo_F = 0;
             }
-
 		    if(Moteur_F < 7)
                 Moteur_F++;
             else
             {
-                Controle_Vitesse();
+                Asserv_Vitesse();
                 Moteur_F = 0;
             }
             do

@@ -110,7 +110,7 @@ Link map of __start
      4] objectif_vitesse (object,global) found in main.o 
      4] controle_derniere_position (object,global) found in main.o 
      4] controle_derniere_erreur (object,global) found in main.o 
-    3] Controle_Vitesse (func,global) found in moteur.o 
+    3] Asserv_Vitesse (func,global) found in moteur.o 
      4] PIT_ClearFlag (func,global) found in Config_PIT.o 
    2] exit (func,weak) found in __ppc_eabi_init.o 
     3] _ExitProcess (func,weak) found in __ppc_eabi_init.o 
@@ -330,27 +330,27 @@ Link map of __start
   00000ca8 0000e2 00002ca8 000014c8  1 .text 	controle.o 
   00000ca8 0000e2 00002ca8 000014c8  2 Controle_Direction 	controle.o 
   00000d8a 000000 00002d8a 000015aa  1 .text.36 	controle.o 
-  00000d8a 0000b4 00002d8a 000015aa  1 .text 	moteur.o 
+  00000d8a 0000ae 00002d8a 000015aa  1 .text 	moteur.o 
   00000d8a 000020 00002d8a 000015aa  2 Compteur_Moteur 	moteur.o 
-  00000daa 000094 00002daa 000015ca  2 Controle_Vitesse 	moteur.o 
-  00000e3e 000000 00002e3e 0000165e  1 .text.30 	moteur.o 
-  00000e3e 0000ea 00002e3e 0000165e  1 .text 	Config_PIT.o 
-  00000e3e 00006c 00002e3e 0000165e  2 Init_PIT 	Config_PIT.o 
-  00000eaa 000020 00002eaa 000016ca  2 PIT_EnableINTC 	Config_PIT.o 
+  00000daa 00008e 00002daa 000015ca  2 Asserv_Vitesse 	moteur.o 
+  00000e38 000000 00002e38 00001658  1 .text.30 	moteur.o 
+  00000e38 0000ea 00002e38 00001658  1 .text 	Config_PIT.o 
+  00000e38 00006c 00002e38 00001658  2 Init_PIT 	Config_PIT.o 
+  00000ea4 000020 00002ea4 000016c4  2 PIT_EnableINTC 	Config_PIT.o 
   UNUSED   000020 ........ ........    PIT_DisableINTC Config_PIT.o 
-  00000eca 000020 00002eca 000016ea  2 PIT_Enable_Channel 	Config_PIT.o 
+  00000ec4 000020 00002ec4 000016e4  2 PIT_Enable_Channel 	Config_PIT.o 
   UNUSED   000020 ........ ........    PIT_Disable_Channel Config_PIT.o 
   UNUSED   00001e ........ ........    PIT_GetFlag Config_PIT.o 
-  00000eea 000018 00002eea 0000170a  2 PIT_ClearFlag 	Config_PIT.o 
-  00000f02 000012 00002f02 00001722  2 Boucle_principale 	Config_PIT.o 
-  00000f14 000014 00002f14 00001734  2 enableIrq 	Config_PIT.o 
-  00000f28 000000 00002f28 00001748  1 .text.53 	Config_PIT.o 
-  00000f28 000188 00002f28 00001748  1 .text 	reset.o 
-  00000f28 000188 00002f28 00001748  2 reload 	reset.o 
-  000010b0 000000 000030b0 000018d0  1 .text.39 	reset.o 
-  000010b0 00003a 000030b0 000018d0  1 .text 	Runtime.PPCEABI.VS.UC.a ExceptionPPC.o
-  000010b0 00001e 000030b0 000018d0  2 __register_fragment 	Runtime.PPCEABI.VS.UC.a ExceptionPPC.o
-  000010ce 00001c 000030ce 000018ee  2 __unregister_fragment 	Runtime.PPCEABI.VS.UC.a ExceptionPPC.o
+  00000ee4 000018 00002ee4 00001704  2 PIT_ClearFlag 	Config_PIT.o 
+  00000efc 000012 00002efc 0000171c  2 Boucle_principale 	Config_PIT.o 
+  00000f0e 000014 00002f0e 0000172e  2 enableIrq 	Config_PIT.o 
+  00000f22 000000 00002f22 00001742  1 .text.53 	Config_PIT.o 
+  00000f22 000188 00002f22 00001742  1 .text 	reset.o 
+  00000f22 000188 00002f22 00001742  2 reload 	reset.o 
+  000010aa 000000 000030aa 000018ca  1 .text.39 	reset.o 
+  000010aa 00003a 000030aa 000018ca  1 .text 	Runtime.PPCEABI.VS.UC.a ExceptionPPC.o
+  000010aa 00001e 000030aa 000018ca  2 __register_fragment 	Runtime.PPCEABI.VS.UC.a ExceptionPPC.o
+  000010c8 00001c 000030c8 000018e8  2 __unregister_fragment 	Runtime.PPCEABI.VS.UC.a ExceptionPPC.o
   UNUSED   00005a ........ ........    ExPPC_FindExceptionFragment__FPcP12FragmentInfo Runtime.PPCEABI.VS.UC.a ExceptionPPC.o
   UNUSED   0000e2 ........ ........    ExPPC_FindExceptionRecord__FPcP15MWExceptionInfo Runtime.PPCEABI.VS.UC.a ExceptionPPC.o
   UNUSED   000006 ........ ........    ExPPC_PopR31__FPcP15MWExceptionInfo Runtime.PPCEABI.VS.UC.a ExceptionPPC.o
@@ -393,9 +393,9 @@ Link map of __start
   UNUSED   000086 ........ ........    __uncaught_exception_helper__FP12ThrowContext Runtime.PPCEABI.VS.UC.a ExceptionPPC.o
   UNUSED   000028 ........ ........    __uncaught_exception Runtime.PPCEABI.VS.UC.a ExceptionPPC.o
   UNUSED   00000a ........ ........    what__Q23std13bad_exceptionCFv Runtime.PPCEABI.VS.UC.a ExceptionPPC.o
-  000010ea 000000 000030ea 0000190a  1 .text.1659 	Runtime.PPCEABI.VS.UC.a ExceptionPPC.o
-  000010ea 000064 000030ea 0000190a  1 .text 	Runtime.PPCEABI.VS.UC.a runtime.o
-  000010ea 00004a 000030ea 0000190a  2 __save_gpr 	Runtime.PPCEABI.VS.UC.a runtime.o
+  000010e4 000000 000030e4 00001904  1 .text.1659 	Runtime.PPCEABI.VS.UC.a ExceptionPPC.o
+  000010e4 000064 000030e4 00001904  1 .text 	Runtime.PPCEABI.VS.UC.a runtime.o
+  000010e4 00004a 000030e4 00001904  2 __save_gpr 	Runtime.PPCEABI.VS.UC.a runtime.o
   UNUSED   000000 ........ ........    _savegpr_14 Runtime.PPCEABI.VS.UC.a runtime.o
   UNUSED   000000 ........ ........    _save32gpr_14 Runtime.PPCEABI.VS.UC.a runtime.o
   UNUSED   000000 ........ ........    _savegpr_15 Runtime.PPCEABI.VS.UC.a runtime.o
@@ -428,7 +428,7 @@ Link map of __start
   UNUSED   000000 ........ ........    _save32gpr_28 Runtime.PPCEABI.VS.UC.a runtime.o
   UNUSED   000000 ........ ........    _savegpr_29 Runtime.PPCEABI.VS.UC.a runtime.o
   UNUSED   000000 ........ ........    _save32gpr_29 Runtime.PPCEABI.VS.UC.a runtime.o
-  0000112a 000000 0000312a 0000194a    _savegpr_30 (entry of __save_gpr) 	Runtime.PPCEABI.VS.UC.a runtime.o
+  00001124 000000 00003124 00001944    _savegpr_30 (entry of __save_gpr) 	Runtime.PPCEABI.VS.UC.a runtime.o
   UNUSED   000000 ........ ........    _save32gpr_30 Runtime.PPCEABI.VS.UC.a runtime.o
   UNUSED   000000 ........ ........    _savegpr_31 Runtime.PPCEABI.VS.UC.a runtime.o
   UNUSED   000000 ........ ........    _save32gpr_31 Runtime.PPCEABI.VS.UC.a runtime.o
@@ -469,11 +469,11 @@ Link map of __start
   UNUSED   000000 ........ ........    _rest32gpr_30 Runtime.PPCEABI.VS.UC.a runtime.o
   UNUSED   000000 ........ ........    _restgpr_31 Runtime.PPCEABI.VS.UC.a runtime.o
   UNUSED   000000 ........ ........    _rest32gpr_31 Runtime.PPCEABI.VS.UC.a runtime.o
-  00001134 000008 00003134 00001954  2 __restore_frame_and_exit 	Runtime.PPCEABI.VS.UC.a runtime.o
-  00001136 000000 00003136 00001956    __finish_restore_frame_and_exit2 (entry of __restore_frame_and_exit) 	Runtime.PPCEABI.VS.UC.a runtime.o
-  0000113c 00000a 0000313c 0000195c  2 __restore_gpr_31_exit 	Runtime.PPCEABI.VS.UC.a runtime.o
-  00001142 000000 00003142 00001962    __finish_restore_frame_and_exit (entry of __restore_gpr_31_exit) 	Runtime.PPCEABI.VS.UC.a runtime.o
-  00001146 000008 00003146 00001966  2 __restore_gpr_30_exit 	Runtime.PPCEABI.VS.UC.a runtime.o
+  0000112e 000008 0000312e 0000194e  2 __restore_frame_and_exit 	Runtime.PPCEABI.VS.UC.a runtime.o
+  00001130 000000 00003130 00001950    __finish_restore_frame_and_exit2 (entry of __restore_frame_and_exit) 	Runtime.PPCEABI.VS.UC.a runtime.o
+  00001136 00000a 00003136 00001956  2 __restore_gpr_31_exit 	Runtime.PPCEABI.VS.UC.a runtime.o
+  0000113c 000000 0000313c 0000195c    __finish_restore_frame_and_exit (entry of __restore_gpr_31_exit) 	Runtime.PPCEABI.VS.UC.a runtime.o
+  00001140 000008 00003140 00001960  2 __restore_gpr_30_exit 	Runtime.PPCEABI.VS.UC.a runtime.o
   UNUSED   000008 ........ ........    __restore_gpr_29_exit Runtime.PPCEABI.VS.UC.a runtime.o
   UNUSED   000008 ........ ........    __restore_gpr_28_exit Runtime.PPCEABI.VS.UC.a runtime.o
   UNUSED   000008 ........ ........    __restore_gpr_27_exit Runtime.PPCEABI.VS.UC.a runtime.o
@@ -517,11 +517,11 @@ Link map of __start
   UNUSED   00001a ........ ........    __shl2i Runtime.PPCEABI.VS.UC.a runtime.o
   UNUSED   00001a ........ ........    __shr2u Runtime.PPCEABI.VS.UC.a runtime.o
   UNUSED   00001c ........ ........    __shr2i Runtime.PPCEABI.VS.UC.a runtime.o
-  0000114e 000000 0000314e 0000196e  1 .text.205 	Runtime.PPCEABI.VS.UC.a runtime.o
-  0000114e 000050 0000314e 0000196e  1 .text 	Runtime.PPCEABI.VS.UC.a __init_cpp_exceptions.o
-  0000114e 00002e 0000314e 0000196e  2 __init_cpp_exceptions 	Runtime.PPCEABI.VS.UC.a __init_cpp_exceptions.o
-  0000117c 000022 0000317c 0000199c  2 __fini_cpp_exceptions 	Runtime.PPCEABI.VS.UC.a __init_cpp_exceptions.o
-  0000119e 000002 000031a0 000019c0 16 *fill*
+  00001148 000000 00003148 00001968  1 .text.205 	Runtime.PPCEABI.VS.UC.a runtime.o
+  00001148 000050 00003148 00001968  1 .text 	Runtime.PPCEABI.VS.UC.a __init_cpp_exceptions.o
+  00001148 00002e 00003148 00001968  2 __init_cpp_exceptions 	Runtime.PPCEABI.VS.UC.a __init_cpp_exceptions.o
+  00001176 000022 00003176 00001996  2 __fini_cpp_exceptions 	Runtime.PPCEABI.VS.UC.a __init_cpp_exceptions.o
+  00001198 000008 000031a0 000019c0 16 *fill*
   000011a0 000636 000031a0 000019c0  1 .text 	Runtime.PPCEABI.VS.UC.a E:\CW_Dev\eppc_support\Do_Not_Distribute\zen_fpemu\Src\vle_ppcsfpe.o
   UNUSED   000018 ........ ........    _fp_round Runtime.PPCEABI.VS.UC.a E:\CW_Dev\eppc_support\Do_Not_Distribute\zen_fpemu\Src\vle_ppcsfpe.o
   UNUSED   00000a ........ ........    _fp_get_fpscr Runtime.PPCEABI.VS.UC.a E:\CW_Dev\eppc_support\Do_Not_Distribute\zen_fpemu\Src\vle_ppcsfpe.o
@@ -854,12 +854,12 @@ Memory map:
                .sdata2 40001368 00000000 00002808 00004008 00004008          0
                 .sbss2 40001368 00000000 00002808 00004008 00004008          0
                   .bss 40001368 00000114 00002808 00004008 00004008          0
-      .PPC.EMB.apuinfo 00009dd4 00000000 0000c5e0 0000dddc 0000dddc          0
+      .PPC.EMB.apuinfo 00009dbc 00000000 0000c5d0 0000ddc4 0000ddc4          0
          .debug_abbrev          0000014d 00002808
-           .debug_info          0000259b 00002955
-           .debug_line          00003749 00004ef0
-            .debug_loc          00000b45 00008639
-       .debug_pubnames          000007f6 0000917e
+           .debug_info          00002599 00002955
+           .debug_line          00003745 00004eee
+            .debug_loc          00000b45 00008633
+       .debug_pubnames          000007f4 00009178
 
 
 Linker generated symbols:
