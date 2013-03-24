@@ -43,12 +43,13 @@ void reload(void) {
             /*pos_servo = potent_entre(700,1500);
             EMIOS_0.CH[4].CBDR.R = pos_servo;
             printhex32(pos_servo); */
+            
   		}
         // Detection ligne d'arrivé (Bouton3 enfonce):
         else if ((SIU.PGPDI[2].R & 0x20000000) == 0x00000000)
         {
-            Acquisition_Camera(0);
-            code_arret_cam();                 
+            /*Acquisition_Camera(0);
+            code_arret_cam();*/              
   	    }  	
     
   	     asm("wait");

@@ -11,4 +11,5 @@ float main_timer_period;
 uint8_t	Capteurs_resultat;
 float controle_kp;
 float controle_kd;
+uint8_t max_derivee;
 

@@ -14,3 +14,5 @@ extern uint8_t	Capteurs_resultat;
 
 extern float controle_kp;
 extern float controle_kd;
+
+extern uint8_t max_derivee;
