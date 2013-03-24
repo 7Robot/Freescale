@@ -57,6 +57,7 @@ int main(void) {
                 SIU.PGPDO[0].R = 0x0000C000;		// Active les 2 moteurs
                 SIU.GPDO[69].B.PDO = 0;     // LED 2 ON	
                 Moteur_ON = 0;
+                moteur_integrale = 0;
             }
             
             Acquisition_Camera(0);

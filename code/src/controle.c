@@ -15,8 +15,8 @@ void Controle_Direction(void)
 	int16_t commande;
 	uint16_t commande_bornee;
     
-    controle_kp = 5;
-    controle_kd = 0;    
+    controle_kp = 6;// 6 et 3 pour une vitesse de 5
+    controle_kd = 5;    
     objectif_vitesse = 2; 
     milieu_ligne(&pos_milieu, &incertitude);
 

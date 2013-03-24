@@ -4,14 +4,14 @@
 // 1000 --> un peu à gauche
 // 1200 --> un peu à droite
 
-#define POS_MILIEU_SERVO 1172
-#define POS_MIN_SERVO 870
-#define POS_MAX_SERVO 1488
+#define POS_MILIEU_SERVO 1118
+#define POS_MIN_SERVO 823
+#define POS_MAX_SERVO 1432
 
 
 
 
-#define CONTROLE_INCERTITUDE_PALIER 40
+#define CONTROLE_INCERTITUDE_PALIER 30
 
 #define CONTROLE_DIFFERENCE_POS_MAX 30
 
