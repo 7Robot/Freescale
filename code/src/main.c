@@ -40,8 +40,6 @@ int main(void) {
     {
   
         // Ici est le code de reset
-
-
         SIU.PGPDO[0].R = 0x00000000;		// Desactive les 2 moteurs
         reload();
         do

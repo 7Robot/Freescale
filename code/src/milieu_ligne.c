@@ -38,7 +38,7 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude)
         valeurs[i] = (int8_t)camera_valeurs[i + 2] - (int8_t)camera_valeurs[i];
     }
 	
-	TransmitCharacter(0x42); // Délimiteur pour l'affichage en python
+	//TransmitCharacter(0x42); // Délimiteur pour l'affichage en python
 	
 	// recherche du min / du max
 	for(i = 1; i < 126; i++)
@@ -64,10 +64,10 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude)
 		*incertitude = 100 * max_hors_ligne / max(valeurs[pos_max], -valeurs[pos_min]);
 	else
 		*incertitude = 250;
-	TransmitCharacter(pos_min);
+	/*TransmitCharacter(pos_min);
 	TransmitCharacter(pos_max);
 	TransmitCharacter(*incertitude);
-	TransmitCharacter(*milieu);
+	TransmitCharacter(*milieu);*/
 
 }
 

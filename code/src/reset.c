@@ -11,10 +11,6 @@ void reload(void) {
     uint32_t pos_servo = 1200;
 	
     SIU.GPDO[71].B.PDO = 0; // LED4 ON
-    
-    // On coupe les moteurs:
-    //SIU.PGPDO[0].R = 0x00000000;		// Eteint les 2 moteurs
-    
 
     do
     {
@@ -52,11 +48,10 @@ void reload(void) {
         else if ((SIU.PGPDI[2].R & 0x20000000) == 0x00000000)
         {
             Acquisition_Camera(0);
-            if (code_arret_cam())
-   	            SIU.GPDO[70].B.PDO = 0;                
+            code_arret_cam();                 
   	    }  	
     
-  	 asm("wait");
+  	     asm("wait");
          SIU.GPDO[68].B.PDO = 1;
          SIU.GPDO[69].B.PDO = 1;
          SIU.GPDO[70].B.PDO = 1;
