@@ -1,3 +1,7 @@
-code/bin
-code/lcf
-code/Robot_Data
+code/bin/
+code/lcf/
+code/Robot_Data/
+*.c~
+*.h~
+*.swp
+
