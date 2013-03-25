@@ -23,8 +23,9 @@ void recherche_pic (int8_t valeurs_derivee[2][126], uint8_t* pos_max) {
 		for (i = inf; i < sup; i++)  valeurs_derivee[1][i] = 0;
 }	 
 
-int code_arret_cam(void)
+void code_arret_cam(void)
 {
+<<<<<<< HEAD
 	static uint8_t nb_pic = 5;
 	static uint8_t seuil = 50;
 	
@@ -56,4 +57,57 @@ int code_arret_cam(void)
         return 1;
     else
         return 0;   
+=======
+	static uint8_t nbLigneArrivee = 0;
+	static uint8_t pallier_pic = 65;
+	uint8_t nbZero = 0;
+		
+	int8_t valeursDerivee[126];		
+	uint8_t i; 
+	uint8_t pos_max = 0;
+
+	pallier_pic = 2*max_derivee/3; // max_derivee a ete calcul� pendant la fonction de focus
+	
+    // recherche du max
+	for(i = 1; i < 126; i++)
+	{
+	    valeursDerivee[i] = camera_valeurs[i+2] - camera_valeurs[i];
+		if(valeursDerivee[i] > valeursDerivee[pos_max])
+			pos_max = i;
+	}
+    TransmitData("\n valeursDerivee: \n");  
+    printhex32(valeursDerivee[pos_max]);
+       
+    // Seuil de considération (algorithme) = k1 * moyenne => incertitude
+    if (valeursDerivee[pos_max] > pallier_pic) { 		
+       // Detection des pics de la derivee
+       i = 0;
+       do
+       {		  
+		  // Seuil de considération (pic) = k2 * max => incertitude
+		  if (abs(valeursDerivee[i]) >= (5/10)*abs(valeursDerivee[pos_max])) {
+			  nbZero++;	
+              i += 3;                     	
+		  }
+		  else i++;
+       }while (i <= 125);  
+       TransmitData("\n NbZero: \n"); 
+       printhex32(nbZero);
+       
+       // Detection des lignes d'arrivees intermediaires (au nombre de deux)
+       if (nbZero == 5) {
+	       nbLigneArrivee++;
+           nbZero = 0;
+           SIU.GPDO[68].B.PDO = 0; // LED1 ON : a enlever
+       }
+ 
+       
+       // Detection de LA ligne d'arrivee
+       if (nbLigneArrivee == 2) {
+	       nbLigneArrivee = 0;
+           SIU.GPDO[69].B.PDO = 0; // LED2 ON : a remplacer par la commade arreter moteur
+       }
+    }
+        	
+>>>>>>> 936c533073de5b2d3771cbf7c3856419c0fda7d6
 }
