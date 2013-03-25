@@ -96,6 +96,7 @@ int main(void) {
 
         }
         while(! reset );
+        delay(10000000);
 
     }	
 }
