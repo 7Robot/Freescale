@@ -62,7 +62,7 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude)
 	}
 	
 	if(abs((int8_t)pos_min - (int8_t)pos_max - LARGEUR_LIGNE) < DELTA_LARGEUR_LIGNE)
-		*incertitude = 100 * max_hors_ligne / max(valeurs[pos_max], -valeurs[pos_min]);
+		*incertitude = 100 * max_hors_ligne / min(valeurs[pos_max], -valeurs[pos_min]);
 	else
 		*incertitude = 250;
 	TransmitCharacter(pos_min);
