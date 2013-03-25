@@ -162,7 +162,7 @@ void initEMIOS_0(void) {
 
 void initEMIOS_0ch3(void) { // servo
 	EMIOS_0.CH[3].CADR.R = 0;     		/* Leading edge when channel counter bus=0*/
-	EMIOS_0.CH[3].CBDR.R = POS_MILIEU_SERVO;  /* Trailing edge when channel counter bus=1400 Middle, 1650 Right Max, 1150 Left Max*/
+	EMIOS_0.CH[3].CBDR.R = pos_milieu_servo;  /* Trailing edge when channel counter bus=1400 Middle, 1650 Right Max, 1150 Left Max*/
 	EMIOS_0.CH[3].CCR.B.BSL = 0x01;  	/* Use counter bus B -> Time base channel 0*/
 	EMIOS_0.CH[3].CCR.B.EDPOL = 1;  	/* Polarity-leading edge sets output */
 	EMIOS_0.CH[3].CCR.B.MODE = 0x60; 	/* Mode is OPWM Buffered */
@@ -219,7 +219,7 @@ void initEMIOS_0ch23(void) {        	/* EMIOS 0 CH 23: Modulus Up Counter */
 
 void initEMIOS_0ch4(void) {        		/* EMIOS 0 CH 4: Servo-moteur */
 	EMIOS_0.CH[4].CADR.R = 0;     		/* Leading edge when channel counter bus=0*/
-	EMIOS_0.CH[4].CBDR.R = POS_MILIEU_SERVO;  /* Trailing edge when channel counter bus=1400 Middle, 1650 Right Max, 1150 Left Max*/
+	EMIOS_0.CH[4].CBDR.R = pos_milieu_servo;  /* Trailing edge when channel counter bus=1400 Middle, 1650 Right Max, 1150 Left Max*/
 	EMIOS_0.CH[4].CCR.B.BSL = 0x01;  	/* Use counter bus B -> Time base channel 0*/
 	EMIOS_0.CH[4].CCR.B.EDPOL = 1;  	/* Polarity-leading edge sets output */
 	EMIOS_0.CH[4].CCR.B.MODE = 0x60; 	/* Mode is OPWM Buffered */
