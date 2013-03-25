@@ -47,6 +47,7 @@ void init()
     init_camera();
 
     Init_PIT(0,64000000, main_timer_period); // Boucle principale
+    Init_PIT(1,64000000, 10e-6); // Test des capteurs
     INTC_InitINTCInterrupts();
     INTC_InstallINTCInterruptHandler(Compteur_Moteur,146,3);
     INTC_InstallINTCInterruptHandler(Boucle_principale,59,1);
@@ -198,7 +199,7 @@ void initEMIOS_0ch8(void) {        		/* EMIOS 0 CH 0: Modulus Up Counter */
 
 void initEMIOS_0ch16(void)
 {
-	EMIOS_0.CH[16].CADR.R = 1570;   	/* Period will be 19999+1 = 20000 clocks (20 msec)*/
+	EMIOS_0.CH[16].CADR.R = 2100;   	/* Period will be 19999+1 = 20000 clocks (20 msec)*/
 	EMIOS_0.CH[16].CCR.B.MODE = 0x50; 	/* Modulus Counter Buffered (MCB) */
 	EMIOS_0.CH[16].CCR.B.BSL = 0x3;   	/* Use internal counter */
 	EMIOS_0.CH[16].CCR.B.UCPRE=0;     	/* Set channel prescaler to divide by 1 */
