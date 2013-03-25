@@ -1,13 +1,6 @@
 #define AMPLITUDE_SERVO 14 // 7
 
-// 672 --> gauche à fond
-// 1000 --> un peu à gauche
-// 1200 --> un peu à droite
-#define POS_MILIEU_SERVO 1114
-#define POS_MIN_SERVO 840
-#define POS_MAX_SERVO 1425
-
-#define CONTROLE_INCERTITUDE_PALIER 40
+#define CONTROLE_INCERTITUDE_PALIER 30
 
 #define CONTROLE_DIFFERENCE_POS_MAX 30
 

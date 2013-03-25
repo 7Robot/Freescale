@@ -11,7 +11,7 @@ baudrate = 115200
 fields = OrderedDict()
 
 fields.update(
-    ('graph%s' % i, 'b') for i in range(125)
+    ('graph%s' % i, 'b') for i in range(126)
 )
 
 fields['pos_min'] = 'B'
@@ -20,7 +20,7 @@ fields['incertitude'] = 'B'
 fields['milieu_ligne'] = 'B'
 
 output = (
-    ('Graph', set('graph%s' % i for i in range(125))),
+    ('Graph', set('graph%s' % i for i in range(126))),
     #('MovingGraph', set(['incertitude', 'milieu_ligne'])),
     ('Stdout', ['incertitude', 'milieu_ligne', 'pos_min', 'pos_max'])
   )

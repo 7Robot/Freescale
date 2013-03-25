@@ -4,6 +4,8 @@
 #include "Config_PIT.h"
 #include "moteur.h"
 #include "extern_globals.h"
+#include "liaison_serie.h"
+
 
 void init()
 {
@@ -45,9 +47,11 @@ void init()
     init_camera();
 
     Init_PIT(0,64000000, main_timer_period); // Boucle principale
+    Init_PIT(1,64000000, 10e-6); // Test des capteurs
     INTC_InitINTCInterrupts();
     INTC_InstallINTCInterruptHandler(Compteur_Moteur,146,3);
     INTC_InstallINTCInterruptHandler(Boucle_principale,59,1);
+    //INTC_InstallINTCInterruptHandler(Data_uart,79,1);
     enableIrq();
     PIT_EnableINTC(0);
     PIT_Enable_Channel(0);
@@ -109,7 +113,17 @@ void initPads (void) {
 	SIU.PCR[22].R = 0x2000;          	/* MPC56xxB: Initialize PB[6] as ANP2 */
 	SIU.PCR[42].R = 0x0200;				/* Initialise la pin de contrôle du freinage en sortie -> PC[10]*/
 	SIU.PCR[57].R = 0x2000;          	/* MPC56xxB: Initialize PD[9] as ANP13 -> potentiomètre */
-	SIU.PCR[58].R = 0x2000;          	/* MPC56xxB: Initialize PD[10] as ANP14 -> potentiomètre */
+	/*Camera:*/
+	SIU.PCR[58].R = 0x2000;          	/* MPC56xxB: Initialize PD[10] as ANP14 -> Camera AO*/
+	SIU.PCR[60].R = 0x0200;             /* PD[12] -> Sortie: Signal SI */
+	SIU.PCR[61].R = 0x0200;             /* PD[13] -> Sortie: Signal CLK */
+	SIU.PCR[62].R = 0x0200;             /* PD[14] -> Sortie: VCC */
+	SIU.PCR[63].R = 0x0200;             /* PD[15] -> Sortie: Masse */
+	/* Alimentation Camera */ 
+	SIU.GPDO[62].R = 1; /* VCC */
+	SIU.GPDO[63].R = 0; /* Masse */
+	/* Fin Camera */
+	
 	SIU.PCR[64].R = 0x0100;				/* Initialise PE[0] (S1) en entrÃ©e */
 	SIU.PCR[65].R = 0x0100;				/* Initialise PE[1] (S2) en entrÃ©e */
 	SIU.PCR[66].R = 0x0100;				/* Initialise PE[2] (S2) en entrÃ©e */
@@ -149,7 +163,7 @@ void initEMIOS_0(void) {
 
 void initEMIOS_0ch3(void) { // servo
 	EMIOS_0.CH[3].CADR.R = 0;     		/* Leading edge when channel counter bus=0*/
-	EMIOS_0.CH[3].CBDR.R = POS_MILIEU_SERVO;  /* Trailing edge when channel counter bus=1400 Middle, 1650 Right Max, 1150 Left Max*/
+	EMIOS_0.CH[3].CBDR.R = pos_milieu_servo;  /* Trailing edge when channel counter bus=1400 Middle, 1650 Right Max, 1150 Left Max*/
 	EMIOS_0.CH[3].CCR.B.BSL = 0x01;  	/* Use counter bus B -> Time base channel 0*/
 	EMIOS_0.CH[3].CCR.B.EDPOL = 1;  	/* Polarity-leading edge sets output */
 	EMIOS_0.CH[3].CCR.B.MODE = 0x60; 	/* Mode is OPWM Buffered */
@@ -185,7 +199,7 @@ void initEMIOS_0ch8(void) {        		/* EMIOS 0 CH 0: Modulus Up Counter */
 
 void initEMIOS_0ch16(void)
 {
-	EMIOS_0.CH[16].CADR.R = 1570;   	/* Period will be 19999+1 = 20000 clocks (20 msec)*/
+	EMIOS_0.CH[16].CADR.R = 2100;   	/* Period will be 19999+1 = 20000 clocks (20 msec)*/
 	EMIOS_0.CH[16].CCR.B.MODE = 0x50; 	/* Modulus Counter Buffered (MCB) */
 	EMIOS_0.CH[16].CCR.B.BSL = 0x3;   	/* Use internal counter */
 	EMIOS_0.CH[16].CCR.B.UCPRE=0;     	/* Set channel prescaler to divide by 1 */
@@ -206,7 +220,7 @@ void initEMIOS_0ch23(void) {        	/* EMIOS 0 CH 23: Modulus Up Counter */
 
 void initEMIOS_0ch4(void) {        		/* EMIOS 0 CH 4: Servo-moteur */
 	EMIOS_0.CH[4].CADR.R = 0;     		/* Leading edge when channel counter bus=0*/
-	EMIOS_0.CH[4].CBDR.R = POS_MILIEU_SERVO;  /* Trailing edge when channel counter bus=1400 Middle, 1650 Right Max, 1150 Left Max*/
+	EMIOS_0.CH[4].CBDR.R = pos_milieu_servo;  /* Trailing edge when channel counter bus=1400 Middle, 1650 Right Max, 1150 Left Max*/
 	EMIOS_0.CH[4].CCR.B.BSL = 0x01;  	/* Use counter bus B -> Time base channel 0*/
 	EMIOS_0.CH[4].CCR.B.EDPOL = 1;  	/* Polarity-leading edge sets output */
 	EMIOS_0.CH[4].CCR.B.MODE = 0x60; 	/* Mode is OPWM Buffered */
@@ -275,6 +289,8 @@ void init_LinFLEX_0_UART (void)
 		
 	/* enter NORMAL mode */
 	LINFLEX_0.LINCR1.R = 0x0080; /* INIT=0 */	
+	
+//	LINFLEX_0.LINIER.R = 0x0004; // Interruption sur donnée reçue
 }
 
 /**************************** Camera *****************************************/

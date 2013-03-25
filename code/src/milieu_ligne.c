@@ -41,15 +41,16 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude)
 	TransmitCharacter(0x42); // Délimiteur pour l'affichage en python
 	
 	// recherche du min / du max
-	for(i = 1; i < 126; i++)
+	for(i = 0; i < 126; i++)
 	{
 		if(valeurs[i] > valeurs[pos_max])
 			pos_max = i;
 		if(valeurs[i] < valeurs[pos_min])
 			pos_min = i;
 		TransmitCharacter(valeurs[i]);
+		
 	}
-
+    max_derivee = max(valeurs[pos_max], -valeurs[pos_min]); // Utile pour définir le seuil dans l'algo de la ligne d'arrivee
 	
 	*milieu =(pos_min + pos_max) / 2;
 	
@@ -61,7 +62,7 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude)
 	}
 	
 	if(abs((int8_t)pos_min - (int8_t)pos_max - LARGEUR_LIGNE) < DELTA_LARGEUR_LIGNE)
-		*incertitude = 100 * max_hors_ligne / max(valeurs[pos_max], -valeurs[pos_min]);
+		*incertitude = 100 * max_hors_ligne / min(valeurs[pos_max], -valeurs[pos_min]);
 	else
 		*incertitude = 250;
 	TransmitCharacter(pos_min);
