@@ -14,18 +14,53 @@ void reload(void) {
 
     do
     {
-		// Balance des blancs (Bouton1 enfonce):
-        if ((SIU.PGPDI[2].R & 0x80000000) == 0x00000000)
+        /* REGLAGE DU SERVO */ //(bouton1)
+		if (!(SIU.PGPDI[2].R & 0x80000000) && (SIU.PGPDI[2].R & 0x40000000) 
+            && (SIU.PGPDI[2].R & 0x20000000) && (SIU.PGPDI[2].R & 0x10000000))
         {
-	    	Acquisition_Camera(1); // on fait la balance des blancs
+ 	        SIU.GPDO[68].B.PDO;          
+            // Position min (bouton2)
+            if (!(SIU.PGPDI[2].R & 0x80000000) && !(SIU.PGPDI[2].R & 0x40000000) 
+                && (SIU.PGPDI[2].R & 0x20000000) && (SIU.PGPDI[2].R & 0x10000000))
+            {
+                pos_servo = potent_entre(700,1500);                
+                EMIOS_0.CH[4].CBDR.R = pos_servo;
+                pos_min_servo = pos_servo;               
+                printhex32(pos_servo);                	
+            }
+            // Position max (bouton3)
+            else if (!(SIU.PGPDI[2].R & 0x80000000) && (SIU.PGPDI[2].R & 0x40000000) 
+                && !(SIU.PGPDI[2].R & 0x20000000) && (SIU.PGPDI[2].R & 0x10000000))
+            {
+                pos_servo = potent_entre(700,1500);                
+                EMIOS_0.CH[4].CBDR.R = pos_servo;
+                pos_max_servo = pos_servo;               
+                printhex32(pos_servo);                	
+            } 
+            // Position milieu (bouton4)
+            else if (!(SIU.PGPDI[2].R & 0x80000000) && (SIU.PGPDI[2].R & 0x40000000) 
+                && !(SIU.PGPDI[2].R & 0x20000000) && (SIU.PGPDI[2].R & 0x10000000))
+            {
+                pos_servo = potent_entre(700,1500);                
+                EMIOS_0.CH[4].CBDR.R = pos_servo;
+                pos_milieu_servo = pos_servo;               
+                printhex32(pos_servo);                	
+            }                       
+                                   
+  	    }
 
-            /* REGLAGE DU SERVO */
-            /*pos_servo = potent_entre(700,1500);
-            EMIOS_0.CH[4].CBDR.R = pos_servo;
-            printhex32(pos_servo);*/
-        }        
-        // Reglage du focus de la camera (Bouton2 enfonce):
-        else if ((SIU.PGPDI[2].R & 0x40000000) == 0x00000000)
+        /* BALANCE DES BLANCS */ //(bouton2)
+        else if ((SIU.PGPDI[2].R & 0x80000000) && !(SIU.PGPDI[2].R & 0x40000000) 
+            && (SIU.PGPDI[2].R & 0x20000000) && (SIU.PGPDI[2].R & 0x10000000))
+        {
+	    	SIU.GPDO[69].B.PDO;        
+	    	Acquisition_Camera(1); // on fait la balance des blancs
+        }   
+ 		
+       
+        /* REGLAGE DU FOCUS */ //(bouton3):
+        else if ((SIU.PGPDI[2].R & 0x80000000) && (SIU.PGPDI[2].R & 0x40000000) 
+            && !(SIU.PGPDI[2].R & 0x20000000) && (SIU.PGPDI[2].R & 0x10000000))
         {
             Acquisition_Camera(0);
 		    milieu_ligne(&milieu, &incertitude);
@@ -37,28 +72,17 @@ void reload(void) {
 			else SIU.GPDO[69].B.PDO = 1;   
 			if (incertitude < 18 )
 			    SIU.GPDO[68].B.PDO = 0;
-			else SIU.GPDO[68].B.PDO = 1;
-			
-			/* REGLAGE DU SERVO */
-            /*pos_servo = potent_entre(700,1500);
-            EMIOS_0.CH[4].CBDR.R = pos_servo;
-            printhex32(pos_servo); */
-            
-  		}
-        // Detection ligne d'arrivé (Bouton3 enfonce):
-        else if ((SIU.PGPDI[2].R & 0x20000000) == 0x00000000)
-        {
-            /*Acquisition_Camera(0);
-            code_arret_cam();*/              
-  	    }  	
-    
+			else SIU.GPDO[68].B.PDO = 1;            
+  		} 
+  		
   	     asm("wait");
          SIU.GPDO[68].B.PDO = 1;
          SIU.GPDO[69].B.PDO = 1;
          SIU.GPDO[70].B.PDO = 1;
 
-    }
-    while(SIU.PGPDI[2].R & 0x10000000);
+    } // Sortie (Bouton4 enfonce):
+    while(!(SIU.PGPDI[2].R & 0x80000000) || !(SIU.PGPDI[2].R & 0x40000000) 
+        || !(SIU.PGPDI[2].R & 0x20000000) || (SIU.PGPDI[2].R & 0x10000000));
         
     SIU.PGPDO[2].R &= 0xf0ffffff; // Enable all leds
     delay(10000000);

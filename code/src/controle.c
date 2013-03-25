@@ -43,15 +43,15 @@ void Controle_Direction(void)
 	commande = CONTROLE_KP * erreur + CONTROLE_KD * derivee + CONTROLE_KI * controle_integrale;*/
     controle_derniere_erreur = erreur;
     
-    //commande = POS_MILIEU_SERVO + CONTROLE_KP * erreur;
-    commande = (uint16_t) (POS_MILIEU_SERVO + controle_kp * erreur + controle_kd*derivee );
-    if(commande < POS_MIN_SERVO) commande_bornee = POS_MIN_SERVO;
-    else if (commande > POS_MAX_SERVO) commande_bornee = POS_MAX_SERVO;
+    //commande = pos_milieu_servo + CONTROLE_KP * erreur;
+    commande = (uint16_t) (pos_milieu_servo + controle_kp * erreur + controle_kd*derivee );
+    if(commande < pos_min_servo) commande_bornee = pos_min_servo;
+    else if (commande > pos_max_servo) commande_bornee = pos_max_servo;
     else commande_bornee = commande; 
     
     EMIOS_0.CH[4].CBDR.R = commande_bornee;
 
 	
-	//EMIOS_0.CH[4].CBDR.R = POS_MILIEU_SERVO + commande * AMPLITUDE_SERVO;
+	//EMIOS_0.CH[4].CBDR.R = pos_milieu_servo + commande * AMPLITUDE_SERVO;
 	
 }

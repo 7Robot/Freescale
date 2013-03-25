@@ -47,6 +47,7 @@ void init()
     init_camera();
 
     Init_PIT(0,64000000, main_timer_period); // Boucle principale
+    Init_PIT(1,64000000, 10e-6); // Test des capteurs
     INTC_InitINTCInterrupts();
     INTC_InstallINTCInterruptHandler(Compteur_Moteur,146,3);
     INTC_InstallINTCInterruptHandler(Boucle_principale,59,1);
@@ -162,7 +163,7 @@ void initEMIOS_0(void) {
 
 void initEMIOS_0ch3(void) { // servo
 	EMIOS_0.CH[3].CADR.R = 0;     		/* Leading edge when channel counter bus=0*/
-	EMIOS_0.CH[3].CBDR.R = POS_MILIEU_SERVO;  /* Trailing edge when channel counter bus=1400 Middle, 1650 Right Max, 1150 Left Max*/
+	EMIOS_0.CH[3].CBDR.R = pos_milieu_servo;  /* Trailing edge when channel counter bus=1400 Middle, 1650 Right Max, 1150 Left Max*/
 	EMIOS_0.CH[3].CCR.B.BSL = 0x01;  	/* Use counter bus B -> Time base channel 0*/
 	EMIOS_0.CH[3].CCR.B.EDPOL = 1;  	/* Polarity-leading edge sets output */
 	EMIOS_0.CH[3].CCR.B.MODE = 0x60; 	/* Mode is OPWM Buffered */
@@ -198,7 +199,7 @@ void initEMIOS_0ch8(void) {        		/* EMIOS 0 CH 0: Modulus Up Counter */
 
 void initEMIOS_0ch16(void)
 {
-	EMIOS_0.CH[16].CADR.R = 1570;   	/* Period will be 19999+1 = 20000 clocks (20 msec)*/
+	EMIOS_0.CH[16].CADR.R = 2100;   	/* Period will be 19999+1 = 20000 clocks (20 msec)*/
 	EMIOS_0.CH[16].CCR.B.MODE = 0x50; 	/* Modulus Counter Buffered (MCB) */
 	EMIOS_0.CH[16].CCR.B.BSL = 0x3;   	/* Use internal counter */
 	EMIOS_0.CH[16].CCR.B.UCPRE=0;     	/* Set channel prescaler to divide by 1 */
@@ -219,7 +220,7 @@ void initEMIOS_0ch23(void) {        	/* EMIOS 0 CH 23: Modulus Up Counter */
 
 void initEMIOS_0ch4(void) {        		/* EMIOS 0 CH 4: Servo-moteur */
 	EMIOS_0.CH[4].CADR.R = 0;     		/* Leading edge when channel counter bus=0*/
-	EMIOS_0.CH[4].CBDR.R = POS_MILIEU_SERVO;  /* Trailing edge when channel counter bus=1400 Middle, 1650 Right Max, 1150 Left Max*/
+	EMIOS_0.CH[4].CBDR.R = pos_milieu_servo;  /* Trailing edge when channel counter bus=1400 Middle, 1650 Right Max, 1150 Left Max*/
 	EMIOS_0.CH[4].CCR.B.BSL = 0x01;  	/* Use counter bus B -> Time base channel 0*/
 	EMIOS_0.CH[4].CCR.B.EDPOL = 1;  	/* Polarity-leading edge sets output */
 	EMIOS_0.CH[4].CCR.B.MODE = 0x60; 	/* Mode is OPWM Buffered */
