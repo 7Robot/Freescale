@@ -74,7 +74,7 @@ void reload(void) {
 			else SIU.GPDO[68].B.PDO = 1;            
   		} 
   		
-  	     asm("wait");
+  	     //asm("wait");
          SIU.GPDO[68].B.PDO = 1;
          SIU.GPDO[69].B.PDO = 1;
          SIU.GPDO[70].B.PDO = 1;

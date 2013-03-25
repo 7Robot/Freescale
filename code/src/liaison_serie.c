@@ -117,13 +117,13 @@ void Data_uart(void)
     static uint8_t select_coef;
     if(select_coef == 0)
     {
-        controle_kp = ReadData();
+        //controle_kp = ReadData();
         TransmitData("\n KP modified \n");
         select_coef = 1;
     }
     else
     {
-        controle_kd = ReadData();
+        //controle_kd = ReadData();
         TransmitData("\n KD modified \n");
         select_coef = 0;
     }

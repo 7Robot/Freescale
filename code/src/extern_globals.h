@@ -16,9 +16,6 @@ extern int16_t controle_integrale;
 extern uint8_t controle_derniere_position;
 extern int8_t main_fin_boucle;
 extern float main_timer_period;
+extern uint16_t compteur_acquisitions_invalides;
+
 extern uint8_t Capteurs_resultat;
-
-extern float controle_kp;
-extern float controle_kd;
-
-extern uint8_t max_derivee;

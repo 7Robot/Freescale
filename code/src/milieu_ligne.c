@@ -2,6 +2,7 @@
 #include "constantes.h"
 
 #define max(i, j) (i > j ? i : j)
+#define min(i,j) (i > j ? j : i)
 
 void moyenne_glissante(int8_t* valeurs)
 {
@@ -30,15 +31,17 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude)
 	uint8_t max_hors_ligne = 0;
 	uint8_t i;
 	
-
+	TransmitCharacter(0x42); // Délimiteur pour l'affichage en python
 	
 	// calcul de la dérivée
     for(i = 0; i < 126; i++)
    	{
         valeurs[i] = (int8_t)camera_valeurs[i + 2] - (int8_t)camera_valeurs[i];
     }
+    
+    valeurs[0] = 0; // hack parce que le premier pixel fait de la merde
 	
-	TransmitCharacter(0x42); // Délimiteur pour l'affichage en python
+
 	
 	// recherche du min / du max
 	for(i = 0; i < 126; i++)
@@ -47,11 +50,10 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude)
 			pos_max = i;
 		if(valeurs[i] < valeurs[pos_min])
 			pos_min = i;
-		TransmitCharacter(valeurs[i]);
+		   		TransmitCharacter(valeurs[i]);
 		
 	}
-    max_derivee = max(valeurs[pos_max], -valeurs[pos_min]); // Utile pour définir le seuil dans l'algo de la ligne d'arrivee
-	
+    	
 	*milieu =(pos_min + pos_max) / 2;
 	
 	// recherche du plus gros pic en dehors de la ligne (incertitude)

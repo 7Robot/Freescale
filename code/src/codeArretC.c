@@ -11,8 +11,6 @@ void code_arret_cam(void)
 	uint8_t i; 
 	uint8_t pos_max = 0;
 
-	pallier_pic = 2*max_derivee/3; // max_derivee a ete calculé pendant la fonction de focus
-	
     // recherche du max
 	for(i = 1; i < 126; i++)
 	{

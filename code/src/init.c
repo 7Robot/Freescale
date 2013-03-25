@@ -47,10 +47,10 @@ void init()
     init_camera();
 
     Init_PIT(0,64000000, main_timer_period); // Boucle principale
-    Init_PIT(1,64000000, 10e-6); // Test des capteurs
+    //Init_PIT(1,64000000, 10e-6); // Test des capteurs
     INTC_InitINTCInterrupts();
     INTC_InstallINTCInterruptHandler(Compteur_Moteur,146,3);
-    INTC_InstallINTCInterruptHandler(Boucle_principale,59,1);
+    //INTC_InstallINTCInterruptHandler(Boucle_principale,59,1);
     //INTC_InstallINTCInterruptHandler(Data_uart,79,1);
     enableIrq();
     PIT_EnableINTC(0);

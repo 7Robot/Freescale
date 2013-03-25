@@ -1,4 +1,4 @@
-#define AMPLITUDE_SERVO 14 // 7
+#define CONTROLE_MILIEU_SERVO 1165
 
 #define CONTROLE_INCERTITUDE_PALIER 30
 
@@ -8,9 +8,9 @@
 #define MOTEUR_KD 0
 #define MOTEUR_KI 10
 
-#define CONTROLE_KP 5
-#define CONTROLE_KD 0
-#define CONTROLE_KI 0.1
+#define CONTROLE_KP 4
+#define CONTROLE_KD 3
+#define CONTROLE_KI 0.3
 
 #define LARGEUR_LIGNE 15
 #define DELTA_LARGEUR_LIGNE 8

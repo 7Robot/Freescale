@@ -13,20 +13,22 @@ void Controle_Direction(void)
 	int8_t erreur;
 	int8_t derivee;
 	int16_t commande;
-	uint16_t commande_bornee;
+	int16_t commande_bornee;
     
-    controle_kp = 6;// 6 et 3 pour une vitesse de 5
-    controle_kd = 5;    
-    objectif_vitesse = 6; 
+
+    objectif_vitesse = 7;
+    ; 
     milieu_ligne(&pos_milieu, &incertitude);
 
     if(incertitude < CONTROLE_INCERTITUDE_PALIER)
     {
         controle_derniere_position = pos_milieu;
+        compteur_acquisitions_invalides = 0;
     }
     else
     {
     	pos_milieu = controle_derniere_position;
+    	compteur_acquisitions_invalides++;
     }
 
     /*objectif_vitesse = max(6-abs((int16_t)(pos_milieu)-64)/10, 2);
@@ -39,12 +41,12 @@ void Controle_Direction(void)
     erreur = 62 - ((int16_t)pos_milieu);
 
 	derivee = erreur - controle_derniere_erreur;
-	/*controle_integrale +=  erreur;
-	commande = CONTROLE_KP * erreur + CONTROLE_KD * derivee + CONTROLE_KI * controle_integrale;*/
+	controle_integrale += erreur;
+
     controle_derniere_erreur = erreur;
     
-    //commande = pos_milieu_servo + CONTROLE_KP * erreur;
-    commande = (uint16_t) (pos_milieu_servo + controle_kp * erreur + controle_kd*derivee );
+    commande = CONTROLE_MILIEU_SERVO + CONTROLE_KP * erreur + CONTROLE_KI*derivee + CONTROLE_KI*controle_integrale;
+    
     if(commande < pos_min_servo) commande_bornee = pos_min_servo;
     else if (commande > pos_max_servo) commande_bornee = pos_max_servo;
     else commande_bornee = commande; 

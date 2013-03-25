@@ -10,7 +10,7 @@
 
 int main(void) {
 
-    uint8_t reset = 1, Moteur_F = 0, Servo_F = 0, Moteur_ON = 0;
+    uint8_t reset = 1, Moteur_F = 0, Servo_F = 0, Moteur_ON = 0, Moteur_OFF = 0;
    
     /******************************************************
     Tps acquisition cam + traitement = 4,2 ms
@@ -36,9 +36,9 @@ int main(void) {
     moteur_integrale = 0;
     
     // Initialisation variables servo
-    pos_min_servo = 845;
-    pos_max_servo = 1417;
-    pos_milieu_servo = 1126;
+    pos_min_servo = 0x382;
+    pos_max_servo = 0x5e8;
+    pos_milieu_servo = 0x4C3;
     
    
     /**************** Scheduled algorithm *****************/
@@ -46,7 +46,7 @@ int main(void) {
  
     while(1)
     {
-  
+  		
         // Ici est le code de reset
         SIU.PGPDO[0].R = 0x00000000;		// Desactive les 2 moteurs
         reload();
@@ -64,35 +64,38 @@ int main(void) {
                 SIU.GPDO[69].B.PDO = 0;     // LED 2 ON	
                 Moteur_ON = 0;
                 moteur_integrale = 0;
+                controle_integrale = 0;
             }
+            if(Moteur_OFF)
+            {
+            	SIU.PGPDO[0].R = 0x00000000;		// Désactive les 2 moteurs
+            	Moteur_OFF = 0;
+            }
+            else if(compteur_acquisitions_invalides > 50)
+            	Moteur_OFF = 1;
             
-            Acquisition_Camera(0);
+            Acquisition_Camera(!(SIU.PGPDI[2].R & 0x40000000)); // bouton 2
 
             //SIU.GPDO[42].B.PDO = 1; // Freinage acif, activation de IN1 sur les Ponts-en-H cf schematique carte de puissance
             /*delay(100);
             SIU.GPDO[42].B.PDO = 1;*/
+
+            Controle_Direction();
             
-            if(Servo_F < 2)
-                Servo_F++;
-            else 
-            {
-                Controle_Direction();
-                Servo_F = 0;
-            }
-		    if(Moteur_F < 7)
+		    if(Moteur_F < 5)
                 Moteur_F++;
             else
             {
                 Asserv_Vitesse();
                 Moteur_F = 0;
             }
-            do
-            {
-                asm("wait");
-            }
-            while(! main_fin_boucle); // Evite de revenir dans la boucle quand il y a des interruptions sur le capteur de vitesse
+            //do
+            //{
+            //    asm("wait");
+            //}
+            //while(! main_fin_boucle); // Evite de revenir dans la boucle quand il y a des interruptions sur le capteur de vitesse
             
-            
+            SIU.GPDO[68].B.PDO = !	SIU.GPDO[68].B.PDO;
 
         }
         while(! reset );
