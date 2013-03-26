@@ -16,7 +16,7 @@ void Controle_Direction(void)
 	int16_t commande_bornee;
     
 
-    objectif_vitesse = 7;
+    objectif_vitesse = 6;
     ; 
     milieu_ligne(&pos_milieu, &incertitude);
 
@@ -51,7 +51,7 @@ void Controle_Direction(void)
     else if (commande > pos_max_servo) commande_bornee = pos_max_servo;
     else commande_bornee = commande; 
     
-    EMIOS_0.CH[4].CBDR.R = commande_bornee;
+    EMIOS_0.CH[4].CBDR.R = commande;
 
 	
 	//EMIOS_0.CH[4].CBDR.R = pos_milieu_servo + commande * AMPLITUDE_SERVO;
