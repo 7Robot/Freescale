@@ -31,8 +31,10 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude)
 	uint8_t max_hors_ligne = 0;
 	uint8_t i;
 	
+	#ifdef DEBUG_LIGNE
 	TransmitCharacter(0x42); // Délimiteur pour l'affichage en python
-	
+	#endif
+
 	// calcul de la dérivée
     for(i = 0; i < 126; i++)
    	{
@@ -50,7 +52,10 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude)
 			pos_max = i;
 		if(valeurs[i] < valeurs[pos_min])
 			pos_min = i;
-		   		TransmitCharacter(valeurs[i]);
+		
+		#ifdef DEBUG_LIGNE
+		TransmitCharacter(valeurs[i]);
+		#endif
 		
 	}
     	
@@ -67,46 +72,12 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude)
 		*incertitude = 100 * max_hors_ligne / min(valeurs[pos_max], -valeurs[pos_min]);
 	else
 		*incertitude = 250;
+	
+	#ifdef DEBUG_LIGNE
 	TransmitCharacter(pos_min);
 	TransmitCharacter(pos_max);
 	TransmitCharacter(*incertitude);
 	TransmitCharacter(*milieu);
+	#endif
 
 }
-
-/*
-void milieu_ligne(uint8_t* milieu, uint16_t* incertitude)
-{
-    int8_t valeurs[128];
-	uint8_t pos_max = 0;
-	uint8_t i;
-    int8_t moyenne;
-    int16_t somme = 0;
-
-    // copie des valeurs pour la camÃ©ra (elles sont modifiÃ©es dans la moyenne glissante)
-    // + moyenne
-    for(i = 0; i < 128; i++)
-    {
-        *(valeurs + i) = *(camera_valeurs + i);
-        somme += *(valeurs + i);
-    }
-    moyenne = somme / 128;
-	
-	for(i = 0; i < 4; i++)
-		moyenne_glissante(valeurs);
-	
-	for(i = 0; i < 128; i++)
-		if(*(valeurs + i) > *(valeurs + pos_max))
-			pos_max = i;
-	
-	*milieu = pos_max;
-
-    moyenne = (moyenne + *(valeurs + pos_max)) / 2;
-
-    *incertitude = 0;
-    for(i = 0; i < 128; i++)
-        if(*(valeurs + i) > moyenne)
-            *incertitude += (i > pos_max) ? i - pos_max : pos_max - i;
-
-}
-*/

@@ -49,7 +49,7 @@ int main(void) {
   		
         // Ici est le code de reset
         SIU.PGPDO[0].R = 0x00000000;		// Desactive les 2 moteurs
-        reload();
+        //reload();
         do
         {
             /* Boutons de controle */
@@ -71,7 +71,7 @@ int main(void) {
             	SIU.PGPDO[0].R = 0x00000000;		// Désactive les 2 moteurs
             	Moteur_OFF = 0;
             }
-            else if(compteur_acquisitions_invalides > 50)
+            else if(compteur_acquisitions_invalides > 500)
             	Moteur_OFF = 1;
             
             Acquisition_Camera(!(SIU.PGPDI[2].R & 0x40000000)); // bouton 2
@@ -89,6 +89,7 @@ int main(void) {
                 Asserv_Vitesse();
                 Moteur_F = 0;
             }
+            
             //do
             //{
             //    asm("wait");

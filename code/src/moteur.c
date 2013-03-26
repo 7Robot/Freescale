@@ -36,6 +36,6 @@ void Asserv_Vitesse(void)
 	moteur_compteur = 0;
 
 	// on indique que l'interruption est finie
-	PIT_ClearFlag(1); 
+	PIT_ClearFlag(1);
 
 }

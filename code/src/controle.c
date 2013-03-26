@@ -14,11 +14,13 @@ void Controle_Direction(void)
 	int8_t derivee;
 	int16_t commande;
 	int16_t commande_bornee;
+	static uint32_t compteur_ligne_arrivee = 0; // On regarde combien de fois on croise la ligne d'arrivé
     
 
-    objectif_vitesse = 6;
+    objectif_vitesse = 7;
     ; 
     milieu_ligne(&pos_milieu, &incertitude);
+    compteur_ligne_arrivee++;
 
     if(incertitude < CONTROLE_INCERTITUDE_PALIER)
     {
@@ -30,6 +32,19 @@ void Controle_Direction(void)
     	pos_milieu = controle_derniere_position;
     	compteur_acquisitions_invalides++;
     }
+    if(code_arret_cam() == 1)
+    {
+        if (compteur_ligne_arrivee >= COMPTEUR_AVANT_ARRIVEE) // 30 secondes après le démarage de la voiture => compteur d'arrêt ligne actif
+    	{
+    		compteur_acquisitions_invalides = 1000;
+    	    compteur_ligne_arrivee = 0;   	    
+    	} 
+    	SIU.GPDO[71].B.PDO = 0;   	    	
+    }
+    
+    SIU.GPDO[71].B.PDO = compteur_ligne_arrivee >= COMPTEUR_AVANT_ARRIVEE;
+
+
 
     /*objectif_vitesse = max(6-abs((int16_t)(pos_milieu)-64)/10, 2);
     
@@ -38,7 +53,7 @@ void Controle_Direction(void)
     
     // PID pour la direction
     // zieger-nicols
-    erreur = 62 - ((int16_t)pos_milieu);
+    erreur = 60 - ((int16_t)pos_milieu);
 
 	derivee = erreur - controle_derniere_erreur;
 	controle_integrale += erreur;

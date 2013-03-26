@@ -8,7 +8,7 @@
 #define MOTEUR_KD 0
 #define MOTEUR_KI 10
 
-#define CONTROLE_KP 7
+#define CONTROLE_KP 5
 #define CONTROLE_KD 0
 #define CONTROLE_KI 0
 
@@ -17,3 +17,13 @@
 
 #define DERIVEE_MIN 5
 #define DIFFERENCE_DERIVEES 5
+
+#define ARRET_SEUIL 90
+#define ARRET_NB_PICS 4
+#define ARRET_MIN_AMPLITUDE 15
+#define ARRET_NB_CONSECUTIFS 1
+
+#define COMPTEUR_AVANT_ARRIVEE 3000
+
+//#define DEBUG_LIGNE
+//#define DEBUG_ARRET
