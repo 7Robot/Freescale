@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------
-//  Readme.txti
+//  Readme.txta
 //------------------------------------------------------------------------
 This project stationery is designed to get you up and running
 quickly with CodeWarrior on your MPC5604B_M27V target.
