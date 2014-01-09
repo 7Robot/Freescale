@@ -43,6 +43,9 @@ while struct.unpack('B', s.read(1))[0] != 0x42:
     pass
 
 while True:
+    print(struct.unpack('B', s.read(1))[0])
+
+while True:
     unpacked_fields = input_format.unpack(s.read(input_format.size))
 
     assert struct.unpack('B', s.read(1))[0] == 0x42, 'Il y a l\'octet magique dans les données envoyées, ou elles ne correspondent pas à celles qu\'on veut reçevoir !'

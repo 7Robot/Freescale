@@ -17,8 +17,8 @@ void Controle_Direction(void)
 	static uint32_t compteur_ligne_arrivee = 0; // On regarde combien de fois on croise la ligne d'arrivé
     
 
-    objectif_vitesse = 7;
-    ; 
+    objectif_vitesse = 3;
+
     milieu_ligne(&pos_milieu, &incertitude);
     compteur_ligne_arrivee++;
 
@@ -62,9 +62,9 @@ void Controle_Direction(void)
     
     commande = CONTROLE_MILIEU_SERVO + CONTROLE_KP * erreur + CONTROLE_KI*derivee + CONTROLE_KI*controle_integrale;
     
-    if(commande < pos_min_servo) commande_bornee = pos_min_servo;
-    else if (commande > pos_max_servo) commande_bornee = pos_max_servo;
-    else commande_bornee = commande; 
+    //if(commande < pos_min_servo) commande_bornee = pos_min_servo;
+    //else if (commande > pos_max_servo) commande_bornee = pos_max_servo;
+    //else commande_bornee = commande; 
     
     EMIOS_0.CH[4].CBDR.R = commande;
 
