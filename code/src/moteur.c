@@ -13,8 +13,8 @@ void Compteur_Moteur(void)
 
 void Asserv_Vitesse(void)
 {
-	int32_t erreur;
-	int32_t derivee;
+	float erreur;
+	float derivee;
 	int32_t commande;
     
     erreur = objectif_vitesse - moteur_compteur;

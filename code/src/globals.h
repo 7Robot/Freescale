@@ -2,9 +2,9 @@ int8_t camera_valeurs[128];
 int pos_min_servo; //845
 int pos_max_servo; //1417
 int pos_milieu_servo; //1126
-uint16_t objectif_vitesse;
-int32_t moteur_derniere_erreur;
-int32_t moteur_integrale;
+float objectif_vitesse;
+float moteur_derniere_erreur;
+float moteur_integrale;
 uint8_t moteur_compteur;
 int8_t controle_derniere_erreur;
 int16_t controle_integrale;
