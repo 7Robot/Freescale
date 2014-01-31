@@ -1,6 +1,7 @@
 #include "liaison_serie.h"
 #include "extern_globals.h" 
-#include "MPC5604B_M27V.h"
+#include "MPC5604B_M07N.h"
+#include <math.h>
 
 /*************************  Fonctions de transmission de données ******************************/
 
@@ -19,21 +20,24 @@ void printlistall(uint8_t tab128[])
 
 void TransmitCharacter(uint8_t ch)
 {
-	LINFLEX_0.BDRL.B.DATA0 = ch;  			/* write character to transmit buffer */
-	while (1 != LINFLEX_0.UARTSR.B.DTF) {}  /* Wait for data transmission completed flag */
-	LINFLEX_0.UARTSR.R = 0x0002; 			/* clear the DTF flag and not the other flags */	
+	LINFLEX_0.BDRL.B.DATA0 = ch;  			/* write character to transmit buffer */	
+	while (1 != LINFLEX_0.UARTSR.B.DTF) {}  /* Wait for data transmission completed flag */	
+	LINFLEX_0.UARTSR.R = 0x0002; 			/* clear the DTF flag and not the other flags */
 }
+
 
 void TransmitData (char TransData[]) 
 {
-	uint8_t	j,k;                                 /* Dummy variable */
-	k =(uint8_t) strlen (TransData);
+	uint16_t	j,k;                                 /* Dummy variable */
+	k =(uint16_t) strlen (TransData);
+	//SIU.GPDO[69].B.PDO = 0;     // LED 2 ON
 	for (j=0; j< k; j++) 
 	{  /* Loop for character string */
 
 		TransmitCharacter(TransData[j]);  		/* Transmit a byte */		
 
 	}
+	//SIU.GPDO[69].B.PDO = 1;     // LED 2 OFF
 }
 
 /* This functions polls UART receive buffer. when it is full, it moves received data from the buffer to the memory */
@@ -55,7 +59,7 @@ uint8_t ReadData (void)
 	return ch;
 	
 }
-
+//transmet en hexa la valeur sur 8 bit transmise
 void printhex8(uint8_t innum) {
   uint8_t j1,in;
   uint8_t p1,p2;
@@ -71,16 +75,118 @@ void printhex8(uint8_t innum) {
   TransmitCharacter(p1);  
 }
 
+//transmet en hexa la valeur sur 16 bit transmise
 void printhex16(uint16_t innum) {
 	printhex8(innum >> 8);
 	printhex8(innum);
 }
 
+//transmet en hexa la valeur sur 32 bit transmise
 void printhex32(uint32_t innum) {
 	printhex16(innum >> 16);
 	printhex16(innum);
 }
 
+// transmet un float
+void printfloat (float data)
+{	
+	// gestion de la précision
+	int8_t power = 0;
+	uint8_t m = 0, c = 0, d = 0, u = 0 , dm = 0, cm = 0, mm = 0;
+	//uint16_t toto;
+	//gestion du signe
+	
+	if (data < 0)
+	{	TransmitCharacter('-');
+		data = -data;	}
+	else 
+		TransmitCharacter (' ');
+	if (data != 0)
+	{
+		// si c'est trop grand on diminue
+		while (data >= 10000.0)
+		{	data = data * 0.001;
+			power += 3;	
+		}
+		// si c'est trop petit on augmente
+		while (data < 1.0)
+		{	data = data*1000;
+			power -=3;
+		}
+	}
+
+
+	
+	data = data + 0.00001;
+	while (m * 1000.0 < data) m++;
+	m--;
+	TransmitCharacter (48+m);
+	data -= m * 1000.0;
+	
+	while (c * 100.0 < data) c++;
+	c--;
+	TransmitCharacter (48+c);
+	data -= c*100.0;
+	
+	while (d * 10.0 < data) d++;
+	d--;
+	TransmitCharacter (48+d);
+	data -= d*10.0;
+	
+	while (u * 1.0 < data) u++;
+	u--;
+	TransmitCharacter (48+u);
+	data -= u*1.0;
+	
+	TransmitCharacter(',');
+	
+	while (dm * 0.1 < data) dm++;
+	dm--;
+	TransmitCharacter (48+dm);
+	data -= dm*0.1;
+	
+	while (cm * 0.01 < data) cm++;
+	cm--;
+	TransmitCharacter (48+cm);
+	data -= cm*0.01;
+	
+	while (mm*0.001 < data) mm++;
+	mm--;
+	TransmitCharacter (48+mm);
+	data -= mm*0.001;
+	
+	
+	
+		
+	
+	TransmitCharacter('e');
+	if (power < 0)
+	{	TransmitCharacter('-');
+		TransmitCharacter(48-power);  	}
+	else
+	{	TransmitCharacter(48+power);
+		TransmitCharacter(' '); 	}
+		
+	TransmitCharacter(' ');
+}
+
+/*
+// fonction qui envoie la partie entière du float par TX
+// et qui renvoie le meme float 
+double printunit(double data)
+{
+	uint8_t i_i = 0;
+	double 	i_f = 0;
+	do
+	{
+		i_f += 1.0;
+		if (data < i_f) TransmitCharacter(48+i_i);
+		i_i ++;
+	}while (i_f <= data && i_i < 10);
+	
+	return (data - i_f + 1.0)*10.0;
+}
+*/
 void printserialsigned(uint16_t innum) {
   uint16_t j1,k1,l1,m1,in;
   uint8_t p1,p2,p3,p4,p5;
@@ -129,3 +235,4 @@ void Data_uart(void)
     }
 
 }
+

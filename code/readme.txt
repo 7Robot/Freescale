@@ -1,8 +1,8 @@
 //------------------------------------------------------------------------
-//  Readme.txta
+//  Readme.txt
 //------------------------------------------------------------------------
 This project stationery is designed to get you up and running
-quickly with CodeWarrior on your MPC5604B_M27V target.
+quickly with CodeWarrior on your MPC5604B_M07N target.
 
 The wizard has created the following CodeWarrior target(s):
 
@@ -19,7 +19,7 @@ initialize some additional registers to improve system
 performance. For MPC551x devices, initialize the PFCRP0 and 
 PFCRP1 registers; for other devices, initialize the BIUCR.
 
-Please review the MPC5604B_M27V reference manual to determine 
+Please review the MPC5604B_M07N reference manual to determine 
 appropriate values.
 
 Sample code for the following language(s) is at your disposal:

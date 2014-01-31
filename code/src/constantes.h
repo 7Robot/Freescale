@@ -1,16 +1,23 @@
-#define CONTROLE_MILIEU_SERVO 1260 // 1330 -> droite // 1165 -> gauche
+#define CONTROLE_MILIEU_SERVO 1330 // 1165 -> gauche
 
-#define CONTROLE_INCERTITUDE_PALIER 40 // 30 à la coupe
+#define CONTROLE_INCERTITUDE_PALIER 50 // 30 à la coupe
 
 #define CONTROLE_DIFFERENCE_POS_MAX 30
 
-#define MOTEUR_KP 40
+#define MOTEUR_KP 10
 #define MOTEUR_KD 0
-#define MOTEUR_KI 10
+#define MOTEUR_KI 50
+#define MAX_MOTEUR_INTEGRALE 1000.0
 
-#define CONTROLE_KP 5
-#define CONTROLE_KD 0
-#define CONTROLE_KI 0
+#define MOTEUR_KP_POS 500
+#define MOTEUR_KD_POS 0
+#define MOTEUR_KI_POS 10
+
+#define CONTROLE_KP 10
+#define CONTROLE_KD 10
+#define CONTROLE_KI 0.1
+#define MAX_CONTROLE_INTEGRALE 1000.0
+#define M_BY_TIC 0.015625
 
 #define LARGEUR_LIGNE 15
 #define DELTA_LARGEUR_LIGNE 8

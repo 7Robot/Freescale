@@ -1,4 +1,4 @@
-#include "MPC5604B_M27V.h"
+#include "MPC5604B_M07N.h"
 
 void delay(uint32_t nb_tours)
 {

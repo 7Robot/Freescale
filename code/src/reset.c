@@ -1,20 +1,21 @@
 #include "camera.h"
 #include "milieu_ligne.h"
-#include "controle.h"
 #include "moteur.h"
 #include "delay.h"
 #include "reset.h"
 
 void reload(void) {  
-	  
+	  /*
     uint8_t milieu, incertitude;
     uint32_t pos_servo = 1200;
+    
+	
 	
     SIU.GPDO[71].B.PDO = 0; // LED4 ON
 
     do
     {
-        /* REGLAGE DU SERVO */ //(bouton1)
+         REGLAGE DU SERVO  //(bouton1)
 		if (!(SIU.PGPDI[2].R & 0x80000000))
         {
  	        SIU.GPDO[68].B.PDO = 0;    
@@ -50,7 +51,7 @@ void reload(void) {
                                    
   	    }
 
-        /* BALANCE DES BLANCS */ //(bouton2)
+         BALANCE DES BLANCS //(bouton2)
         else if (!(SIU.PGPDI[2].R & 0x40000000))
         {
 	    	SIU.GPDO[69].B.PDO = 0;
@@ -58,7 +59,7 @@ void reload(void) {
         }   
  		
        
-        /* REGLAGE DU FOCUS */ //(bouton3):
+         REGLAGE DU FOCUS  //(bouton3):
         else if (!(SIU.PGPDI[2].R & 0x20000000))
         {
             Acquisition_Camera(0);
@@ -87,4 +88,6 @@ void reload(void) {
     SIU.PGPDO[2].R &= 0xf0ffffff; // Enable all leds
     delay(10000000);
     SIU.PGPDO[2].R |= 0x0f000000; // Disable all leds  	  
+    
+    */
 }

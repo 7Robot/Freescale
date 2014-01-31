@@ -1,7 +1,7 @@
 #ifndef __LIAISON_SERIE__
 #define __LIAISON_SERIE__
 
-#include "MPC5604B_M27V.h"
+#include "MPC5604B_M07N.h"
 
 //Envoyer un tableau de données en UART
 void printlistall(uint8_t tab128[]);
@@ -14,5 +14,7 @@ void printhex16(uint16_t innum);
 void printhex32(uint32_t innum);
 void printserialsigned(uint16_t innum);
 void Data_uart(void);
+void printfloat(float);
+//double printunit(double);
 
 #endif

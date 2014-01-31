@@ -31,8 +31,8 @@ void init()
     //initEMIOS_0ch3();                   /* Initialize eMIOS 0 channel 3 as OPWM, servo moteur sans passer par la carte de puissance */
 	initEMIOS_0ch4(); 					/* Initialize eMIOS 0 channel 4 as OPWM, Servo moteur  */
 	initEMIOS_0ch6(); 					/* Initialize eMIOS 0 channel 6 as OPWM, Moteur Gauche */
-	initEMIOS_0ch7(); 					/* Initialize eMIOS 0 channel 7 as OPWM, Motuer Droit  */
-	initEMIOS_0ch11(); 					/* Initialize eMIOS 0 channel 7 as OPWM, Motuer Droit  */
+	initEMIOS_0ch7(); 					/* Initialize eMIOS 0 channel 7 as OPWM, Moteur Droit  */
+	initEMIOS_0ch11(); 					/* capteur avancée  */
 	
 	init_LinFLEX_0_UART();              /* Liaison Série */
 	
@@ -55,7 +55,7 @@ void init()
     //INTC_InstallINTCInterruptHandler(Data_uart,79,1);
     //INTC_InstallINTCInterruptHandler(Asserv_Vitesse, 59,1);
     enableIrq();
-    PIT_EnableINTC(0);
+    PIT_EnableINTC(0); 
     PIT_Enable_Channel(0);
 
 }
@@ -115,7 +115,7 @@ void initPads (void) {
 	SIU.PCR[22].R = 0x2000;          	/* MPC56xxB: Initialize PB[6] as ANP2 */
 	SIU.PCR[42].R = 0x0200;				/* Initialise la pin de contrôle du freinage en sortie -> PC[10]*/
 	SIU.PCR[57].R = 0x2000;          	/* MPC56xxB: Initialize PD[9] as ANP13 -> potentiomètre */
-	/*Camera:*/
+	/*Camera1:*/
 	SIU.PCR[58].R = 0x2000;          	/* MPC56xxB: Initialize PD[10] as ANP14 -> Camera AO*/
 	SIU.PCR[60].R = 0x0200;             /* PD[12] -> Sortie: Signal SI */
 	SIU.PCR[61].R = 0x0200;             /* PD[13] -> Sortie: Signal CLK */
@@ -124,7 +124,18 @@ void initPads (void) {
 	/* Alimentation Camera */ 
 	SIU.GPDO[62].R = 1; /* VCC */
 	SIU.GPDO[63].R = 0; /* Masse */
-	/* Fin Camera */
+	/* Fin Camera1 */
+	
+	/*Camera2:*/
+	SIU.PCR[48].R = 0x2000;          	/* MPC56xxB: Initialize PD[0] as ANP14 -> Camera AO*/
+	SIU.PCR[38].R = 0x0200;             /* PC[6] -> Sortie: Signal SI */
+	SIU.PCR[36].R = 0x0200;             /* PC[4] -> Sortie: Signal CLK */
+	SIU.PCR[34].R = 0x0200;             /* PC[2] -> Sortie: VCC */
+	SIU.PCR[32].R = 0x0200;             /* PC[0] -> Sortie: Masse */
+	/* Alimentation Camera */ 
+	SIU.GPDO[34].R = 1; /* VCC */
+	SIU.GPDO[32].R = 0; /* Masse */
+	/* Fin Camera2 */
 	
 	SIU.PCR[64].R = 0x0100;				/* Initialise PE[0] (S1) en entrÃ©e */
 	SIU.PCR[65].R = 0x0100;				/* Initialise PE[1] (S2) en entrÃ©e */
@@ -163,6 +174,7 @@ void initEMIOS_0(void) {
 	EMIOS_0.MCR.B.FRZ = 1;    			/* Enable stopping channels when in debug mode */
 }
 
+//ancien servo direct sur carte
 void initEMIOS_0ch3(void) { // servo
 	EMIOS_0.CH[3].CADR.R = 0;     		/* Leading edge when channel counter bus=0*/
 	EMIOS_0.CH[3].CBDR.R = pos_milieu_servo;  /* Trailing edge when channel counter bus=1400 Middle, 1650 Right Max, 1150 Left Max*/
@@ -231,7 +243,7 @@ void initEMIOS_0ch4(void) {        		/* EMIOS 0 CH 4: Servo-moteur */
 
 void initEMIOS_0ch6(void) {        		/* EMIOS 0 CH 6: Motor Left*/
 	EMIOS_0.CH[6].CADR.R = 0;     	/* Leading edge when channel counter bus=0*/
-	EMIOS_0.CH[6].CBDR.R = 250;//785;   /* Trailing edge when channel counter bus=500*/
+	EMIOS_0.CH[6].CBDR.R = 0;//785;   /* Trailing edge when channel counter bus=500*/
 	EMIOS_0.CH[6].CCR.B.BSL = 0x0;  	/* Use counter bus A -> Time base channel 23 */
 	EMIOS_0.CH[6].CCR.B.EDPOL = 1;  	/* Polarity-leading edge sets output */
 	EMIOS_0.CH[6].CCR.B.MODE = 0x60; 	/* Mode is OPWM Buffered */
@@ -239,8 +251,8 @@ void initEMIOS_0ch6(void) {        		/* EMIOS 0 CH 6: Motor Left*/
 }
 
 void initEMIOS_0ch7(void) {        		/* EMIOS 0 CH 7: Motor Right*/
-	EMIOS_0.CH[7].CADR.R = 500;    		/* Leading edge when channel counter bus=0*/
-	EMIOS_0.CH[7].CBDR.R = 750;//285;   /* Trailing edge when channel's counter bus=999*/
+	EMIOS_0.CH[7].CADR.R = 000;    		/* Leading edge when channel counter bus=0*/
+	EMIOS_0.CH[7].CBDR.R = 050;//285;   /* Trailing edge when channel's counter bus=999*/
 	EMIOS_0.CH[7].CCR.B.BSL = 0x0; 		/* Use counter bus A -> Time base channel 23 */
 	EMIOS_0.CH[7].CCR.B.EDPOL = 1; 		/* Polarity-leading edge sets output*/
 	EMIOS_0.CH[7].CCR.B.MODE = 0x60; 	/* Mode is OPWM Buffered */
@@ -299,6 +311,6 @@ void init_LinFLEX_0_UART (void)
 
 void init_camera (void)
 {
-        SIU.PCR[27].R = 0x0200;                         /* Program the Sensor read start pin as output*/
-        SIU.PCR[29].R = 0x0200;                         /* Program the Sensor Clock pin as output*/
+        //SIU.PCR[27].R = 0x0200;                         /* Program the Sensor read start pin as output*/
+        //SIU.PCR[29].R = 0x0200;                         /* Program the Sensor Clock pin as output*/
 }

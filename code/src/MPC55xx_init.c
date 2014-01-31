@@ -13,7 +13,7 @@
 
 #include "Exceptions.h"    /* IVPR and default exception handlers setup */
 #include "INTCInterrupts.h" /* INTC Interrupts Requests configuration */
-#include "MPC5604B_M27V_HWInit.h"
+#include "MPC5604B_M07N_HWInit.h"
 
 #pragma section code_type ".init"
 

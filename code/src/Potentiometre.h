@@ -1,4 +1,4 @@
-#include "MPC5604B_M27V.h"
+#include "MPC5604B_M07N.h"
 
 
 uint32_t potentiometer_PD0(void);

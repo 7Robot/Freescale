@@ -1,18 +1,18 @@
 
 /*
  *
- * FILE : MPC5604B_M27V_HWInit.h
+ * FILE : MPC5604B_M07N_HWInit.h
  *
  * DESCRIPTION:
- *  This file contains all MPC5604B_M27V derivative needed initializations, 
- *  and all initializations for the MPC5604B_M27V boards which are supported.
+ *  This file contains all MPC5604B_M07N derivative needed initializations, 
+ *  and all initializations for the MPC5604B_M07N boards which are supported.
  *  This includes setting up the External Bus Interface to allow access to 
  *  memory on the external bus, and ensuring there is a valid entry in the
  *  MMU for the external memory access.
  */
 
-#ifndef _MPC5604B_M27V_HWINIT_H_
-#define _MPC5604B_M27V_HWINIT_H_
+#ifndef _MPC5604B_M07N_HWINIT_H_
+#define _MPC5604B_M07N_HWINIT_H_
 
 /*----------------------------------------------------------------------------*/
 /* Includes                                                                   */
@@ -23,13 +23,13 @@ extern "C" {
 #endif
 
 /*******************************************************/
-/* MPC5604B_M27V derivative specific hardware initialization */
+/* MPC5604B_M07N derivative specific hardware initialization */
 /*******************************************************/ 
 
 __asm void INIT_Derivative(void); 
 
 /*******************************************************/
-/* MPC5604B_M27V boards specific hardware initializations    */
+/* MPC5604B_M07N boards specific hardware initializations    */
 /*******************************************************/
 
 /*----------------------------------------------------------------------------*/
@@ -38,7 +38,7 @@ __asm void INIT_Derivative(void);
 
 /* Supported Boards */
 #define NO_EXTERNAL_MEMORY            0
-#define MPC5604B_M27VDEMO_AXM_0321          1
+#define MPC5604B_M07NDEMO_AXM_0321          1
 
 /* Used board */
 #define INIT_USED_BOARD NO_EXTERNAL_MEMORY

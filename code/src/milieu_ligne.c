@@ -1,82 +1,95 @@
+
 #include "milieu_ligne.h"
 #include "constantes.h"
 
-#define max(i, j) (i > j ? i : j)
-#define min(i,j) (i > j ? j : i)
 
-void moyenne_glissante(int8_t* valeurs)
+
+
+
+// renvoie un tableau avec la dérivée des valeurs
+int16_t* deriver(uint16_t* valeurs)
 {
-    uint8_t i;
-    int8_t previous = *valeurs;
-    int8_t temp;
-
-    *valeurs = (previous*2 + *(valeurs + 1))/3;
-
-	for(i = 1; i < 125; i++)
-    {
-        temp = *(valeurs + i);
-        *(valeurs + i) = (temp + previous + *(valeurs + i + 1)) / 3;
-        previous = temp;
-    }
-
-    *(valeurs + 125) = ((*(valeurs + 125))*2 + previous)/3;
+	int i; // iterateur
+	int16_t* derivee = (int16_t*) malloc( 128 * sizeof(*derivee) ); // tableau résultant
+	
+	derivee[0] = 0; //on se fiche de la première valeur
+	for (i=1; i<128; i++)
+	{
+		derivee[i] = valeurs[i] - valeurs[i-1];
+	}
+	return derivee;
 }
-    
 
-void milieu_ligne(uint8_t* milieu, uint8_t* incertitude)
+
+
+
+
+// appliquer un hysteresis a 3 niveaux resultants : -1, 0 et 1
+// on a besoin de 2 seuils (bas et haut) et d'une tolérance pour l'hysteresis
+uint8_t* filtre_hys_3(int16_t* valeurs, int seuil_bas, int seuil_haut, int tol)
 {
-    int8_t valeurs[126];
-	uint8_t pos_max = 0;
-	uint8_t pos_min = 0;
-	uint8_t max_hors_ligne = 0;
-	uint8_t i;
+	int i;						// iterateur
+	int16_t v;					// temporaire sur tableau
+	uint8_t* signal_hys = (uint8_t*) malloc( 128 * sizeof(*signal_hys) );	// tableau filtré
 	
-	#ifdef DEBUG_LIGNE
-	TransmitCharacter(0x42); // Délimiteur pour l'affichage en python
-	#endif
-
-	// calcul de la dérivée
-    for(i = 0; i < 126; i++)
-   	{
-        valeurs[i] = (int8_t)camera_valeurs[i + 2] - (int8_t)camera_valeurs[i];
-    }
-    
-    valeurs[0] = 0; // hack parce que le premier pixel fait de la merde
+	// initialisation du tableau résultant
+	v = valeurs[0];
+	if (v>seuil_haut) {signal_hys[0] = 1;}
+	else if (v>seuil_bas) {signal_hys[0] = 0;}
+	else {signal_hys[0] = -1;}
 	
-
-	// recherche du min / du max
-	for(i = 0; i < 126; i++)
+	// calcul du reste du tableau
+	for (i=1; i<128; i++)
 	{
-		if(valeurs[i] > valeurs[pos_max])
-			pos_max = i;
-		if(valeurs[i] < valeurs[pos_min])
-			pos_min = i;
-		
-		#ifdef DEBUG_LIGNE
-		TransmitCharacter(valeurs[i]);
-		#endif
-		
+		v = valeurs[i];
+		if (v>seuil_haut+tol) {signal_hys[i] = 1;}
+		else if (v<seuil_bas-tol) {signal_hys[i] = -1;}
+		else if (v>seuil_haut-tol)
+		{
+			if (signal_hys[i-1] = 1) signal_hys[i] = 1;
+			else signal_hys[i] = 0;
+		}
+		else if (v<seuil_bas+tol)
+		{
+			if (signal_hys[i-1] = -1) signal_hys[i] = -1;
+			else signal_hys[i] = 0;
+		}
+		else {signal_hys[i] = 0;}
 	}
-    	
-	*milieu =(pos_min + pos_max) / 2;
-	
-	// recherche du plus gros pic en dehors de la ligne (incertitude)
-	for(i = 0; i < 126; i++)
-	{
-		if(abs((int8_t)(*milieu) - (int8_t)i) > LARGEUR_LIGNE + DELTA_LARGEUR_LIGNE && abs(valeurs[i]) > max_hors_ligne)
-			max_hors_ligne = abs(valeurs[i]);
-	}
-	
-	if(abs((int8_t)pos_min - (int8_t)pos_max - LARGEUR_LIGNE) < DELTA_LARGEUR_LIGNE)
-		*incertitude = 100 * max_hors_ligne / min(valeurs[pos_max], -valeurs[pos_min]);
-	else
-		*incertitude = 250;
-	
-	#ifdef DEBUG_LIGNE
-	TransmitCharacter(pos_min);
-	TransmitCharacter(pos_max);
-	TransmitCharacter(*incertitude);
-	TransmitCharacter(*milieu);
-	#endif
+	return signal_hys;
+}
 
+
+
+
+// calcul la position des min sur un hysteresis a 3 niveaux
+// renvoie un tableau d'indices
+// Attention, la longueur du tableau est dans mini[0]
+uint8_t* min_hys(uint8_t* hys)
+{
+	// limite à 20 le nombre de min ou max trouvables
+	uint8_t* mini = (uint8_t*) malloc( 20 * sizeof(*mini) );
+	mini[0] = 0;
+	return mini;
+}
+
+
+
+
+// renvoie la position de centre de la bande noire de la ligne
+uint8_t milieu_ligne(uint16_t* valeurs_filtrees)
+{
+	uint8_t centre_ligne = 0;		// valeur à renvoyer
+	int16_t* signal_derive;			// dérivée des valeurs
+	uint8_t* signal_hys;			// apres application hysteresis
+	uint8_t* mini;					// min et max de l'hysteresis (ATTENTION la taille réelle est dans min_max[0][0])
+	int seuil_bas = -4;				// seuil bas de l'hysteresis
+	int seuil_haut = 4;				// seuil haut de l'hysteresis
+	int tol = 1;					// tolérance de l'hysteresis
+	
+	signal_derive = deriver(valeurs_filtrees);
+	signal_hys = filtre_hys_3(signal_derive, seuil_bas, seuil_haut, tol);
+	mini = min_hys(signal_hys);
+	
+	return centre_ligne;
 }

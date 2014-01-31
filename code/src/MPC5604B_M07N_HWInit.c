@@ -1,11 +1,11 @@
 
 /*
  *
- * FILE : MPC5604B_M27V_HWInit.c
+ * FILE : MPC5604B_M07N_HWInit.c
  *
  * DESCRIPTION:
- *  This file contains all MPC5604B_M27V derivative needed initializations, 
- *  and all initializations for the MPC5604B_M27V boards which are supported.
+ *  This file contains all MPC5604B_M07N derivative needed initializations, 
+ *  and all initializations for the MPC5604B_M07N boards which are supported.
  *  This includes setting up the External Bus Interface to allow access
  *  to memory on the external bus, and ensuring there is a valid entry in
  *  the MMU for the external memory access.
@@ -15,20 +15,20 @@
 /* Includes                                                                  */
 /*---------------------------------------------------------------------------*/
 
-#include "MPC5604B_M27V.h"      /* MPC56xx platform development header            */
-#include "MPC5604B_M27V_HWInit.h"
+#include "MPC5604B_M07N.h"      /* MPC56xx platform development header            */
+#include "MPC5604B_M07N_HWInit.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /*******************************************************/
-/* MPC5604B_M27V derivative specific hardware initialization */
+/* MPC5604B_M07N derivative specific hardware initialization */
 /*******************************************************/
 
 /* Symbol L2SRAM_LOCATION is defined in the application linker command 
    file (.lcf)  It is defined to the start of the internal SRAM in the 
-   MPC5604B_M27V. 
+   MPC5604B_M07N. 
 */
 /*lint -esym(752, L2SRAM_LOCATION) */
 extern long L2SRAM_LOCATION;  
@@ -38,7 +38,7 @@ __asm void INIT_Derivative(void)
 {
 nofralloc
 
-    /* MPC5604B_M27V SRAM initialization code                              */
+    /* MPC5604B_M07N SRAM initialization code                              */
     lis r11,L2SRAM_LOCATION@h       /* Base of SRAM, 64-bit word aligned */
     ori r11,r11,L2SRAM_LOCATION@l
 
@@ -54,7 +54,7 @@ nofralloc
 }
 
 /*******************************************************/
-/* MPC5604B_M27V boards specific hardware initializations    */
+/* MPC5604B_M07N boards specific hardware initializations    */
 /*******************************************************/
 
 /** This macro allows to use C defined address with the inline assembler */
@@ -105,9 +105,9 @@ nofralloc
 /* External Memory Locations from lcf file                                    */
 /*----------------------------------------------------------------------------*/
 
-#if INIT_USED_BOARD==MPC5604B_M27VDEMO_AXM_0321
+#if INIT_USED_BOARD==MPC5604B_M07NDEMO_AXM_0321
 /* Symbol AXM_0321_EXTERNAL_RAM is defined in the application linker command file (.lcf) 
-   It is defined to the start of the external memory on the MPC5604B_M27VDEMO_AXM-0321 board 
+   It is defined to the start of the external memory on the MPC5604B_M07NDEMO_AXM-0321 board 
 */
 extern unsigned long AXM_0321_EXTERNAL_RAM[]; 
 #endif
@@ -146,7 +146,7 @@ nofralloc
 
     mflr r27
 
-    /*  This initializes the MPC5604B_M27V external bus
+    /*  This initializes the MPC5604B_M07N external bus
         Set up the pins
         Address bus PCR 4 - 27
         Configure address bus pins
@@ -212,13 +212,13 @@ nofralloc
 /* Initialize the used EBI Chip Selects */
 __asm void __initEBIChipSelects(void)
 {
-#if INIT_USED_BOARD==MPC5604B_M27VDEMO_AXM_0321
+#if INIT_USED_BOARD==MPC5604B_M07NDEMO_AXM_0321
 MAKE_HLI_COMPATIBLE(EBBI_CS0_BR,&EBI.CS[0].BR.R)
 MAKE_HLI_COMPATIBLE(EBBI_CS0_OR,&EBI.CS[0].OR.R)
 #endif
 nofralloc
 
-#if INIT_USED_BOARD==MPC5604B_M27VDEMO_AXM_0321
+#if INIT_USED_BOARD==MPC5604B_M07NDEMO_AXM_0321
     /*  CY7C1338 512K External SRAM - 4 beat burst, 0 wait
         Set up Memory Controller CS0 @ AXM_0321_EXTERNAL_RAM
     */
@@ -269,7 +269,7 @@ nofralloc
 /* Initialize the needed MMU Table entries */
 __asm void __initMMUExternalMemory(void)
 {
-#if INIT_USED_BOARD==MPC5604B_M27VDEMO_AXM_0321
+#if INIT_USED_BOARD==MPC5604B_M07NDEMO_AXM_0321
 /* Set up MMU for External Memory
    Base address = 0x2000_0000
    16 MByte Memory Space, Not Guarded, Cachable, All Access
@@ -284,7 +284,7 @@ nofralloc
 
      mflr     r27
 
-#if INIT_USED_BOARD==MPC5604B_M27VDEMO_AXM_0321
+#if INIT_USED_BOARD==MPC5604B_M07NDEMO_AXM_0321
      /* load r3 with MAS0 value */
      lis r3,AXM_0321_EXT_RAM_MAS0_VALUE@h
      ori r3,r3,AXM_0321_EXT_RAM_MAS0_VALUE@l
