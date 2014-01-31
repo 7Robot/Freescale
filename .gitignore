@@ -1,5 +1,9 @@
+# folders to ignore
 code/bin/
 code/Robot_Data/
+freescale_project_Data
+
+# files to ignore
 *.c~
 *.h~
 *.swp
