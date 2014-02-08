@@ -8,9 +8,9 @@
 #define MOTEUR_KD 0
 #define MOTEUR_KI 10
 
-#define CONTROLE_KP 5
-#define CONTROLE_KD 0
-#define CONTROLE_KI 0
+//#define CONTROLE_KP 5
+//#define CONTROLE_KD 0
+//#define CONTROLE_KI 0
 
 #define LARGEUR_LIGNE 15
 #define DELTA_LARGEUR_LIGNE 8
