@@ -21,9 +21,6 @@ void Controle_Direction(void)
 	int16_t commande;
 	int16_t commande_bornee;
 	static uint32_t compteur_ligne_arrivee = 0; // On regarde combien de fois on croise la ligne d'arrivé
-    
-
-   
 
     milieu_ligne(&pos_milieu, &incertitude);
     

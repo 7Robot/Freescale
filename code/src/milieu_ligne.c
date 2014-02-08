@@ -44,7 +44,6 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude)
     valeurs[0] = 0; // hack parce que le premier pixel fait de la merde
 	
 
-	
 	// recherche du min / du max
 	for(i = 0; i < 126; i++)
 	{

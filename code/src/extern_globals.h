@@ -6,10 +6,10 @@ extern pos_min_servo;
 extern pos_max_servo; 
 extern pos_milieu_servo;
 
-extern uint16_t objectif_vitesse;
+extern float objectif_vitesse;
 
-extern int32_t moteur_derniere_erreur;
-extern int32_t moteur_integrale;
+extern float moteur_derniere_erreur;
+extern float moteur_integrale;
 extern uint8_t moteur_compteur;
 extern int8_t controle_derniere_erreur;
 extern int16_t controle_integrale;
