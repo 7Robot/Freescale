@@ -1,7 +1,7 @@
 #ifndef __INIT__H__
 #define __INIT_H__
 
-#include "MPC5604B_M27V.h"
+#include "MPC5604B_M07N.h"
 #include "constantes.h"
 
 void init(void);

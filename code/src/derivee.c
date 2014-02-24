@@ -1,5 +1,8 @@
-void derivee (uint8_t* pos_max, uint8_t* pos_min)
+#include "typedefs.h"
+
+void derivee (uint8_t *pos_max, uint8_t *pos_min)
 {
+	int i;
     *pos_max = 0;
     *pos_min = 0;
     

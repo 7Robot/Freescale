@@ -21,7 +21,7 @@
 /* Includes                                                                  */
 /*---------------------------------------------------------------------------*/
 
-#include "MPC5604B_M27V.h"         /* MPC55xx platform development header       */
+#include "MPC5604B_M07N.h"         /* MPC55xx platform development header       */
 
 #include "IntcInterrupts.h"     /* Implement functions from this file */
 

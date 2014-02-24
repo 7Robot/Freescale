@@ -1,3 +1,3 @@
-#include "MPC5604B_M27V.h"
+#include "MPC5604B_M07N.h"
 
 int code_arret_cam(void);

@@ -97,7 +97,7 @@ HISTORY
 #pragma only_std_keywords off
 
 #define ALLOC_ADDITIONAL_HEAPS 0
-#include "MPC5604B_M27V.h"
+#include "MPC5604B_M07N.h"
 #define FLASH_REG CFLASH.PFCR0.R
 #define FLASH_DATA 0x108580ED
 /*$FlashRegister2$*/
