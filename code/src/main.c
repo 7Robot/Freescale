@@ -9,6 +9,7 @@
 #include "extern_globals.h"
 #include "liaison_serie.h"
 #include "reset.h"
+#include "math.h"
 
 //pepino
 #include <stdio.h>
@@ -53,15 +54,13 @@ int main(void) {
     moteur_compteur = 0;
     
     // Initialisation variables servo
-    /*
-    pos_min_servo = 0x3d0;	//0x3b0 = real min
-    pos_max_servo = 0x610;	//0x630 = real max
-    pos_milieu_servo = 0x4f0;
-    */
     pos_min_servo = 0x3b0;	//0x3b0 = real min
     pos_max_servo = 0x5f0;	//0x630 = real max
     pos_milieu_servo = 0x4d0;
-   //pos_max_servo = 0x4d0;  pos_min_servo = 0x4d0;
+    
+    // Initialisation variables camera
+    centre_piste_proche = 64;
+	centre_piste_loin = 64;
    
    	old_bouton = SIU.PGPDI[2].R & 0x80000000;
     /**************** Scheduled algorithm *****************/
@@ -91,8 +90,8 @@ int main(void) {
             }
             if(Moteur_OFF)
             {
-                    SIU.PGPDO[0].R = 0x00000000;                // Désactive les 2 moteurs
-                    Moteur_OFF = 0;
+                SIU.PGPDO[0].R = 0x00000000;                // Désactive les 2 moteurs
+                Moteur_OFF = 0;
             }
             
             // gestion de la camera
@@ -100,7 +99,7 @@ int main(void) {
             // traitement des signaux
             camera_valeurs_filtrees_1 = Filtrer_Valeurs_Camera(1);
             camera_valeurs_filtrees_2 = Filtrer_Valeurs_Camera(2);
-            // detection du milieu de la ligne avec les valurs jutes récupérées
+            // detection du milieu de la ligne avec les valeurs justes récupérées
            	milieu_camera_1_old = milieu_camera_1;
            	milieu_camera_1 =  milieu_ligne(camera_valeurs_filtrees_1);
            	milieu_camera_2_old = milieu_camera_2;
@@ -113,12 +112,14 @@ int main(void) {
            	// application de la commande
            	EMIOS_0.CH[4].CBDR.R = ((uint16_t) commande_finale);
            	
+           	
            	// asserv en vitesse
+           	// Moteur_F sert uniquement a commander en vitesse tous les 5 coups
            	if(Moteur_F < 5)
                 Moteur_F++;
             else
             {
-            	objectif_vitesse = 2;
+                objectif_vitesse = 5-2*coeff_camera_loin; // plus la ligne devant est droite, plus on va vite
                 Asserv_Vitesse();
                 Moteur_F = 0;
             }

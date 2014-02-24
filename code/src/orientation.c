@@ -1,6 +1,8 @@
 #include "orientation.h"
 #include "extern_globals.h"
 
+#include "math.h"
+
 float limiter(float valeur, float limite_inf, float limite_sup)
 {
 	if (valeur<limite_inf)
@@ -20,7 +22,6 @@ float limiter(float valeur, float limite_inf, float limite_sup)
 float get_commande_orientation(uint8_t milieu_camera,uint8_t milieu_camera_old)
 {
 	// variables
-	uint8_t centre_camera = 64;
 	static float erreur = 0;
 	static float derivee = 0;
 	float commande_orientation;
@@ -32,9 +33,8 @@ float get_commande_orientation(uint8_t milieu_camera,uint8_t milieu_camera_old)
 	float Kp = 10;
 	float Kd = 0;
 	
-	
 	// Calcul erreur et derivee en filtre passe bas	
-	erreur = (0.8*erreur) + (0.2*(centre_camera - milieu_camera));
+	erreur = (0.8*erreur) + (0.2*(centre_piste_proche - milieu_camera));
 	derivee = (0.9*derivee) + (0.1*(erreur - controle_derniere_erreur));
 	controle_derniere_erreur = erreur;
 	
@@ -53,5 +53,8 @@ float get_commande_orientation(uint8_t milieu_camera,uint8_t milieu_camera_old)
 
 float combiner(float base, float orientation, uint8_t milieu_camera_loin)
 {
-	return limiter(base + orientation,(float)pos_min_servo, (float)pos_max_servo);
+	// variables
+	float erreur_camera_loin = fabs(centre_piste_loin - milieu_camera_loin);
+    coeff_camera_loin = 1/64*erreur_camera_loin;
+	return limiter(base + coeff_camera_loin*orientation,(float)pos_min_servo, (float)pos_max_servo);
 }
