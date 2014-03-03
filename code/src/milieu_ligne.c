@@ -85,6 +85,31 @@ void min_max_hys(uint8_t* hys, Variation* var, int* nb_var)
 
 
 
+// calcule la position, couleur et largeur des bandes à partir des variations
+void calcul_bandes(Variation* var, int* nb_var, Bande* bandes, int* nb_bandes)
+{
+	Bande b;
+	
+	// pour les tests on sait ce qu'il y a dans var
+	// couleur
+	if ((var[1].sens - var[0].sens) > 0)
+	{
+		b.couleur = 1;
+	}
+	else
+	{
+		b.couleur = 0;
+	}
+	// centre
+	b.centre = (var[1].centre + var[0].centre)/2;
+	// largeur
+	b.largeur = var[1].centre - var[0].centre;
+	
+	bandes[0] = b;
+	*nb_bandes = 1;
+	
+}
+
 
 // renvoie la position de centre de la bande noire de la ligne
 uint8_t milieu_ligne(uint16_t* valeurs_filtrees)
@@ -96,11 +121,14 @@ uint8_t milieu_ligne(uint16_t* valeurs_filtrees)
 	int seuil_haut = 4;				// seuil haut de l'hysteresis
 	int tol = 1;					// tolérance de l'hysteresis
 	Variation* var = (Variation*) malloc(20*sizeof(var));// min et max de l'hysteresis
-	int* nb_var;					// nb de variations dans var[]
+	int nb_var = 0;					// nb de variations dans var[]
+	Bande* bandes = (Bande*) malloc(20*sizeof(bandes)); // bandes claires et sombres
+	int nb_bandes = 0;
 	
 	signal_derive = deriver(valeurs_filtrees);
 	signal_hys = filtre_hys_3(signal_derive, seuil_bas, seuil_haut, tol);
-	min_max_hys(signal_hys, var, nb_var);
+	min_max_hys(signal_hys, var, &nb_var);
+	calcul_bandes(var, &nb_var, bandes, &nb_bandes);
 	
 	return centre_ligne;
 }

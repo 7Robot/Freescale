@@ -12,6 +12,15 @@ struct Variation
     float centre; // indice du pixel du centre de la variation
 };
 
+// structure des bandes repérées à partir des variations
+typedef struct Bande Bande;
+struct Bande
+{
+    int couleur; // 0 pour sombre, 1 pour claire
+    float centre; // indice du pixel du centre de la bande
+    float largeur; // largeur de la bande
+};
+
 // renvoie un tableau avec la dérivée des valeurs
 int16_t* deriver(uint16_t* valeurs);
 
@@ -23,6 +32,9 @@ uint8_t* filtre_hys_3(int16_t* valeurs, int seuil_bas, int seuil_haut, int tol);
 // renvoie un tableau de variations var
 // le nombre de variations est renvoyé dans nb_var (limité à 20)
 void min_max_hys(uint8_t* hys, Variation* var, int* nb_var);
+
+// calcule la position, couleur et largeur des bandes à partir des variations
+void calcul_bandes(Variation* var, int* nb_var, Bande* bandes, int* nb_bandes);
 
 uint8_t milieu_ligne(uint16_t* valeurs_filtrees);
 
