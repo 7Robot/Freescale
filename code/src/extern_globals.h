@@ -24,3 +24,11 @@ extern uint8_t Capteurs_resultat;
 extern uint8_t i_camera_interupt;
 extern uint16_t camera_valeurs_brutes1[128];
 extern uint16_t camera_valeurs_brutes2[128];
+
+
+// coefs dependant de l'ecart à la ligne de la camera loin
+extern float coeff_camera_loin;
+
+// centre de la piste
+extern uint8_t centre_piste_proche;
+extern uint8_t centre_piste_loin;

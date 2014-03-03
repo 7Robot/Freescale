@@ -1,20 +1,11 @@
 #include "orientation.h"
 #include "extern_globals.h"
+#include "math.h"
 
+// nom explicite : restreindre valeur entre limite_inf et limite_sup
 float limiter(float valeur, float limite_inf, float limite_sup)
 {
-	if (valeur<limite_inf)
-	{
-		return limite_inf;
-	}
-	else if (valeur>limite_sup)
-	{
-		return limite_sup;
-	}
-	else
-	{
-		return (int) valeur;
-	}
+	return fmax(limite_inf, fmin(valeur, limite_sup));
 }
 
 float get_commande_orientation(uint8_t milieu_camera,uint8_t milieu_camera_old)
@@ -53,5 +44,9 @@ float get_commande_orientation(uint8_t milieu_camera,uint8_t milieu_camera_old)
 
 float combiner(float base, float orientation, uint8_t milieu_camera_loin)
 {
-	return limiter(base + orientation,(float)pos_min_servo, (float)pos_max_servo);
+	// variables
+	float erreur_camera_loin = fabs(centre_piste_loin - milieu_camera_loin);
+	
+	coeff_camera_loin = 1/64*erreur_camera_loin;
+	return limiter(base + coeff_camera_loin*orientation,(float)pos_min_servo, (float)pos_max_servo);
 }

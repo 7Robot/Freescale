@@ -17,3 +17,9 @@ uint16_t compteur_acquisitions_invalides;
 uint8_t i_camera_interupt;
 uint16_t camera_valeurs_brutes1[128];
 uint16_t camera_valeurs_brutes2[128];
+
+// coefs dependant de l'ecart à la ligne de la camera loin
+float coeff_camera_loin;
+// centre de la piste
+uint8_t centre_piste_proche;
+uint8_t centre_piste_loin;

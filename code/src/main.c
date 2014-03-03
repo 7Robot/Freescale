@@ -9,6 +9,7 @@
 #include "extern_globals.h"
 #include "liaison_serie.h"
 #include "reset.h"
+#include "math.h"
 
 //pepino
 #include <stdio.h>
@@ -100,7 +101,7 @@ int main(void) {
             // traitement des signaux
             camera_valeurs_filtrees_1 = Filtrer_Valeurs_Camera(1);
             camera_valeurs_filtrees_2 = Filtrer_Valeurs_Camera(2);
-            // detection du milieu de la ligne avec les valurs jutes récupérées
+            // detection du milieu de la ligne avec les valeurs justes récupérées
            	milieu_camera_1_old = milieu_camera_1;
            	milieu_camera_1 =  milieu_ligne(camera_valeurs_filtrees_1);
            	milieu_camera_2_old = milieu_camera_2;
@@ -118,7 +119,7 @@ int main(void) {
                 Moteur_F++;
             else
             {
-            	objectif_vitesse = 2;
+            	objectif_vitesse = 5-2*coeff_camera_loin; // plus la ligne devant est droite, plus on va vite
                 Asserv_Vitesse();
                 Moteur_F = 0;
             }
