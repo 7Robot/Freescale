@@ -62,15 +62,25 @@ uint8_t* filtre_hys_3(int16_t* valeurs, int seuil_bas, int seuil_haut, int tol)
 
 
 
-// calcul la position des min sur un hysteresis a 3 niveaux
-// renvoie un tableau d'indices
-// Attention, la longueur du tableau est dans mini[0]
-uint8_t* min_hys(uint8_t* hys)
+// calcul la position des min et max sur un hysteresis a 3 niveaux
+// renvoie un tableau de variations var
+// le nombre de variations est renvoyé dans nb_var (limité à 20)
+void min_max_hys(uint8_t* hys, Variation* var, int* nb_var)
 {
-	// limite à 20 le nombre de min ou max trouvables
-	uint8_t* mini = (uint8_t*) malloc( 20 * sizeof(*mini) );
-	mini[0] = 0;
-	return mini;
+	Variation v;
+	
+	// premiere variation (test)
+	v.sens = 0;
+	v.centre = 115;
+	var[0] = v;
+	
+	// seconde variation (test)
+	v.sens = 1;
+	v.centre = 125;
+	var[1] = v;
+	
+	// nb_var vaut 2 pour les tests
+	*nb_var = 2;
 }
 
 
@@ -82,14 +92,15 @@ uint8_t milieu_ligne(uint16_t* valeurs_filtrees)
 	uint8_t centre_ligne = 0;		// valeur à renvoyer
 	int16_t* signal_derive;			// dérivée des valeurs
 	uint8_t* signal_hys;			// apres application hysteresis
-	uint8_t* mini;					// min et max de l'hysteresis (ATTENTION la taille réelle est dans min_max[0][0])
 	int seuil_bas = -4;				// seuil bas de l'hysteresis
 	int seuil_haut = 4;				// seuil haut de l'hysteresis
 	int tol = 1;					// tolérance de l'hysteresis
+	Variation* var = (Variation*) malloc(20*sizeof(var));// min et max de l'hysteresis
+	int* nb_var;					// nb de variations dans var[]
 	
 	signal_derive = deriver(valeurs_filtrees);
 	signal_hys = filtre_hys_3(signal_derive, seuil_bas, seuil_haut, tol);
-	mini = min_hys(signal_hys);
+	min_max_hys(signal_hys, var, nb_var);
 	
 	return centre_ligne;
 }
