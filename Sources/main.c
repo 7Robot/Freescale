@@ -39,13 +39,13 @@ void main (void)
 			autorisation_aquiz = 0;
 			Acquisitions_Cameras();
 			
-			Asserv_Vitesse(bidule/30.0);
+		/*	Asserv_Vitesse(bidule/30.0);
 			Set_Dir_Servo(bidule);
 			Set_PWM_Leds(50 + bidule/2.0);
 			bidule += 0.05;
 			if (bidule >=100)
 				bidule = -100;
-				
+				*/
 			toto++;
 			if (toto == 255)
 			{

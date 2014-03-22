@@ -1,7 +1,6 @@
 #include "moteur.h"
 #include "liaison_serie.h"
 #include "extern_globals.h"
-#include "Config_PIT.h"
 
 int32_t moteur_compteur = 0;
 float moteur_integrale = 0;
@@ -69,9 +68,9 @@ void Asserv_Vitesse(float objectif_vitesse)
     moteur_compteur = 0;
     erreur = objectif_vitesse - moteur_compteur_temp;
     
-	TransmitData("mot_c: ");
+/*	TransmitData("mot_c: ");
 	printfloat((float)moteur_compteur_temp);
-	TransmitCharacter('\n');
+	TransmitCharacter('\n');*/
 	// partie dérivée
 	derivee = erreur - moteur_derniere_erreur;
 	moteur_derniere_erreur = erreur;
@@ -85,13 +84,13 @@ void Asserv_Vitesse(float objectif_vitesse)
 	MOTEUR_KD * derivee + 
 	MOTEUR_KI * moteur_integrale;
 	
-	TransmitData("err : ");
+/*	TransmitData("err : ");
 	printfloat(erreur);
 	TransmitCharacter('\n');
 	
 	TransmitData("int : ");
 	printfloat(moteur_integrale);
-	TransmitCharacter('\n');
+	TransmitCharacter('\n');*/
 	
 /*	TransmitData("der : ");
 	printfloat(derivee);

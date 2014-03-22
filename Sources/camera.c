@@ -15,6 +15,9 @@ void Acquisitions_Cameras()
 	
 	//SIU.PGPD[2].R = PORT[E] & PORT[F];// mappage du port pour visualisation
 	
+
+	
+	
 	// début de la séquence : coup de clock avec bit de start (SI)
 	SIU.PGPDO[2].R = SIU.PGPDO[2].R & ~(BITS_SI | BITS_CLK);	// mise à 0 de tous les bits
 	delay(DELAY_CLK_CAM/2);
@@ -24,6 +27,12 @@ void Acquisitions_Cameras()
 	delay(DELAY_CLK_CAM/2);
 	SIU.PGPDO[2].R = SIU.PGPDO[2].R & ~BITS_SI;					// start = 0
 	delay(DELAY_CLK_CAM/2);
+	
+	// fist acquiz pour précharger le condo dans l'ADC...
+	ADC.MCR.B.NSTART=1; 
+	while (ADC.MCR.B.NSTART);
+	i = (ADC.CDR[40].B.CDATA == 0);
+	i = (ADC.CDR[41].B.CDATA == 0);
 	
 	// séquence de récupération des bits
 	for (i = 0; i < 128; i++)
@@ -40,7 +49,10 @@ void Acquisitions_Cameras()
 	
 	// remise de la clock à 0 à la fin de la séquence
 	SIU.PGPDO[2].R = SIU.PGPDO[2].R & ~BITS_CLK;			// CLK = 0
-	
+	delay(DELAY_CLK_CAM);
+	SIU.PGPDO[2].R = SIU.PGPDO[2].R | BITS_CLK;				// CLK = 1
+	delay(DELAY_CLK_CAM);
+	SIU.PGPDO[2].R = SIU.PGPDO[2].R & ~BITS_CLK;			// CLK = 0
     // old version avec 1 seule caméra
    /* // En passant directement sur la carte mère 
     SIU.PGPDO[1].R &= ~0x0000000C;          // All port line low 

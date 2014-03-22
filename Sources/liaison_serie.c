@@ -110,13 +110,7 @@ void TransmitCharacterIfInf(uint8_t ch, uint8_t lim)
 	}
 }
 
-/*  ancienne version, carractère par carractère
-void TransmitCharacter(uint8_t ch)
-{
-	LINFLEX_0.BDRL.B.DATA0 = ch;  			// write character to transmit buffer 
-	while (1 != LINFLEX_0.UARTSR.B.DTF) {}  // Wait for data transmission completed flag 
-	LINFLEX_0.UARTSR.R = 0x0002; 			// clear the DTF flag and not the other flags 	
-}*/
+
 
 void TransmitData (char TransData[]) 
 {
@@ -141,26 +135,7 @@ void TransmitDataIfInf (char TransData[], uint8_t lim)
 
 	}
 }
-/*
-// This functions polls UART receive buffer. when it is full, it moves received data from the buffer to the memory 
-uint8_t ReadData (void)
-{
-	uint8_t ch;
-	// wait for DRF 
-	while (1 != LINFLEX_0.UARTSR.B.DRF) {}  // Wait for data reception completed flag 
-		
-	// wait for RMB 
-	while (1 != LINFLEX_0.UARTSR.B.RMB) {}  // Wait for Release Message Buffer 
-	
-	// get the data 
-	ch = (uint8_t)LINFLEX_0.BDRM.B.DATA4;
-		
-	// clear the DRF and RMB flags by writing 1 to them 
-	LINFLEX_0.UARTSR.R = 0x0204;
-	
-	return ch;
-	
-}*/
+
 
 void printhex8(uint8_t innum) {
   uint8_t j1,in;
@@ -218,23 +193,6 @@ void printserialsigned(int16_t innum) {
   TransmitCharacter(0x09);
 }
 
-void Data_uart(void)
-{
-    static uint8_t select_coef;
-    if(select_coef == 0)
-    {
-        //controle_kp = ReadData();
-        TransmitData("\n KP modified \n");
-        select_coef = 1;
-    }
-    else
-    {
-        //controle_kd = ReadData();
-        TransmitData("\n KD modified \n");
-        select_coef = 0;
-    }
-    
-}
     
 void printfloat (float data)
 {	

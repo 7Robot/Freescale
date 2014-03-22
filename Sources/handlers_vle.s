@@ -129,7 +129,7 @@ Pit1Handler:
 #  e_stwu  r1, -0x50 (r1)      # Create stack frame and store back chain
 #  se_stw  r3,  0x28 (r1)      # Store a working register 
 #                              # Note: use se_ form for r0-7, r24-41 with positive offset
-#  mfsrr0  r3			      # Store SRR0:1 (must be done before enabling EE)
+#  mfsrr0  r3			       # Store SRR0:1 (must be done before enabling EE)
 #  se_stw  r3,  0x0C (r1)
 #  mfsrr1  r3				  	
 #  se_stw  r3,  0x10 (r1)
