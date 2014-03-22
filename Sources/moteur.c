@@ -1,7 +1,6 @@
 #include "moteur.h"
 #include "liaison_serie.h"
 #include "extern_globals.h"
-#include "Config_PIT.h"
 
 int32_t moteur_compteur = 0;
 float moteur_integrale = 0;

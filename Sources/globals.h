@@ -4,6 +4,8 @@
 uint16_t camera1_valeurs[128];
 uint16_t camera2_valeurs[128];
 
+uint16_t ancien_milieu;
+
 uint16_t pos_min_servo = POS_MILIEU_SERVO - AMPLITUDE_SERVO;
 uint16_t pos_max_servo = POS_MILIEU_SERVO + AMPLITUDE_SERVO;
 uint16_t pos_milieu_servo = POS_MILIEU_SERVO;
@@ -24,3 +26,7 @@ uint8_t	Capteurs_resultat;
 
 uint8_t nb_receive = 0;
 vuint8_t autorisation_aquiz = 0;
+
+uint16_t controle_kp = CONTROLE_KP;
+uint16_t controle_kd = CONTROLE_KD;
+uint16_t controle_ki = CONTROLE_KI;
