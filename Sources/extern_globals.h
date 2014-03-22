@@ -11,7 +11,7 @@ extern uint16_t pos_max_servo;
 extern uint16_t pos_milieu_servo;
 extern uint16_t amplitude_servo;
 
-//extern float objectif_vitesse;
+extern float objectif_vitesse;
 
 
 extern int8_t controle_derniere_erreur;
@@ -30,3 +30,4 @@ extern 	vuint8_t autorisation_aquiz;
 extern uint16_t controle_kp ;
 extern uint16_t controle_kd ;
 extern uint16_t controle_ki ;
+

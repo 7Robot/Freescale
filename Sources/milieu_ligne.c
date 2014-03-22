@@ -1,8 +1,15 @@
 #include "milieu_ligne.h"
 #include "constantes.h"
+#include "math.h"
 
 #define max(i, j) (i > j ? i : j)
 #define min(i,j) (i > j ? j : i)
+
+
+
+//*************************************************  moyenne_glissante **************************************************************
+
+
 
 void moyenne_glissante(int8_t* valeurs)
 {
@@ -21,6 +28,23 @@ void moyenne_glissante(int8_t* valeurs)
 
     *(valeurs + 125) = ((*(valeurs + 125))*2 + previous)/3;
 }
+    
+    
+
+//************************************************* abs **************************************************************
+
+
+
+ uint16_t abs(uint16_t n)
+ {
+ 	if (n>0)
+ 		return n;
+ 	else
+ 		return -n;
+ }
+    
+//************************************************* milieu_ligne **************************************************************
+    
     
 
 void milieu_ligne(uint8_t* milieu, uint8_t* incertitude, uint16_t camera_val[])

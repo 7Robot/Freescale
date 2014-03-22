@@ -3,7 +3,7 @@
 
 #include "MPC5604B_M27V.h"
 
-void Asserv_Vitesse(float);
+void Asserv_Vitesse(void);
 
 void Commande_Moteur(float C_Moteur_D, float C_Moteur_G);
 

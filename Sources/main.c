@@ -38,6 +38,8 @@ void main (void)
 			
 			autorisation_aquiz = 0;
 			Acquisitions_Cameras();
+			Controle_Direction(); 
+			Asserv_Vitesse();
 			
 		/*	Asserv_Vitesse(bidule/30.0);
 			Set_Dir_Servo(bidule);
@@ -46,7 +48,7 @@ void main (void)
 			if (bidule >=100)
 				bidule = -100;
 				*/
-			toto++;
+			/*toto++;
 			if (toto == 255)
 			{
 				for (i = 0; i< 128; i++)
@@ -62,7 +64,10 @@ void main (void)
 				TransmitCharacter(' ');
 				printhex16(buff2[toto]);
 				TransmitCharacter('\n');
-			}
+			}*/
+			
+			
+		
 			
 
 

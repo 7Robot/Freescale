@@ -11,7 +11,7 @@ uint16_t pos_max_servo = POS_MILIEU_SERVO + AMPLITUDE_SERVO;
 uint16_t pos_milieu_servo = POS_MILIEU_SERVO;
 uint16_t amplitude_servo = AMPLITUDE_SERVO;
 
-//float objectif_vitesse;
+float objectif_vitesse = 0;
 
 
 int8_t controle_derniere_erreur;
@@ -30,3 +30,4 @@ vuint8_t autorisation_aquiz = 0;
 uint16_t controle_kp = CONTROLE_KP;
 uint16_t controle_kd = CONTROLE_KD;
 uint16_t controle_ki = CONTROLE_KI;
+

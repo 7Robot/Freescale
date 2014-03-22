@@ -6,6 +6,10 @@ int32_t moteur_compteur = 0;
 float moteur_integrale = 0;
 float moteur_derniere_erreur = 0;
 
+
+//************************************************* Capteur1_Roue_ISR **************************************************************
+
+
 void Capteur1_Roue_ISR(void)
 {
 	uint32_t Port;
@@ -30,6 +34,12 @@ void Capteur1_Roue_ISR(void)
 	}
 	EMIOS_1.CH[13].CSR.B.FLAG = 0x1;
 }
+
+
+
+//************************************************* Capteur2_Roue_ISR **************************************************************
+
+
 
 void Capteur2_Roue_ISR(void)
 {
@@ -56,7 +66,12 @@ void Capteur2_Roue_ISR(void)
 
 
 
-void Asserv_Vitesse(float objectif_vitesse)
+//************************************************* Asserv_Vitesse **************************************************************
+
+
+
+
+void Asserv_Vitesse(void)
 {
 	float erreur;
 	float derivee;
@@ -105,6 +120,13 @@ void Asserv_Vitesse(float objectif_vitesse)
 	// envoie de la commande aux moteurs
 	Commande_Moteur(commande, commande);
 }
+
+
+
+
+//************************************************* Commande_Moteur **************************************************************
+
+
 
 
 // cette fonction attend des valeurs en %

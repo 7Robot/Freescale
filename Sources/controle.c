@@ -6,6 +6,9 @@
 
 #define max(x,y) (x<y?y:x)
  
+ 
+//***************************************************  Controle_Direction  ****************************************************************
+ 
 void Controle_Direction(void)
 {
     uint8_t pos_milieu;
@@ -86,6 +89,12 @@ void Controle_Direction(void)
 	Set_Dir_Servo((float)commande);
 	
 }
+
+
+
+//************************************************* Set_Dir_Servo **************************************************************
+
+
 
 // cette fonction veut des valeurs en %
 void Set_Dir_Servo(float consigne)

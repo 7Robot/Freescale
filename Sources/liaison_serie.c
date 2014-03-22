@@ -382,7 +382,22 @@ void SwIrq4ISR(void)
 					break;
 				}
 			break;
+			
+		case 'o' : switch (buffer_rx_lecture[1])
+				{
+
+				case 'v' : objectif_vitesse = data;
+					break;
+				}
+			break;
 	}
+	
+	TransmitData("Kp: ");
+	printfloat(controle_kp);  
+	TransmitData("Kd: ");
+	printfloat(controle_kd);
+	TransmitData("Ki: ");
+	printfloat(controle_ki);
 					
 	/*if (buffer_rx_lecture[0] == 's')// parlons servo
 	{
