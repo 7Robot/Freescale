@@ -5,6 +5,6 @@
 #include "extern_globals.h";
 
 void moyenne_glissante(int8_t* valeurs);
-void milieu_ligne(uint8_t* milieu, uint8_t* incertitude);
+void milieu_ligne(uint8_t* milieu, uint8_t* incertitude, uint16_t camera_val[]);
 
 #endif

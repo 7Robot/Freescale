@@ -10,16 +10,30 @@ void Controle_Direction(void)
 {
     uint8_t pos_milieu;
     uint8_t incertitude;
+    uint8_t pos_milieu_loin;
+    uint8_t incertitude_loin;
 	int8_t erreur;
 	int8_t derivee;
 	int16_t commande;
 	int16_t commande_bornee;
 	static uint32_t compteur_ligne_arrivee = 0; // On regarde combien de fois on croise la ligne d'arrivé
+	uint16_t camera1_val[128] ;
+	uint16_t camera2_val[128] ;
+    int i;
     
+    for (i=0; i<=128; i++)
+    {
+    	camera1_val[i] = camera1_valeurs[i];
+    	camera2_val[i] = camera2_valeurs[i];
+    }
 
 
-    milieu_ligne(&pos_milieu, &incertitude);
+    milieu_ligne(&pos_milieu, &incertitude, camera1_val);
+    milieu_ligne(&pos_milieu_loin, &incertitude_loin, camera2_val);
+    
+    
     compteur_ligne_arrivee++;
+
 
     if(incertitude < CONTROLE_INCERTITUDE_PALIER)
     {
@@ -59,7 +73,7 @@ void Controle_Direction(void)
 
     controle_derniere_erreur = erreur;
     
-    commande = CONTROLE_MILIEU_SERVO + CONTROLE_KP * erreur + CONTROLE_KD*derivee + CONTROLE_KI*controle_integrale;
+    commande = CONTROLE_MILIEU_SERVO + controle_kp * erreur + controle_kd*derivee + controle_ki*controle_integrale;
     
     //if(commande < pos_min_servo) commande_bornee = pos_min_servo;
     //else if (commande > pos_max_servo) commande_bornee = pos_max_servo;

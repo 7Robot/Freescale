@@ -23,23 +23,29 @@ void moyenne_glissante(int8_t* valeurs)
 }
     
 
-void milieu_ligne(uint8_t* milieu, uint8_t* incertitude)
+void milieu_ligne(uint8_t* milieu, uint8_t* incertitude, uint16_t camera_val[])
 {
-    uint16_t valeurs[126];
+	uint16_t valeurs[126];
 	uint8_t pos_max = 0;
 	uint8_t pos_min = 0;
 	uint8_t max_hors_ligne = 0;
 	uint8_t i;
 
 
+
 	// calcul de la dérivée
     for(i = 0; i < 126; i++)
    	{
-        valeurs[i] = camera1_valeurs[i + 2] - camera1_valeurs[i];
+        valeurs[i] = camera_val[i + 2] - camera_val[i];
     }
     
     valeurs[0] = 0; // hack parce que le premier pixel fait de la merde
 	
+	
+	
+		// calcul de la dérivée de la deuxième camera
+
+    
 
 	
 	// recherche du min / du max
@@ -50,6 +56,8 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude)
 		if(valeurs[i] < valeurs[pos_min])
 			pos_min = i;
 	}
+    
+    
     	
 	*milieu =(pos_min + pos_max) / 2;
 	
@@ -64,4 +72,16 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude)
 		*incertitude = 100 * max_hors_ligne / min(valeurs[pos_max], -valeurs[pos_min]);
 	else
 		*incertitude = 250;
+	
+	
+	//ancien_milieu = *milieu
 }
+
+
+
+
+
+
+
+
+

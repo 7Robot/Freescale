@@ -4,6 +4,8 @@
 extern uint16_t camera1_valeurs[128];
 extern uint16_t camera2_valeurs[128];
 
+extern uint16_t ancien_milieu;
+
 extern uint16_t pos_min_servo; 
 extern uint16_t pos_max_servo; 
 extern uint16_t pos_milieu_servo;
@@ -24,3 +26,7 @@ extern uint8_t Capteurs_resultat;
 
 extern uint8_t nb_receive;
 extern 	vuint8_t autorisation_aquiz;
+
+extern uint16_t controle_kp ;
+extern uint16_t controle_kd ;
+extern uint16_t controle_ki ;

@@ -368,11 +368,27 @@ void SwIrq4ISR(void)
 					(buffer_rx_lecture[6] - 48);
 	printfloat(data);
 	
-	if (buffer_rx_lecture[0] == 's')// parlons servo
+	
+	switch (buffer_rx_lecture[0])
+	{
+		case 'c' : switch (buffer_rx_lecture[1])
+				{
+
+				case 'p' : controle_kp = data;
+					break;
+				case 'i' : controle_ki = data;
+					break;
+				case 'd' : controle_kd = data;
+					break;
+				}
+			break;
+	}
+					
+	/*if (buffer_rx_lecture[0] == 's')// parlons servo
 	{
 		if (buffer_rx_lecture[1] == 'm')	// parlons milieu
 			pos_milieu_servo = data;
-	}	
+	}	*/
 	
 	INTC.SSCIR[4].B.CLR = 1;		// Clear channel's flag   
 }
