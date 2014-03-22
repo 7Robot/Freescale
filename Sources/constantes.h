@@ -6,7 +6,7 @@
 
 #define MOTEUR_KP 10
 #define MOTEUR_KD 0
-#define MOTEUR_KI 10
+#define MOTEUR_KI 1
 #define MAX_MOTEUR 70
 
 

@@ -30,11 +30,16 @@ void Controle_Direction(void)
     	camera2_val[i] = camera2_valeurs[i];
     }
 
-
     milieu_ligne(&pos_milieu, &incertitude, camera1_val);
     milieu_ligne(&pos_milieu_loin, &incertitude_loin, camera2_val);
     
+/*    TransmitData("\npm :");
+    printfloat(pos_milieu);
+    TransmitData("\npml :");
+    printfloat(pos_milieu_loin);
+    TransmitCharacter('\n');*/
     
+    /*
     compteur_ligne_arrivee++;
 
 
@@ -58,8 +63,8 @@ void Controle_Direction(void)
     	SIU.GPDO[71].B.PDO = 0;   	    	
     }
     
-    SIU.GPDO[71].B.PDO = compteur_ligne_arrivee >= COMPTEUR_AVANT_ARRIVEE;
 
+*/
 
 
     /*objectif_vitesse = max(6-abs((int16_t)(pos_milieu)-64)/10, 2);
@@ -76,17 +81,10 @@ void Controle_Direction(void)
 
     controle_derniere_erreur = erreur;
     
-    commande = CONTROLE_MILIEU_SERVO + controle_kp * erreur + controle_kd*derivee + controle_ki*controle_integrale;
+    commande = controle_kp * erreur + controle_kd*derivee + controle_ki*controle_integrale;
     
-    //if(commande < pos_min_servo) commande_bornee = pos_min_servo;
-    //else if (commande > pos_max_servo) commande_bornee = pos_max_servo;
-    //else commande_bornee = commande; 
     
-    //EMIOS_0.CH[4].CBDR.R = commande;
-
-	
-	//EMIOS_0.CH[4].CBDR.R = pos_milieu_servo + commande * AMPLITUDE_SERVO;
-	Set_Dir_Servo((float)commande);
+	//Set_Dir_Servo((float)commande);
 	
 }
 

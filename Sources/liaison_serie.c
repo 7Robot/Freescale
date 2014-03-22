@@ -392,18 +392,14 @@ void SwIrq4ISR(void)
 			break;
 	}
 	
-	TransmitData("Kp: ");
+	TransmitData("\nKp: ");
 	printfloat(controle_kp);  
-	TransmitData("Kd: ");
+	TransmitData("\nKd: ");
 	printfloat(controle_kd);
-	TransmitData("Ki: ");
+	TransmitData("\nKi: ");
 	printfloat(controle_ki);
-					
-	/*if (buffer_rx_lecture[0] == 's')// parlons servo
-	{
-		if (buffer_rx_lecture[1] == 'm')	// parlons milieu
-			pos_milieu_servo = data;
-	}	*/
-	
+	TransmitData("\nObj_v: ");
+	printfloat(objectif_vitesse);
+
 	INTC.SSCIR[4].B.CLR = 1;		// Clear channel's flag   
 }

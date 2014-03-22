@@ -41,14 +41,8 @@ void main (void)
 			Controle_Direction(); 
 			Asserv_Vitesse();
 			
-		/*	Asserv_Vitesse(bidule/30.0);
-			Set_Dir_Servo(bidule);
-			Set_PWM_Leds(50 + bidule/2.0);
-			bidule += 0.05;
-			if (bidule >=100)
-				bidule = -100;
-				*/
-			/*toto++;
+	
+		/*	toto++;
 			if (toto == 255)
 			{
 				for (i = 0; i< 128; i++)
@@ -64,29 +58,8 @@ void main (void)
 				TransmitCharacter(' ');
 				printhex16(buff2[toto]);
 				TransmitCharacter('\n');
-			}*/
-			
-			
-		
-			
-
-
-		//	SIU.GPDO[68].B.PDO = !SIU.GPDO[68].B.PDO;
-		/*	
-			if (sens == 1)
-			{
-				CMD += 0.005;
-				if (CMD >= 2)
-					sens = 0;
 			}
-			else
-			{
-				CMD -= 0.005;
-				if (CMD <= -2)
-					sens = 1;
-			}
-			//Asserv_Vitesse(CMD);*/
-		
+		*/
 		}
 		
 	}	

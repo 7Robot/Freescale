@@ -63,14 +63,6 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude, uint16_t camera_val[])
         valeurs[i] = camera_val[i + 2] - camera_val[i];
     }
     
-    valeurs[0] = 0; // hack parce que le premier pixel fait de la merde
-	
-	
-	
-		// calcul de la dérivée de la deuxième camera
-
-    
-
 	
 	// recherche du min / du max
 	for(i = 0; i < 126; i++)
@@ -80,7 +72,6 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude, uint16_t camera_val[])
 		if(valeurs[i] < valeurs[pos_min])
 			pos_min = i;
 	}
-    
     
     	
 	*milieu =(pos_min + pos_max) / 2;
