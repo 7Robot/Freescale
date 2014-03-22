@@ -1,0 +1,9 @@
+; INTC_HW_VLE_run_from_flash.mac file S.M.
+
+hloadmap ..\bin\INTC_HW_VLE-flash.elf   ; load program debug symbols
+gotil main      ; run until main
+clearvar        ; Clear any previous variable display
+var Pit1Ctr     ; display variable 
+var SWirq4Ctr   ; display variable
+
+

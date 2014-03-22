@@ -1,0 +1,9 @@
+; INTC_HW_VLE_run_from_ram.mac file S.M.
+
+hload ..\bin\INTC_HW_VLE-ram.elf   ; load program
+gotil main      ; run until main
+clearvar        ; Clear any previous variable display
+var Pit1Ctr     ; display variable 
+var SWirq4Ctr   ; display variable
+
+

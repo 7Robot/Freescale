@@ -1,0 +1,16 @@
+# GENERIC files
+*~
+*.swp
+
+#documentation
+*.pdf
+
+#compilés
+*.o
+*.class
+/bin
+
+*.pptx
+
+*.exe
+*.log

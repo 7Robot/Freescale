@@ -1,0 +1,73 @@
+/* 5500_VLE_ram.lcf - Simple minimal MPC5500 link file using 32 KB SRAM */
+/* Aug 30 2007 initial version */
+/* May 09 2008 SM: Put stack in it's own 1KB (0x400) memory segment */
+/* Sep 09 2008 SM: Modified for VLE code */
+
+MEMORY
+{
+        interrupts_ram: org = 0x40000000, len = 0x3000
+        internal_ram:   org = 0x40003000, len = 0x4C00
+        stack_ram:      org = 0x40007C00, len = 0x0400
+}
+
+SECTIONS
+{
+
+  GROUP : {
+      .ivor_branch_table (VLECODE) : {}       /* For MPC5516 core interrupts  */
+      .intc_hw_branch_table (VLECODE) ALIGN (2048) : {} /* For INTC in HW Vector Mode   */
+      .ivor_handlers (VLECODE) : {}           /* Handlers for core interrupts */
+  } > interrupts_ram
+  
+   
+   GROUP : {
+    	.intc_sw_isr_vector_table : {} /* For INTC in SW Vector Mode */
+
+        .text_vle (VLECODE) : {
+             *(.text)
+             *(.text_vle)
+             *(.fini)
+             *(.eini)
+         }
+       .init  : {}
+       .init_vle (VLECODE) : {
+             *(.init)
+             *(.init_vle)
+          }
+        .ctors : {}
+        .dtors : {}
+        .rodata (CONST) : {
+            *(.rdata)
+            *(.rodata)
+         }
+	    .sdata2       : {}
+	    .sbss2 : {}
+	    extab      : {}
+	    extabindex : {}
+	 }	 > internal_ram
+
+
+	GROUP : {
+	    .data  (DATA) : {} 
+	    .sdata (DATA) : {}
+	    .sbss  (BSS)  : {}
+	    .bss   (BSS)  : {}
+	} > internal_ram
+}   
+
+
+/* Freescale CodeWarrior compiler address designations */
+
+_stack_addr = ADDR(stack_ram)+SIZEOF(stack_ram);
+_stack_end  = ADDR(stack_ram);
+
+/* These are not currently being used
+_heap_addr  = ADDR(.bss)+SIZEOF(.bss);
+_heap_end   = ADDR(internal_ram)+SIZEOF(internal_ram);
+*/
+__IVPR_VALUE = ADDR(interrupts_ram);
+
+
+/* L2 SRAM Location (used for L2 SRAM initialization) */
+
+L2SRAM_LOCATION = 0x40000000;
