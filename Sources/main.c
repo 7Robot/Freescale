@@ -82,54 +82,7 @@ void main (void)
 			}
 			//Asserv_Vitesse(CMD);*/
 		
-			/*TransmitData("main : \n");
-			TransmitCharacter(LINFLEX_3.BDRM.B.DATA4);
-			TransmitCharacter('\n');
-			printhex16(	LINFLEX_3.LINCR1.R);
-			TransmitCharacter('\n');
-			printhex16(	LINFLEX_3.LINSR.R);
-			TransmitCharacter('\n');
-			printhex16(	LINFLEX_3.UARTCR.R);
-			TransmitCharacter('\n');
-			printhex16(	LINFLEX_3.UARTSR.R);
-			TransmitCharacter('\n');
-  			SIU.GPDO[69].B.PDO = !SIU.GPDO[69].B.PDO;
-  			EMIOS_0.CH[4].CBDR.R = pos_milieu_servo;
-  			printfloat((float)pos_milieu_servo);*/
-
-			
-	
-		
-  	//LINFLEX03.BDRL.R = ('M'<<24)|('A'<<16)|('0'<<8)|('\n');
-		/*	printfloat(CMD);
-			TransmitData("\nDRIE ");
-			printhex8(LINFLEX_0.LINIER.B.DRIE);
-			TransmitData("\nDRF ");
-			//printhex8(LINFLEX_0.UARTSR.B.DRF);
-			TransmitData("\nRMB ");
-			//printhex8(LINFLEX_0.UARTSR.B.RMB);			
-			TransmitData("\nbuff ");
-		//	printhex8(LINFLEX_0.BDRM.B.DATA4);
-			TransmitData("\nUARTSR ");
-			//printhex32(LINFLEX_0.UARTSR.R);
-			TransmitData("\nLINIER ");
-			//printhex32(LINFLEX_0.LINIER.R);
-			TransmitData("\nLINSR ");
-			//printhex32(LINFLEX_0.LINSR.R);
-			
-			TransmitData("\nnb ");*/
-			
-			
-		/*	if (autorisation_aquiz == 0)
-				TransmitData("\nok        ");
 		}
-		
-	//	if (LINFLEX_0.UARTSR.B.DRF == 1)
-	//		LINFLEX_0.UARTSR.B.DRF = 1;
-		*/
-		}
-	//	SIU.GPDO[15].B.PDO = LINFLEX_0.UARTSR.B.RMB;
-	//	SIU.GPDO[14].B.PDO = LINFLEX_0.UARTSR.B.DRF;
 		
 	}	
 }
