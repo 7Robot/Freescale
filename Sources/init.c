@@ -134,8 +134,8 @@ void initPads (void) {
 	
 	
 	// new cameras
-	SIU.PCR[80].R = 0x2002;				// PF[0]  = entrée analogique cam1 => ANS8
-	SIU.PCR[81].R = 0x2002;				// PF[1]  = entrée analogique cam2 => ANS9
+	SIU.PCR[80].R = 0x2000;				// PF[0]  = entrée analogique cam1 => ANS8
+	SIU.PCR[81].R = 0x2000;				// PF[1]  = entrée analogique cam2 => ANS9
 	
 	SIU.PCR[82].R = 0x0200;				// PF[2]  = SI  cam 1 
 	SIU.PCR[83].R = 0x0200;				// PF[3]  = SI  cam 2
