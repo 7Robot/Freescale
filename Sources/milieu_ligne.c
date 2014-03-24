@@ -49,27 +49,50 @@ void moyenne_glissante(int8_t* valeurs)
 
 void milieu_ligne(uint8_t* milieu, uint8_t* incertitude, uint16_t camera_val[])
 {
-	uint16_t valeurs[126];
+	uint16_t valeurs_deriv[128];
+	uint16_t valeurs_moy [128];
 	uint8_t pos_max = 0;
 	uint8_t pos_min = 0;
 	uint8_t max_hors_ligne = 0;
 	uint8_t i;
-
-
+	
+	uint16_t moy;
+	
+	// fait la somme des 5 proches : 
+	// moy [i] = val[i-2] + [i-1] + [i] + [i+1] + [i+2]
+	moy = 3*camera_val[0] + camera_val[1] + camera_val[2];
+	valeurs_moy[0] = moy;
+	moy = moy - camera_val[0] + camera_val[3];
+	valeurs_moy[1] = moy;
+	moy = moy - camera_val[0] + camera_val[4];
+	valeurs_moy[2] = moy;
+	
+	for (i = 3; i <= 125; i ++)
+	{
+		moy = moy - camera_val[i-3] + camera_val[i+2];
+		valeurs_moy[i] = moy;
+	}
+	moy = moy - camera_val[123] + camera_val[127];
+	valeurs_moy[126] = moy;
+	moy = moy - camera_val[124] + camera_val[127];
+	valeurs_moy[127] = moy;
+	
 
 	// calcul de la dérivée
     for(i = 0; i < 126; i++)
    	{
-        valeurs[i] = camera_val[i + 2] - camera_val[i];
+        valeurs_deriv[i+1] = valeurs_moy[i + 2] - valeurs_moy[i];
     }
+    valeurs_deriv[0] = 0;
+    valeurs_deriv[127] = 0;
     
 	
 	// recherche du min / du max
-	for(i = 0; i < 126; i++)
+	for(i = 0; i < 128; i++)
 	{
-		if(valeurs[i] > valeurs[pos_max])
+		if(valeurs_deriv[i] > valeurs_deriv[pos_max])
 			pos_max = i;
-		if(valeurs[i] < valeurs[pos_min])
+		if(valeurs_deriv[i] < valeurs_deriv[pos_min])
 			pos_min = i;
 	}
     
@@ -79,12 +102,12 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude, uint16_t camera_val[])
 	// recherche du plus gros pic en dehors de la ligne (incertitude)
 	for(i = 0; i < 126; i++)
 	{
-		if(abs((int8_t)(*milieu) - (int8_t)i) > LARGEUR_LIGNE + DELTA_LARGEUR_LIGNE && abs(valeurs[i]) > max_hors_ligne)
-			max_hors_ligne = abs(valeurs[i]);
+		if(abs((int8_t)(*milieu) - (int8_t)i) > LARGEUR_LIGNE + DELTA_LARGEUR_LIGNE && abs(valeurs_deriv[i]) > max_hors_ligne)
+			max_hors_ligne = abs(valeurs_deriv[i]);
 	}
 	
 	if(abs((int8_t)pos_min - (int8_t)pos_max - LARGEUR_LIGNE) < DELTA_LARGEUR_LIGNE)
-		*incertitude = 100 * max_hors_ligne / min(valeurs[pos_max], -valeurs[pos_min]);
+		*incertitude = 100 * max_hors_ligne / min(valeurs_deriv[pos_max], -valeurs_deriv[pos_min]);
 	else
 		*incertitude = 250;
 	
