@@ -40,28 +40,23 @@ void main (void)
 			Acquisitions_Cameras();
 			Controle_Direction(); 
 			Asserv_Vitesse();
+			Set_PWM_Leds(led_power);
 			
-	
-		/*	toto++;
+			toto++;
 			if (toto == 255)
 			{
+				TransmitData("\n\n\nstart:\n\n");
 				for (i = 0; i< 128; i++)
 				{
-					buff1[i] = camera1_valeurs[i];
-					buff2[i] = camera2_valeurs[i];
+					printhex16(camera1_valeurs[i]);
+					TransmitCharacter(' ');
+					printhex16(camera2_valeurs[i]);
+					TransmitCharacter('\n');
 				}
-				TransmitData("\n\n\nstart:\n\n");
+				TransmitData("coucou, je suis une phrase\n");
+				
 			}
-			if (toto < 128)
-			{
-				printhex16(buff1[toto]);
-				TransmitCharacter(' ');
-				printhex16(buff2[toto]);
-				TransmitCharacter('\n');
-			}
-		*/
 		}
-		
 	}	
 }
 

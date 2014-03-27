@@ -358,7 +358,7 @@ void initEMIOS_0ch7(void) {        		// EMIOS 0 CH 7: Motor Right Forward
 void initEMIOS_1ch11(void)        		// EMIOS 0 CH 18: LED
 {
 	EMIOS_1.CH[11].CADR.R = 0;    		// Leading edge when channel counter bus=0  
-	EMIOS_1.CH[11].CBDR.R = 500;		// Trailing edge when channel's counter bus=500 // max à 999
+	EMIOS_1.CH[11].CBDR.R = 200;		// Trailing edge when channel's counter bus=500 // max à 999
 	EMIOS_1.CH[11].CCR.B.BSL = 0x0; 	// Use counter bus A -> Time base channel 23   
 	EMIOS_1.CH[11].CCR.B.EDPOL = 1; 	// Polarity-leading edge sets output  
 	EMIOS_1.CH[11].CCR.B.MODE = 0x60; 	// Mode is OPWM Buffered   

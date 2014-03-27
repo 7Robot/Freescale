@@ -31,3 +31,4 @@ extern uint16_t controle_kp ;
 extern uint16_t controle_kd ;
 extern uint16_t controle_ki ;
 
+extern float led_power;

@@ -6,24 +6,14 @@
 // *************************  Fonctions de transmission de données *****************************
 
 
-    vuint8_t buffer_tx[256];
+    vuint32_t buffer_tx[1000];
+    vuint32_t buffer_tx_temp;
     vuint8_t buffer_rx[8];
     vuint8_t buffer_rx_lecture[8];
 	vuint8_t i_buffer_r = 0;
-	vuint8_t i_buffer_t = 0;
-	
-void printlistall(uint8_t tab128[]) 
-{
-	uint8_t pt=0;	
-	TransmitCharacter(0x0a);//line feed   
-    TransmitCharacter(0x0d);//retour à la ligne  
-    for(pt=0;pt<128;pt++){
-       printserialhex(tab128[pt]);
-       TransmitCharacter(0x20);//espace
-    }
-    TransmitCharacter(0x0a);//line feed   
-    TransmitCharacter(0x0d);//retour à la ligne   
-}
+	vuint16_t i_buffer_t = 0;
+	vuint8_t i_buffer_t_temp = 0;
+
 
  
 
@@ -44,24 +34,22 @@ void UART_TXI_ISR(void)
 	SIU.GPDO[69].B.PDO = !SIU.GPDO[69].B.PDO;
  */
 	// V2
-	uint8_t i;
-	uint32_t buff_temp =
-			((buffer_tx[3] << 24) |		// ecriture du buffer avec 4 octets à transmettre
-			( buffer_tx[2] << 16)) 
-			|
-			((buffer_tx[1] << 8)  |
-		  	  buffer_tx[0]);
-		  	  
-	LINFLEX_0.BDRL.R = buff_temp;
+	uint16_t i;		  	  
 	LINFLEX_0.UARTSR.B.DTF = 1;					// clear le bit (oui, on clear en écrivant 1)
+	LINFLEX_0.BDRL.R = buffer_tx[0];	
 		  	  
-	i_buffer_t -= 4;
-	for (i = 0; i <= i_buffer_t; i++)
-		buffer_tx[i] = buffer_tx[i+4];
-	if (i_buffer_t <= 4)
+	i_buffer_t --;
+	if (i_buffer_t == 0)
+	{
 		LINFLEX_0.LINIER.B.DTIE = 0;
+	}
+	else
+	{
+		for (i = 0; i <= i_buffer_t; i++)
+			buffer_tx[i] = buffer_tx[i+1];
+	}
+			
 	
-	//SIU.GPDO[69].B.PDO = !SIU.GPDO[69].B.PDO;
 }
 
 void Rst_Buffer(void)
@@ -83,30 +71,68 @@ void TransmitCharacter(uint8_t ch)
   	// V2
 
 	//while(i_buffer_t > 250);
-	if (i_buffer_t < 250)
+	if (i_buffer_t < 990)
 	{
-		buffer_tx[i_buffer_t] = ch;
-		i_buffer_t ++;
-		if (i_buffer_t > 4)
+		if (i_buffer_t_temp == 0)
+		{
+			buffer_tx_temp = ch;
+			i_buffer_t_temp++;
+		}
+		else if (i_buffer_t_temp == 1)
+		{
+			buffer_tx_temp |= ch << 8;
+			i_buffer_t_temp++;
+		}
+		else if (i_buffer_t_temp == 2)
+		{
+			buffer_tx_temp |= ch << 16;
+			i_buffer_t_temp++;
+		}
+		else
+		{
+			buffer_tx_temp |= ch << 24;
+			i_buffer_t_temp = 0;
+			i_buffer_t ++;
+			
+			buffer_tx[i_buffer_t] = buffer_tx_temp;
+			
 			LINFLEX_0.LINIER.B.DTIE = 1;
+		}
 	}
-	
-
-  	
 }
-uint8_t get_i_buffer_t(void)
+
+uint16_t get_i_buffer_t(void)
 {
 	return i_buffer_t;
 }
 
-void TransmitCharacterIfInf(uint8_t ch, uint8_t lim)
+void TransmitCharacterIfInf(uint8_t ch, uint16_t lim)
 {
 	if (i_buffer_t <= lim)
 	{
-	  	i_buffer_t ++;
-		buffer_tx[i_buffer_t] = ch;
-		if (i_buffer_t > 4)
+		if (i_buffer_t_temp == 0)
+		{
+			buffer_tx_temp = ch;
+			i_buffer_t_temp++;
+		}
+		else if (i_buffer_t_temp == 1)
+		{
+			buffer_tx_temp |= ch << 8;
+			i_buffer_t_temp++;
+		}
+		else if (i_buffer_t_temp == 2)
+		{
+			buffer_tx_temp |= ch << 16;
+			i_buffer_t_temp++;
+		}
+		else
+		{
+			buffer_tx_temp |= ch << 24;
+			i_buffer_t_temp = 0;
+			i_buffer_t ++;
+			buffer_tx[i_buffer_t] = buffer_tx_temp;
 			LINFLEX_0.LINIER.B.DTIE = 1;
+		}
 	}
 }
 
@@ -118,21 +144,17 @@ void TransmitData (char TransData[])
 	k =(uint16_t) strlen (TransData);
 	for (j=0; j< k; j++) 
 	{  // Loop for character string 
-
 		TransmitCharacter(TransData[j]);  		// Transmit a byte 		
-
 	}
 }
 
-void TransmitDataIfInf (char TransData[], uint8_t lim) 
+void TransmitDataIfInf (char TransData[], uint16_t lim) 
 {
 	uint16_t	j,k;                                 // Dummy variable 
 	k =(uint16_t) strlen (TransData);
 	for (j=0; j< k; j++) 
 	{  // Loop for character string 
-
 		TransmitCharacterIfInf(TransData[j], lim);  		// Transmit a byte 		
-
 	}
 }
 
@@ -340,9 +362,9 @@ void UART_RXI_ISR(void)
 			i_buffer_r ++;
 			buffer_rx[i_buffer_r] = rx;				// ajoute le dernier mot reçu à la fin du buffer
 			
-			TransmitCharacter('\n');
-			printhex8(rx);
-			TransmitCharacter('\n');
+			//TransmitData("received\n");
+			//printhex8(rx);
+			TransmitCharacter('r');
 			if (rx == '\n' || rx == '\r')						// si le dernier caractère reçu est \n ça veut dire que normalement une commade est prete
 			{
 				i_buffer_r = 0;
@@ -361,45 +383,105 @@ void UART_RXI_ISR(void)
 // interruption de lecture du buffer série
 void SwIrq4ISR(void)
 {
-	uint16_t data =	10000*(buffer_rx_lecture[2] - 48) + 
-					1000*(buffer_rx_lecture[3] - 48) +
-					100*(buffer_rx_lecture[4] - 48) + 
-					10*(buffer_rx_lecture[5] - 48) + 
-					(buffer_rx_lecture[6] - 48);
-	printfloat(data);
-	
-	
-	switch (buffer_rx_lecture[0])
+	uint16_t data = 0;
+	if (	buffer_rx_lecture[2] >=48 && buffer_rx_lecture[2] <= 57 &&
+			buffer_rx_lecture[3] >=48 && buffer_rx_lecture[3] <= 57 &&
+			buffer_rx_lecture[4] >=48 && buffer_rx_lecture[4] <= 57 &&
+			buffer_rx_lecture[5] >=48 && buffer_rx_lecture[5] <= 57 &&
+			buffer_rx_lecture[6] >=48 && buffer_rx_lecture[6] <= 57  	)
 	{
-		case 'c' : switch (buffer_rx_lecture[1])
-				{
+		data = 	10000*(buffer_rx_lecture[2] - 48) + 
+				1000*(buffer_rx_lecture[3] - 48) +
+				100*(buffer_rx_lecture[4] - 48) + 
+				10*(buffer_rx_lecture[5] - 48) + 
+				(buffer_rx_lecture[6] - 48);
+		
+		printfloat(data);
+		
+		switch (buffer_rx_lecture[0])
+		{
+			case 'c' : switch (buffer_rx_lecture[1])
+					{
 
-				case 'p' : controle_kp = data;
-					break;
-				case 'i' : controle_ki = data;
-					break;
-				case 'd' : controle_kd = data;
-					break;
-				}
-			break;
-			
-		case 'o' : switch (buffer_rx_lecture[1])
-				{
+					case 'p' : controle_kp = data;
+							TransmitData("Kp: ");
+							printfloat(controle_kp);  
+							TransmitCharacter('\n');
+						break;
+					case 'i' : controle_ki = data;
+							TransmitData("Ki: ");
+							printfloat(controle_ki);
+							TransmitCharacter('\n');
+						break;
+					case 'd' : controle_kd = data;
+							TransmitData("Kd: ");
+							printfloat(controle_kd);
+							TransmitCharacter('\n');
+						break;
+					}
+				break;
+				
+			case 'o' : switch (buffer_rx_lecture[1])
+					{
 
-				case 'v' : objectif_vitesse = data;
-					break;
-				}
-			break;
+					case 'v' : objectif_vitesse = data;
+							TransmitData("Obj_v: ");
+							printfloat(objectif_vitesse);
+							TransmitCharacter('\n');
+						break;
+					}
+				break;
+				
+			case 'l' :switch (buffer_rx_lecture[1])
+					{
+
+					case 'p' : led_power = data/10.0;
+							TransmitData("led: ");
+							printfloat(led_power);
+							TransmitCharacter('\n');
+						break;
+					}
+				break;
+		}
 	}
 	
-	TransmitData("\nKp: ");
-	printfloat(controle_kp);  
-	TransmitData("\nKd: ");
-	printfloat(controle_kd);
-	TransmitData("\nKi: ");
-	printfloat(controle_ki);
-	TransmitData("\nObj_v: ");
-	printfloat(objectif_vitesse);
-
 	INTC.SSCIR[4].B.CLR = 1;		// Clear channel's flag   
+}
+
+
+// fonction qui tente de vider le buffer TX
+void Flush_UART_Try(void)
+{
+	uint16_t i;
+		  	 
+	if (LINFLEX_0.UARTSR.B.DTF == 1)	// si le buffer matériel est vide
+	{											
+	
+		if (i_buffer_t >= 4)			// et que le buffer logiciel est plein
+		{
+			LINFLEX_0.UARTCR.B.TDFL = 3;
+			LINFLEX_0.UARTSR.B.DTF = 1;			// clear le bit (oui, on clear en écrivant 1)
+			LINFLEX_0.BDRL.R = (( buffer_tx[3] << 24) |		// ecriture du buffer avec 4 octets à transmettre
+								( buffer_tx[2] << 16)) 
+								|
+							   (( buffer_tx[1] << 8)  |
+			  	  				  buffer_tx[0]); 
+			i_buffer_t -= 4;
+			for (i = 0; i <= i_buffer_t; i++)
+				buffer_tx[i] = buffer_tx[i+4];
+		}
+		else if(i_buffer_t != 0)
+		{
+			LINFLEX_0.UARTCR.B.TDFL = i_buffer_t - 1;
+			LINFLEX_0.UARTSR.B.DTF = 1;			// clear le bit (oui, on clear en écrivant 1)
+			LINFLEX_0.BDRL.R = (( buffer_tx[3] << 24) |		// ecriture du buffer avec 4 octets à transmettre
+								( buffer_tx[2] << 16)) 
+								|
+							   (( buffer_tx[1] << 8)  |
+			  	  				  buffer_tx[0]); 
+			i_buffer_t = 0;
+		}		
+	}
+	
+		//LINFLEX_0.UARTCR.B.TDFL = 3;
 }
