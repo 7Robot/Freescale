@@ -118,8 +118,18 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude, uint16_t camera_val[])
 
 
 
+/************************** somme_all_ligne******************************/
+// à utiliser pour faire la moyenne sur tous les pixels => enlever le cosinus moyen...
 
-
-
+uint32_t somme_all_ligne(uint16_t tab[])
+{
+	uint32_t somme = 0;
+	uint8_t i = 0;
+	
+	for (i = 0; i < 128; i++)
+		somme += tab[i];
+		
+	return somme;
+}
 
 
