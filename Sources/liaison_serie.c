@@ -7,7 +7,7 @@
 
 
     vuint32_t buffer_tx[1000];
-    vuint32_t buffer_tx_temp;
+    uint32_t buffer_tx_temp;
     vuint8_t buffer_rx[8];
     vuint8_t buffer_rx_lecture[8];
 	vuint8_t i_buffer_r = 0;
@@ -45,7 +45,7 @@ void UART_TXI_ISR(void)
 	}
 	else
 	{
-		for (i = 0; i <= i_buffer_t; i++)
+		for (i = 0; i < i_buffer_t; i++)
 			buffer_tx[i] = buffer_tx[i+1];
 	}
 			
@@ -92,9 +92,9 @@ void TransmitCharacter(uint8_t ch)
 		{
 			buffer_tx_temp |= ch << 24;
 			i_buffer_t_temp = 0;
-			i_buffer_t ++;
 			
 			buffer_tx[i_buffer_t] = buffer_tx_temp;
+			i_buffer_t ++;
 			
 			LINFLEX_0.LINIER.B.DTIE = 1;
 		}
@@ -129,8 +129,8 @@ void TransmitCharacterIfInf(uint8_t ch, uint16_t lim)
 		{
 			buffer_tx_temp |= ch << 24;
 			i_buffer_t_temp = 0;
-			i_buffer_t ++;
 			buffer_tx[i_buffer_t] = buffer_tx_temp;
+			i_buffer_t ++;
 			LINFLEX_0.LINIER.B.DTIE = 1;
 		}
 	}
