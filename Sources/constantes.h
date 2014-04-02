@@ -36,3 +36,4 @@
 
 #define TICS_BY_METER 250
 #define METER_BY_TICS 0.004
+#define DENOMINATEUR_A 524288 // = 2* 64^3
