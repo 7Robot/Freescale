@@ -31,4 +31,9 @@ uint16_t controle_kp = CONTROLE_KP;
 uint16_t controle_kd = CONTROLE_KD;
 uint16_t controle_ki = CONTROLE_KI;
 
+
+float moteur_kp = MOTEUR_KP;
+float moteur_ki = MOTEUR_KI;
+float moteur_kd = MOTEUR_KD;
+
 float led_power = 0;

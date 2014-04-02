@@ -38,12 +38,12 @@ void main (void)
 			
 			autorisation_aquiz = 0;
 			Acquisitions_Cameras();
-			Controle_Direction(); 
+			Controle_Direction((toto == 255)); 
 			Asserv_Vitesse();
 			Set_PWM_Leds(led_power);
 			
 			toto++;
-			if (toto == 255)
+		/*	if (toto == 255)
 			{
 				TransmitData("\n\n\nstart:\n\n");
 				for (i = 0; i< 128; i++)
@@ -52,10 +52,9 @@ void main (void)
 					TransmitCharacter(' ');
 					printhex16(camera2_valeurs[i]);
 					TransmitCharacter('\n');
-				}
-				TransmitData("coucou, je suis une phrase\n");
+				}				
 				
-			}
+			}*/
 		}
 	}	
 }

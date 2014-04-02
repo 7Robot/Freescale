@@ -47,7 +47,7 @@ void moyenne_glissante(int8_t* valeurs)
     
     
 
-void milieu_ligne(uint8_t* milieu, uint8_t* incertitude, uint16_t camera_val[])
+void milieu_ligne(uint8_t* milieu, uint8_t* incertitude, uint16_t camera_val[], uint8_t print)
 {
 	uint16_t valeurs_deriv[128];
 	uint16_t valeurs_moy [128];
@@ -56,26 +56,70 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude, uint16_t camera_val[])
 	uint8_t max_hors_ligne = 0;
 	uint8_t i;
 	
+	uint32_t somme_ligne_moy = 0;
+	uint16_t max_moy = 0;
+	
 	uint16_t moy;
 	
+	
 	// fait la somme des 5 proches : 
-	// moy [i] = val[i-2] + [i-1] + [i] + [i+1] + [i+2]
+	// moy [i] = val[i-2] + val[i-1] + val[i] + val[i+1] + val[i+2]
+	// moy [i+1] = moy[i] - val[i-3] + val[i+2]
+	
+	// regarde en meme temps le max de ces valeurs et la somme globale de toutes 
+	
 	moy = 3*camera_val[0] + camera_val[1] + camera_val[2];
 	valeurs_moy[0] = moy;
+	max_moy = moy;
+	somme_ligne_moy += moy;
+	
 	moy = moy - camera_val[0] + camera_val[3];
 	valeurs_moy[1] = moy;
+	max_moy = max(max_moy, moy);
+	somme_ligne_moy += moy;
+	
 	moy = moy - camera_val[0] + camera_val[4];
 	valeurs_moy[2] = moy;
+	max_moy = max(max_moy, moy);
+	somme_ligne_moy += moy;
+	
 	
 	for (i = 3; i <= 125; i ++)
 	{
 		moy = moy - camera_val[i-3] + camera_val[i+2];
 		valeurs_moy[i] = moy;
+		max_moy = max(max_moy, moy);
+		somme_ligne_moy += moy;	
 	}
+	
 	moy = moy - camera_val[123] + camera_val[127];
 	valeurs_moy[126] = moy;
+	max_moy = max(max_moy, moy);
+	somme_ligne_moy += moy;
+	
 	moy = moy - camera_val[124] + camera_val[127];
 	valeurs_moy[127] = moy;
+	max_moy = max(max_moy, moy);
+	somme_ligne_moy += moy;
+	
+	
+	if (print)
+	{
+		for (i = 0; i< 128; i++)
+		{
+			printhex16(valeurs_moy[i]);
+			TransmitCharacter('\n');
+		}				
+		TransmitData("somme:\n");
+		printhex32(somme_ligne_moy);
+		TransmitData("\nmax:\n");
+		printhex16(max_moy);
+		TransmitCharacter('\n');
+		TransmitCharacter('\n');
+		TransmitCharacter('\n');
+	}
+	
+	
 	
 
 	// calcul de la dérivée
@@ -118,18 +162,5 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude, uint16_t camera_val[])
 
 
 
-/************************** somme_all_ligne******************************/
-// à utiliser pour faire la moyenne sur tous les pixels => enlever le cosinus moyen...
-
-uint32_t somme_all_ligne(uint16_t tab[])
-{
-	uint32_t somme = 0;
-	uint8_t i = 0;
-	
-	for (i = 0; i < 128; i++)
-		somme += tab[i];
-		
-	return somme;
-}
 
 

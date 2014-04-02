@@ -9,7 +9,7 @@
  
 //***************************************************  Controle_Direction  ****************************************************************
  
-void Controle_Direction(void)
+void Controle_Direction(uint8_t print)
 {
     uint8_t pos_milieu;
     uint8_t incertitude;
@@ -29,9 +29,13 @@ void Controle_Direction(void)
     	camera1_val[i] = camera1_valeurs[i];
     	camera2_val[i] = camera2_valeurs[i];
     }
-
-    milieu_ligne(&pos_milieu, &incertitude, camera1_val);
-    milieu_ligne(&pos_milieu_loin, &incertitude_loin, camera2_val);
+	
+	if (print != 0) 
+		TransmitData("cam1:\n");
+    milieu_ligne(&pos_milieu, &incertitude, camera1_val, print);
+    if (print != 0) 
+		TransmitData("cam2:\n");
+    milieu_ligne(&pos_milieu_loin, &incertitude_loin, camera2_val, print);
     
 /*    TransmitData("\npm :");
     printfloat(pos_milieu);

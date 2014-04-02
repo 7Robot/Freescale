@@ -6,7 +6,7 @@
 // *************************  Fonctions de transmission de données *****************************
 
 
-    vuint32_t buffer_tx[1000];
+    vuint32_t buffer_tx[800];
     uint32_t buffer_tx_temp;
     vuint8_t buffer_rx[8];
     vuint8_t buffer_rx_lecture[8];
@@ -71,7 +71,7 @@ void TransmitCharacter(uint8_t ch)
   	// V2
 
 	//while(i_buffer_t > 250);
-	if (i_buffer_t < 990)
+	if (i_buffer_t < 790)
 	{
 		if (i_buffer_t_temp == 0)
 		{
@@ -363,8 +363,11 @@ void UART_RXI_ISR(void)
 			buffer_rx[i_buffer_r] = rx;				// ajoute le dernier mot reçu à la fin du buffer
 			
 			//TransmitData("received\n");
-			//printhex8(rx);
+			
 			TransmitCharacter('r');
+			TransmitCharacter(rx);
+			printhex8(rx);
+			
 			if (rx == '\n' || rx == '\r')						// si le dernier caractère reçu est \n ça veut dire que normalement une commade est prete
 			{
 				i_buffer_r = 0;
@@ -403,19 +406,40 @@ void SwIrq4ISR(void)
 			case 'c' : switch (buffer_rx_lecture[1])
 					{
 
-					case 'p' : controle_kp = data;
-							TransmitData("Kp: ");
+					case 'p' : controle_kp = data/10.0;
+							TransmitData("C_Kp: ");
 							printfloat(controle_kp);  
 							TransmitCharacter('\n');
 						break;
-					case 'i' : controle_ki = data;
-							TransmitData("Ki: ");
+					case 'i' : controle_ki = data/10.0;
+							TransmitData("C_Ki: ");
 							printfloat(controle_ki);
 							TransmitCharacter('\n');
 						break;
-					case 'd' : controle_kd = data;
-							TransmitData("Kd: ");
+					case 'd' : controle_kd = data/10.0;
+							TransmitData("C_Kd: ");
 							printfloat(controle_kd);
+							TransmitCharacter('\n');
+						break;
+					}
+				break;
+				
+			case 'm' : switch (buffer_rx_lecture[1])
+					{
+
+					case 'p' : moteur_kp = data/10.0;
+							TransmitData("M_Kp: ");
+							printfloat(moteur_kp);  
+							TransmitCharacter('\n');
+						break;
+					case 'i' : moteur_ki = data/10.0;
+							TransmitData("M_Ki: ");
+							printfloat(moteur_ki);
+							TransmitCharacter('\n');
+						break;
+					case 'd' : moteur_kd = data/10.0;
+							TransmitData("M_Kd: ");
+							printfloat(moteur_kd);
 							TransmitCharacter('\n');
 						break;
 					}
@@ -424,7 +448,7 @@ void SwIrq4ISR(void)
 			case 'o' : switch (buffer_rx_lecture[1])
 					{
 
-					case 'v' : objectif_vitesse = data;
+					case 'v' : objectif_vitesse = data/10.0;
 							TransmitData("Obj_v: ");
 							printfloat(objectif_vitesse);
 							TransmitCharacter('\n');

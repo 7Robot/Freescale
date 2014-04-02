@@ -95,9 +95,9 @@ void Asserv_Vitesse(void)
 	
 	// calcul global
 	commande = 
-	MOTEUR_KP * erreur + 
-	MOTEUR_KD * derivee + 
-	MOTEUR_KI * moteur_integrale;
+	moteur_kp * erreur + 
+	moteur_kd * derivee + 
+	moteur_ki * moteur_integrale;
 	
 /*	TransmitData("err : ");
 	printfloat(erreur);
@@ -132,7 +132,18 @@ void Asserv_Vitesse(void)
 // cette fonction attend des valeurs en %
 void Commande_Moteur(float C_Moteur_D, float C_Moteur_G)
 {
+/*	static uint8_t i = 0;
+	i++;
+	if (i == 120)
+	{
+		TransmitData("D : \n");
+		printfloat(C_Moteur_D);
+		TransmitData("\nG : \n");
+		printfloat(C_Moteur_G);
+		TransmitCharacter('\n');
+	}
 	
+*/	
 	// protection anti over-shoot
 	if (C_Moteur_D > MAX_MOTEUR)
 		C_Moteur_D = MAX_MOTEUR;
@@ -167,4 +178,11 @@ void Commande_Moteur(float C_Moteur_D, float C_Moteur_G)
 		EMIOS_0.CH[6].CBDR.R = 0;
 		EMIOS_0.CH[3].CBDR.R = (uint16_t)(- 10*C_Moteur_G);
 	}	
+}
+
+
+
+float get_moteur_compteur(void)
+{
+	return (float)(moteur_compteur);
 }

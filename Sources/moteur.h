@@ -7,4 +7,6 @@ void Asserv_Vitesse(void);
 
 void Commande_Moteur(float C_Moteur_D, float C_Moteur_G);
 
+float get_moteur_compteur(void);
+
 #endif

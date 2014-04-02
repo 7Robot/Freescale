@@ -31,4 +31,8 @@ extern uint16_t controle_kp ;
 extern uint16_t controle_kd ;
 extern uint16_t controle_ki ;
 
+extern float moteur_kp;
+extern float moteur_ki;
+extern float moteur_kd;
+
 extern float led_power;

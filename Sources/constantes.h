@@ -6,8 +6,8 @@
 
 #define MOTEUR_KP 10
 #define MOTEUR_KD 0
-#define MOTEUR_KI 1
-#define MAX_MOTEUR 70
+#define MOTEUR_KI 0.1
+#define MAX_MOTEUR 90
 
 
 #define LARGEUR_LIGNE 15
@@ -29,6 +29,10 @@
 
 #define CONTROLE_MILIEU_SERVO 1330 // 1165 -> gauche  /// euh, what?
 
-#define CONTROLE_KP 5;
-#define CONTROLE_KD 0;
-#define CONTROLE_KI 0;
+#define CONTROLE_KP 5
+#define CONTROLE_KD 0
+#define CONTROLE_KI 0
+
+
+#define TICS_BY_METER 250
+#define METER_BY_TICS 0.004
