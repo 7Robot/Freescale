@@ -49,8 +49,8 @@ void moyenne_glissante(int8_t* valeurs)
 
 void milieu_ligne(uint8_t* milieu, uint8_t* incertitude, uint16_t camera_val[], uint8_t print)
 {
-	uint16_t valeurs_deriv[128];
-	uint16_t valeurs_moy [128];
+	int16_t valeurs_deriv[128];
+	int16_t valeurs_moy [128]; 
 	uint8_t pos_max = 0;
 	uint8_t pos_min = 0;
 	uint8_t max_hors_ligne = 0;
@@ -60,6 +60,7 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude, uint16_t camera_val[], 
 	uint16_t max_moy = 0;
 	
 	uint16_t moy;
+	float a;
 	
 	
 	// fait la somme des 5 proches : 
@@ -101,6 +102,19 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude, uint16_t camera_val[], 
 	valeurs_moy[127] = moy;
 	max_moy = max(max_moy, moy);
 	somme_ligne_moy += moy;
+	
+	
+	//On cherche a corriger l'erreur par une courbe ax^2+c
+	
+	a = (somme_ligne_moy-128*max_moy)/DENOMINATEUR_A;
+	
+	for (i = 0; i<128; i++)
+	{
+		valeurs_moy[i] = valeurs_moy[i]-(a*((i-64)^2)+max_moy);
+	}
+	
+	
+	
 	
 	
 	if (print)
