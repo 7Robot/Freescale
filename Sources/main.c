@@ -29,7 +29,11 @@ void main (void)
 	uint16_t buff1[128], buff2[128];
 		
 	init();
-
+	
+	printfloat(1.0);
+	 printfloat(125615321.0);
+	 printfloat(0.000000005678);printfloat(DENOMINAT_A_DIVIDE);
+	
 	while (1)
 	{ 
 
