@@ -61,7 +61,15 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude, uint16_t camera_val[], 
 	uint8_t pos_max = 0;
 	uint8_t pos_min = 0;
 	uint8_t max_hors_ligne = 0;
-	uint8_t i;
+	uint8_t i, j=0, k=0, l=0, j2=0;
+	int16_t seuil;
+	uint8_t max_possibles[16] = {0};
+	uint8_t min_possibles[16] = {0};
+	uint8_t milieu_possible = 0;
+	uint8_t proba_milieu;
+	uint8_t proba_milieu_mini = 128;
+	uint8_t ecart_reel = 0;
+
 	
 	uint32_t somme_ligne_moy = 0;
 	uint16_t max_moy = 0;
@@ -202,36 +210,16 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude, uint16_t camera_val[], 
 	
 	//On cherche a corriger l'erreur par une courbe ax^2+c
 	
-	a = (((float)somme_ligne_moy - 128.0*(float)(max_moy)) * DENOMINAT_A_DIVIDE);
+	/*a = (somme_ligne_moy-128*max_moy)/DENOMINATEUR_A;
 	
 	for (i = 0; i<128; i++)
 	{
-		valeurs_moy[i] = (int16_t)(valeurs_moy[i] - (a*( (i-64)^2) + max_moy) );
-	}
+		valeurs_moy[i] = valeurs_moy[i]-(a*((i-64)^2)+max_moy);
+	}*/
 	
 	
 	
-	
-	
-	if (print)
-	{
-		for (i = 0; i< 128; i++)
-		{
-			printhex16(valeurs_moy[i]);
-			TransmitCharacter('\n');
-		}				
-		TransmitData("somme:\n");
-		printhex32(somme_ligne_moy);
-		TransmitData("\nmax:\n");
-		printhex16(max_moy);
-		TransmitCharacter('\n');
-		printfloat(a);
-		TransmitCharacter('\n');
-		printfloat(DENOMINAT_A_DIVIDE);
-		TransmitCharacter('\n');
-		printfloat(DENOMINATEUR_A);
-		TransmitCharacter('\n');
-	}
+
 	
 	
 	
@@ -245,7 +233,7 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude, uint16_t camera_val[], 
     valeurs_deriv[127] = 0;
     
 	
-	// recherche du min / du max
+	// recherche du min et du max
 	for(i = 0; i < 128; i++)
 	{
 		if(valeurs_deriv[i] > valeurs_deriv[pos_max])
@@ -253,10 +241,87 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude, uint16_t camera_val[], 
 		if(valeurs_deriv[i] < valeurs_deriv[pos_min])
 			pos_min = i;
 	}
-    
-    	
-	*milieu =(pos_min + pos_max) / 2;
 	
+	
+	seuil = /*max(*/valeurs_deriv[pos_max]/*,abs(valeurs_deriv[pos_min]))*//2;
+	
+	
+	i=0;
+    while (i < 128)
+    {
+    	//on a atteint un pic de valeurs
+    	if(valeurs_deriv[i] > seuil)
+    	{
+    		max_possibles[j] = i;
+    		//on cherche le maximum du pic de valeurs
+    		while ((valeurs_deriv[i+k] > seuil)&&(i+k<128))
+    		{
+    			max_possibles[j] = max(valeurs_deriv[i], valeurs_deriv[i+k]);
+    			k++;
+    		}
+    		j++;
+    		i+=k-1;
+    		k=1;
+    	}
+    	
+    	
+    	if(valeurs_deriv[i] < -seuil)
+    	{
+    		min_possibles[k] = i;
+    		
+    		while ((valeurs_deriv[i+k] > seuil)&&(i+k<128))
+    		{
+    			min_possibles[j2] = min(valeurs_deriv[i], valeurs_deriv[i+k]);
+    			k++;
+    		}
+    		j2++;
+    		i+=k-1;
+    		k=1;
+    	}
+    	
+    	i++;
+    }
+    
+   
+    
+    for(i = 0; i<j; i++)
+    {
+    	for(l = 0; l<j2; l++)
+    	{    		
+    		milieu_possible=(min_possibles[i]+max_possibles[l])/2;
+    		ecart_reel = abs(i-l);
+    		proba_milieu=abs(milieu_possible-ancien_milieu) + abs(ecart_normal - ecart_reel);
+    		if (proba_milieu < proba_milieu_mini)
+    			proba_milieu_mini = proba_milieu;
+    	}
+    }
+    
+    
+    
+    //proba_milieu = (pos_max + pos_min)/2;
+    ancien_milieu = proba_milieu;
+    	
+    if (abs(proba_milieu - ancien_milieu) > 5) 
+    {
+    	*milieu = ancien_milieu;
+    }
+    else 
+    {
+    	*milieu = proba_milieu;
+    }
+	
+		if (print)
+	{
+		/*for (i = 0; i< 128; i++)
+		{
+			printserialsigned(valeurs_deriv[i]);
+			TransmitCharacter('\n');
+		}*/
+		printserialsigned(proba_milieu);			
+		TransmitCharacter('\n');
+		TransmitCharacter('\n');
+		TransmitCharacter('\n');
+	}
 	// recherche du plus gros pic en dehors de la ligne (incertitude)
 	for(i = 0; i < 126; i++)
 	{

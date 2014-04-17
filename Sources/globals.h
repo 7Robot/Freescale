@@ -3,8 +3,7 @@
 
 uint16_t camera1_valeurs[128];
 uint16_t camera2_valeurs[128];
-
-uint16_t ancien_milieu;
+uint8_t ancien_milieu=64;//ancien milieu
 
 uint16_t pos_min_servo = POS_MILIEU_SERVO - AMPLITUDE_SERVO;
 uint16_t pos_max_servo = POS_MILIEU_SERVO + AMPLITUDE_SERVO;
@@ -37,3 +36,6 @@ float moteur_ki = MOTEUR_KI;
 float moteur_kd = MOTEUR_KD;
 
 float led_power = 0;
+
+uint8_t ecart_normal = 15;//valeur incertaine, a recalculer
+	

@@ -3,8 +3,7 @@
 
 extern uint16_t camera1_valeurs[128];
 extern uint16_t camera2_valeurs[128];
-
-extern uint16_t ancien_milieu;
+extern uint8_t ancien_milieu;//ancien milieu
 
 extern uint16_t pos_min_servo; 
 extern uint16_t pos_max_servo; 
@@ -36,3 +35,5 @@ extern float moteur_ki;
 extern float moteur_kd;
 
 extern float led_power;
+
+extern uint8_t ecart_normal;
