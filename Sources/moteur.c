@@ -5,6 +5,7 @@
 int32_t moteur_compteur = 0;
 float moteur_integrale = 0;
 float moteur_derniere_erreur = 0;
+float moteur_derniere_derivee = 0;
 
 
 //************************************************* Capteur1_Roue_ISR **************************************************************
@@ -77,17 +78,19 @@ void Asserv_Vitesse(void)
 	float derivee;
 	float commande;
 	int32_t moteur_compteur_temp;
+   float liss_err = 0.8;
+   float liss_der = 0.8;
     
     // calcul erreur
     moteur_compteur_temp = moteur_compteur;
     moteur_compteur = 0;
-    erreur = objectif_vitesse - moteur_compteur_temp;
+    erreur = liss_err*moteur_derniere_erreur + (1-liss_err)*(objectif_vitesse - moteur_compteur_temp);
     
 /*	TransmitData("mot_c: ");
 	printfloat((float)moteur_compteur_temp);
 	TransmitCharacter('\n');*/
 	// partie dérivée
-	derivee = erreur - moteur_derniere_erreur;
+	derivee = liss_der*moteur_derniere_derivee + (1-liss_der)*(erreur - moteur_derniere_erreur);
 	moteur_derniere_erreur = erreur;
 	
 	// partie intégrale

@@ -65,7 +65,7 @@ void main (void)
 
 void Pit1ISR(void) {		// interrupt every 10ms
     autorisation_aquiz = 1;
-  	blink_led(0);
+  	blink_led(3);
   	PIT.CH[1].TFLG.B.TIF = 1;    // MPC56xxP/B/S: CLear PIT 1 flag by writing 1 
 }
 
