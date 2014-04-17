@@ -33,9 +33,10 @@ void Controle_Direction(uint8_t print)
 	if (print != 0) 
 		TransmitData("cam1:\n");
     milieu_ligne(&pos_milieu, &incertitude, camera1_val, print);
-    if (print != 0) 
+    
+    /*if (print != 0) 
 		TransmitData("cam2:\n");
-    milieu_ligne(&pos_milieu_loin, &incertitude_loin, camera2_val, print);
+    milieu_ligne(&pos_milieu_loin, &incertitude_loin, camera2_val, print);*/
     
 /*    TransmitData("\npm :");
     printfloat(pos_milieu);
@@ -85,10 +86,10 @@ void Controle_Direction(uint8_t print)
 
     controle_derniere_erreur = erreur;
     
-    commande = controle_kp * erreur + controle_kd*derivee + controle_ki*controle_integrale;
+    commande = -controle_kp * erreur + controle_kd*derivee + controle_ki*controle_integrale;
     
     
-	//Set_Dir_Servo((float)commande);
+	Set_Dir_Servo((float)commande);
 	
 }
 
