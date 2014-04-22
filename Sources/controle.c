@@ -26,60 +26,20 @@ void Controle_Direction(uint8_t print)
     
     for (i=0; i<=128; i++)
     {
-    	camera1_val[i] = camera1_valeurs[i];
-    	camera2_val[i] = camera2_valeurs[i];
+    	camera1_val[i] = camera2_valeurs[i];
+    	//camera2_val[i] = camera2_valeurs[i];
     }
 	
 	if (print != 0) 
 		TransmitData("cam1:\n");
-    milieu_ligne(&pos_milieu, &incertitude, camera1_val, print);
-    
-    /*if (print != 0) 
-		TransmitData("cam2:\n");
-    milieu_ligne(&pos_milieu_loin, &incertitude_loin, camera2_val, print);*/
-    
-/*    TransmitData("\npm :");
-    printfloat(pos_milieu);
-    TransmitData("\npml :");
-    printfloat(pos_milieu_loin);
-    TransmitCharacter('\n');*/
-    
-    /*
-    compteur_ligne_arrivee++;
-
-
-    if(incertitude < CONTROLE_INCERTITUDE_PALIER)
-    {
-        controle_derniere_position = pos_milieu;
-        compteur_acquisitions_invalides = 0;
-    }
-    else
-    {
-    	pos_milieu = controle_derniere_position;
-    	compteur_acquisitions_invalides++;
-    }
-    if(code_arret_cam() == 1)
-    {
-        if (compteur_ligne_arrivee >= COMPTEUR_AVANT_ARRIVEE) // 30 secondes après le démarage de la voiture => compteur d'arrêt ligne actif
-    	{
-    		compteur_acquisitions_invalides = 1000;
-    	    compteur_ligne_arrivee = 0;   	    
-    	} 
-    	SIU.GPDO[71].B.PDO = 0;   	    	
-    }
+    //milieu_ligne(&pos_milieu, &incertitude, camera2_valeurs, 0);
     
 
-*/
-
-
-    /*objectif_vitesse = max(6-abs((int16_t)(pos_milieu)-64)/10, 2);
-    
-    commande = (64 - (int16_t)pos_milieu) / (objectif_vitesse);
-    */
+    // objectif_vitesse = max(6-abs((int16_t)(pos_milieu)-64)/10, 2);
     
     // PID pour la direction
     // zieger-nicols
-    erreur = 60 - ((int16_t)pos_milieu);
+    erreur = 64 - ((int16_t)pos_milieu);
 
 	derivee = erreur - controle_derniere_erreur;
 	controle_integrale += erreur;
@@ -89,8 +49,8 @@ void Controle_Direction(uint8_t print)
     commande = -controle_kp * erreur + controle_kd*derivee + controle_ki*controle_integrale;
     
     
-	Set_Dir_Servo((float)commande);
-	
+	//Set_Dir_Servo((float)commande);
+	Set_Dir_Servo(0);
 }
 
 

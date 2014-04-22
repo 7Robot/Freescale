@@ -31,11 +31,18 @@ uint16_t controle_kd = CONTROLE_KD;
 uint16_t controle_ki = CONTROLE_KI;
 
 
-float moteur_kp = MOTEUR_KP;
-float moteur_ki = MOTEUR_KI;
-float moteur_kd = MOTEUR_KD;
+float moteur_kp_vit = MOTEUR_KP;
+float moteur_ki_vit = MOTEUR_KI;
+float moteur_kd_vit = MOTEUR_KD;
+
+float moteur_kp_pos = MOTEUR_KP;
+float moteur_ki_pos = MOTEUR_KI;
+float moteur_kd_pos = MOTEUR_KD;
 
 float led_power = 0;
 
 uint8_t ecart_normal = 15;//valeur incertaine, a recalculer
 	
+	
+	
+float projection[128];

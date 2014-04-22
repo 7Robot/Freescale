@@ -134,8 +134,8 @@ void initPads (void) {
 	
 	
 	// new cameras
-	SIU.PCR[80].R = 0x2000;				// PF[0]  = entrée analogique cam1 => ANS8
-	SIU.PCR[81].R = 0x2000;				// PF[1]  = entrée analogique cam2 => ANS9
+	SIU.PCR[80].R = 0x2002;				// PF[0]  = entrée analogique cam1 => ANS8
+	SIU.PCR[81].R = 0x2002;				// PF[1]  = entrée analogique cam2 => ANS9
 	
 	SIU.PCR[82].R = 0x0200;				// PF[2]  = SI  cam 1 
 	SIU.PCR[83].R = 0x0200;				// PF[3]  = SI  cam 2
@@ -358,7 +358,7 @@ void initEMIOS_0ch7(void) {        		// EMIOS 0 CH 7: Motor Right Forward
 void initEMIOS_1ch11(void)        		// EMIOS 0 CH 18: LED
 {
 	EMIOS_1.CH[11].CADR.R = 0;    		// Leading edge when channel counter bus=0  
-	EMIOS_1.CH[11].CBDR.R = 200;		// Trailing edge when channel's counter bus=500 // max à 999
+	EMIOS_1.CH[11].CBDR.R = 500;		// Trailing edge when channel's counter bus=500 // max à 999
 	EMIOS_1.CH[11].CCR.B.BSL = 0x0; 	// Use counter bus A -> Time base channel 23   
 	EMIOS_1.CH[11].CCR.B.EDPOL = 1; 	// Polarity-leading edge sets output  
 	EMIOS_1.CH[11].CCR.B.MODE = 0x60; 	// Mode is OPWM Buffered   
@@ -488,7 +488,7 @@ void init_LinFLEX_3_UART (void)
 void initPIT1(void) {
 	PIT.PITMCR.B.MDIS = 0;			// PIT Master_Disable = 0
 	PIT.PITMCR.B.FRZ = 1;	     	// Freeze in debug = 1
-	PIT.CH[1].LDVAL.R = 64000000/100; // Timeout= 6 400 000 sysclks x 1sec/64M sysclks = 100 ms 
+	PIT.CH[1].LDVAL.R = 64000000/100; // Timeout= 6 400 000 sysclks x 1sec/64M sysclks = 10 ms 
 	PIT.CH[1].TCTRL.B.TEN = 1;		// Ch[1] Timer Enable
 	PIT.CH[1].TCTRL.B.TIE = 1;		// Ch[1] Interrupt enable
 	INTC.PSR[60].R = 2;           	// PIT 1 interrupt vector with priority 2

@@ -8,8 +8,8 @@
 
     vuint32_t buffer_tx[800];
     uint32_t buffer_tx_temp;
-    vuint8_t buffer_rx[8];
-    vuint8_t buffer_rx_lecture[8];
+    vuint8_t buffer_rx[7];
+    vuint8_t buffer_rx_lecture[7];
 	vuint8_t i_buffer_r = 0;
 	vuint16_t i_buffer_t = 0;
 	vuint8_t i_buffer_t_temp = 0;
@@ -351,10 +351,10 @@ void UART_RXI_ISR(void)
 		LINFLEX_3.UARTSR.B.DRF = 1;
 		LINFLEX_3.UARTSR.B.RMB = 1;
 		//TransmitCharacterIfInf(rx,80);			// debug
-		if (i_buffer_r >= 7)					// si le buffer est plein, on drop la première valeur reçue (fifo)
+		if (i_buffer_r >= 6)					// si le buffer est plein, on drop la première valeur reçue (fifo)
 		{
 			i_buffer_r --;
-			for (i = 0; i <=6; i++)
+			for (i = 0; i <=5; i++)
 				buffer_rx[i] = buffer_rx[i+1];
 		}
 		if (rx != 0x1b || rx != 0x7e || rx != 0x7f) // si le caractere reçu n'est ni echap, ni suppr, ni effacer....
@@ -371,7 +371,7 @@ void UART_RXI_ISR(void)
 			if (rx == '\n' || rx == '\r')						// si le dernier caractère reçu est \n ça veut dire que normalement une commade est prete
 			{
 				i_buffer_r = 0;
-				for (i=0;i<=7;i++)
+				for (i=0;i<=6;i++)
 					buffer_rx_lecture[i] = buffer_rx[i];
 				INTC.SSCIR[4].B.SET = 1;			// Declenche l'interruption software 4
 			}
@@ -390,14 +390,12 @@ void SwIrq4ISR(void)
 	if (	buffer_rx_lecture[2] >=48 && buffer_rx_lecture[2] <= 57 &&
 			buffer_rx_lecture[3] >=48 && buffer_rx_lecture[3] <= 57 &&
 			buffer_rx_lecture[4] >=48 && buffer_rx_lecture[4] <= 57 &&
-			buffer_rx_lecture[5] >=48 && buffer_rx_lecture[5] <= 57 &&
-			buffer_rx_lecture[6] >=48 && buffer_rx_lecture[6] <= 57  	)
+			buffer_rx_lecture[5] >=48 && buffer_rx_lecture[5] <= 57  	)
 	{
-		data = 	10000*(buffer_rx_lecture[2] - 48) + 
-				1000*(buffer_rx_lecture[3] - 48) +
-				100*(buffer_rx_lecture[4] - 48) + 
-				10*(buffer_rx_lecture[5] - 48) + 
-				(buffer_rx_lecture[6] - 48);
+		data = 	1000*(buffer_rx_lecture[2] - 48) + 
+				100*(buffer_rx_lecture[3] - 48) +
+				10*(buffer_rx_lecture[4] - 48) + 
+				(buffer_rx_lecture[5] - 48);
 		
 		printfloat(data);
 		
@@ -427,19 +425,19 @@ void SwIrq4ISR(void)
 			case 'm' : switch (buffer_rx_lecture[1])
 					{
 
-					case 'p' : moteur_kp = data/10.0;
+					case 'p' : moteur_kp_vit = data/10.0;
 							TransmitData("M_Kp: ");
-							printfloat(moteur_kp);  
+							printfloat(moteur_kp_vit);  
 							TransmitCharacter('\n');
 						break;
-					case 'i' : moteur_ki = data/10.0;
+					case 'i' : moteur_ki_vit = data/10.0;
 							TransmitData("M_Ki: ");
-							printfloat(moteur_ki);
+							printfloat(moteur_ki_vit);
 							TransmitCharacter('\n');
 						break;
-					case 'd' : moteur_kd = data/10.0;
+					case 'd' : moteur_kd_vit = data/10.0;
 							TransmitData("M_Kd: ");
-							printfloat(moteur_kd);
+							printfloat(moteur_kd_vit);
 							TransmitCharacter('\n');
 						break;
 					}
@@ -468,6 +466,8 @@ void SwIrq4ISR(void)
 				break;
 		}
 	}
+	else 
+		TransmitData("Error_receive\n");
 	
 	INTC.SSCIR[4].B.CLR = 1;		// Clear channel's flag   
 }

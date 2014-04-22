@@ -30,10 +30,17 @@ extern uint16_t controle_kp ;
 extern uint16_t controle_kd ;
 extern uint16_t controle_ki ;
 
-extern float moteur_kp;
-extern float moteur_ki;
-extern float moteur_kd;
+extern float moteur_kp_vit;
+extern float moteur_ki_vit;
+extern float moteur_kd_vit;
+
+extern float moteur_kp_pos;
+extern float moteur_ki_pos;
+extern float moteur_kd_pos;
 
 extern float led_power;
 
 extern uint8_t ecart_normal;
+
+
+extern float projection[128];

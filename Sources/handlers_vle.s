@@ -64,7 +64,7 @@ Pit1Handler:
   se_stw  r3,  0x10 (r1)
 
   wrteei  1                     # Set MSR[EE]=1	
-  
+
   e_stw   r12, 0x4C (r1)        # Store rest of gprs
   e_stw   r11, 0x48 (r1)
   e_stw   r10, 0x44 (r1)
@@ -104,7 +104,6 @@ Pit1Handler:
   e_lwz   r10, 0x44 (r1)
   e_lwz   r11, 0x48 (r1)
   e_lwz   r12, 0x4C (r1)
- 
   mbar    0                     # Ensure store to clear interrupt flag bit completed
   
   e_lis   r3, INTC_EOIR@ha      # Single Core: Load upper half of EIOR address to r3
@@ -249,7 +248,6 @@ SwIrq4Handler:
   e_lwz   r10, 0x44 (r1)
   e_lwz   r11, 0x48 (r1)
   e_lwz   r12, 0x4C (r1)
- 
   mbar    0                     # Ensure store to clear interrupt flag bit completed
   
   e_lis   r3, INTC_EOIR@ha      # Single Core: Load upper half of EIOR address to r3
@@ -282,7 +280,7 @@ UART_TXI_Handler:
   se_stw  r3,  0x10 (r1)
 
   wrteei  1                     # Set MSR[EE]=1	
-  
+
   e_stw   r12, 0x4C (r1)        # Store rest of gprs
   e_stw   r11, 0x48 (r1)
   e_stw   r10, 0x44 (r1)
@@ -322,7 +320,6 @@ UART_TXI_Handler:
   e_lwz   r10, 0x44 (r1)
   e_lwz   r11, 0x48 (r1)
   e_lwz   r12, 0x4C (r1)
- 
   mbar    0                     # Ensure store to clear interrupt flag bit completed
   
   e_lis   r3, INTC_EOIR@ha      # Single Core: Load upper half of EIOR address to r3
@@ -395,7 +392,6 @@ UART_RXI_Handler:
   e_lwz   r10, 0x44 (r1)
   e_lwz   r11, 0x48 (r1)
   e_lwz   r12, 0x4C (r1)
- 
   mbar    0                     # Ensure store to clear interrupt flag bit completed
   
   e_lis   r3, INTC_EOIR@ha      # Single Core: Load upper half of EIOR address to r3
@@ -468,7 +464,6 @@ Capteur1_Roue_Handler:
   e_lwz   r10, 0x44 (r1)
   e_lwz   r11, 0x48 (r1)
   e_lwz   r12, 0x4C (r1)
- 
   mbar    0                     # Ensure store to clear interrupt flag bit completed
   
   e_lis   r3, INTC_EOIR@ha      # Single Core: Load upper half of EIOR address to r3
@@ -503,7 +498,6 @@ Capteur2_Roue_Handler:
   se_stw  r3,  0x10 (r1)
 
   wrteei  1                     # Set MSR[EE]=1	
-
 
   e_stw   r12, 0x4C (r1)        # Store rest of gprs
   e_stw   r11, 0x48 (r1)
@@ -544,7 +538,6 @@ Capteur2_Roue_Handler:
   e_lwz   r10, 0x44 (r1)
   e_lwz   r11, 0x48 (r1)
   e_lwz   r12, 0x4C (r1)
- 
   mbar    0                     # Ensure store to clear interrupt flag bit completed
   
   e_lis   r3, INTC_EOIR@ha      # Single Core: Load upper half of EIOR address to r3

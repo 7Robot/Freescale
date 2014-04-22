@@ -27,7 +27,7 @@
 #define AMPLITUDE_SERVO 550
 #define POS_MILIEU_SERVO 2400
 
-#define CONTROLE_MILIEU_SERVO 1330 // 1165 -> gauche  /// euh, what?
+#define CONTROLE_MILIEU_SERVO 1330 
 
 #define CONTROLE_KP 5
 #define CONTROLE_KD 0

@@ -3,15 +3,12 @@
 #include "constantes.h"
 #include "math.h"
 
-#include "vector_X1.h"
-#include "vector_X2.h"
-#include "vector_X4.h"
-#include "vector_X6.h"
 
 #define max(i, j) (i > j ? i : j)
 #define min(i,j) (i > j ? j : i)
 
-#define MODE_PROJ
+#define MODE_SEUIL
+// #define MODE_DERIV
 
 
 //*************************************************  moyenne_glissante **************************************************************
@@ -42,9 +39,9 @@ void moyenne_glissante(int8_t* valeurs)
 
 
 
- uint16_t abs(uint16_t n)
+ uint16_t abs(int16_t n)
  {
- 	if (n>0)
+ 	if (n>=0)
  		return n;
  	else
  		return -n;
@@ -54,15 +51,20 @@ void moyenne_glissante(int8_t* valeurs)
     
     
 
-void milieu_ligne(uint8_t* milieu, uint8_t* incertitude, uint16_t camera_val[], uint8_t print)
+void milieu_ligne(uint8_t* milieu, uint8_t* incertitude, uint16_t camera_val[] , uint8_t print)
 {
 	int16_t valeurs_deriv[128];
 	uint16_t valeurs_moy [128]; 
+	uint8_t valeurs_seuil [128];
+	uint16_t seuil_moy;
+	uint8_t start_seuil = 0, stop_seuil = 127;
+	uint8_t bande_noire[4][2];// start; stop;
+	uint8_t compte_bande_noire = 0, etat_bande_noire = 0;
 	uint8_t pos_max = 0;
 	uint8_t pos_min = 0;
 	uint8_t max_hors_ligne = 0;
 	uint8_t i, j=0, k=0, l=0, j2=0;
-	int16_t seuil;
+	int16_t seuil = 0;
 	uint8_t max_possibles[16] = {0};
 	uint8_t min_possibles[16] = {0};
 	uint8_t milieu_possible = 0;
@@ -70,28 +72,15 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude, uint16_t camera_val[], 
 	uint8_t proba_milieu_mini = 128;
 	uint8_t ecart_reel = 0;
 
-	
+
 	uint32_t somme_ligne_moy = 0;
 	uint16_t max_moy = 0;
+	uint16_t min_moy = 0;
 	
 	uint16_t moy;
 	float a;
-	#ifdef MODE_PROJ
-		float coef_0 = 0.0883883476483184;
-		float proj_0 = 0.0;
-		float proj_1 = 0.0;
-		float proj_2 = 0.0;
-		float proj_4 = 0.0;
-		float proj_6 = 0.0;
-		float projection[128], moy_proj[128];
-		float min_moy = 10000000;
-		uint8_t pos_min_moy = 0;
-		
-		float max_1_proj = 0.0,max_2_proj = 0.0;
-		float proj_prev = 0.0, proj_actu = 0.0, proj_next = 0.0;
-		uint8_t pos_max_1, pos_max_2, max_en_cours = 1;
-		float offset, pente;
-	#endif
+	
+	
 	
 	// fait la somme des 5 proches : 
 	// moy [i] = val[i-2] + val[i-1] + val[i] + val[i+1] + val[i+2]
@@ -102,16 +91,19 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude, uint16_t camera_val[], 
 	moy = 3*camera_val[0] + camera_val[1] + camera_val[2];
 	valeurs_moy[0] = moy;
 	max_moy = moy;
+	min_moy = moy;
 	somme_ligne_moy += moy;
 	
 	moy = moy - camera_val[0] + camera_val[3];
 	valeurs_moy[1] = moy;
 	max_moy = max(max_moy, moy);
+	min_moy = min(min_moy, moy);
 	somme_ligne_moy += moy;
 	
 	moy = moy - camera_val[0] + camera_val[4];
 	valeurs_moy[2] = moy;
 	max_moy = max(max_moy, moy);
+	min_moy = min(min_moy, moy);
 	somme_ligne_moy += moy;
 	
 	for (i = 3; i <= 125; i ++)
@@ -119,227 +111,315 @@ void milieu_ligne(uint8_t* milieu, uint8_t* incertitude, uint16_t camera_val[], 
 		moy = moy - camera_val[i-3] + camera_val[i+2];
 		valeurs_moy[i] = moy;
 		max_moy = max(max_moy, moy);
+		min_moy = min(min_moy, moy);
 		somme_ligne_moy += moy;
 	}
 	
 	moy = moy - camera_val[123] + camera_val[127];
 	valeurs_moy[126] = moy;
 	max_moy = max(max_moy, moy);
+	min_moy = min(min_moy, moy);
 	somme_ligne_moy += moy;
 	
 	moy = moy - camera_val[124] + camera_val[127];
 	valeurs_moy[127] = moy;
 	max_moy = max(max_moy, moy);
+	min_moy = min(min_moy, moy);
 	somme_ligne_moy += moy;
 	
 		
-	#ifdef MODE_PROJ
-		for (i = 0; i < 128; i ++)
+	#ifdef MODE_SEUIL
+		seuil_moy = (max_moy + min_moy) >> 1;	// seuil à la moitiée du min et max
+		
+		// passage en tout ou rien
+		// blanc = 0, noir = 1;
+		for (i = 0; i <= 128; i++)
 		{
-			proj_0 += coef_0*valeurs_moy[i];
-			proj_1 += vector_X1[i]*valeurs_moy[i];
-			proj_2 += vector_X2[i]*valeurs_moy[i];
-			proj_4 += vector_X4[i]*valeurs_moy[i];
-			proj_6 += vector_X6[i]*valeurs_moy[i];	
+			if (valeurs_moy[i] >= seuil)
+				valeurs_seuil[i] = 0;
+			else
+				valeurs_seuil[i] = 1;
 		}
 		
-		for (i = 0; i < 128; i++)
-		{
-			projection[i] = coef_0*proj_0 + proj_1*vector_X1[i] + proj_2*vector_X2[i] + proj_4*vector_X4[i] + proj_6*vector_X6[i];
-		}
+		// recherche des milieux
 		
-		proj_prev = projection[0];
-		proj_actu = projection[1];
-		proj_next = projection[2];
-		i = 1;
-		while (max_en_cours == 1 && i < 64)
-		{
-			if (proj_actu > proj_prev && proj_actu >= proj_next)
-			{
-				max_en_cours = 2;
-				max_1_proj = proj_actu;
-				pos_max_1 = i;
-			}
-			i++;
-			proj_prev = proj_actu;
-			proj_actu = proj_next;
-			proj_next = projection[i+1];
-		}
+		// on enleve d'abord les bords si inutilisables
+		while (valeurs_seuil[start_seuil] == 1 && start_seuil < 50)
+			start_seuil ++;
+		while (valeurs_seuil[stop_seuil] == 1 && stop_seuil >78)
+			stop_seuil --;
 		
-		while (max_en_cours == 2 && i < 126)
+		if (stop_seuil == 78 || start_seuil == 50)
 		{
-			i++;
-			proj_prev = proj_actu;
-			proj_actu = proj_next;
-			proj_next = projection[i+1];
-			
-			if (proj_actu >= proj_prev && proj_actu > proj_next)
-			{
-				max_en_cours = 3;
-				max_2_proj = proj_actu;
-				pos_max_2 = i;
-			}
+			// y a soucis
 		}
-		
-		if (max_en_cours == 3)
+		else
 		{
-			pente = (max_2_proj - max_1_proj)/(pos_max_2 - pos_max_1);
-			offset = max_1_proj - pente * pos_max_1;
-			for (i = pos_max_1; i <= pos_max_2; i++)
+			compte_bande_noire = 0;
+			etat_bande_noire = 0;
+			for (i = start_seuil; i <= stop_seuil; i++)
 			{
-				projection[i] = offset + i * pente;
-			}
-			
-			
-			for (i = 0; i < 127; i++)
-			{
-				moy_proj[i] = valeurs_moy[i] - projection[i];
-				if (moy_proj[i] < min_moy)
+				if (etat_bande_noire == 0)
 				{
-					min_moy = moy_proj[i];
-					pos_min_moy = i;
+					if (valeurs_seuil[i] == 1)	// si front montant (blanc => noir)
+					{
+						etat_bande_noire = 1;
+						bande_noire[compte_bande_noire][0] = i;
+					}					
 				}
-			}
+				else
+				{
+					if (valeurs_seuil[i] == 0)	// si front descendant (noir => blanc)
+					{
+						etat_bande_noire = 0;
+						bande_noire[compte_bande_noire][1] = i;
+						compte_bande_noire ++;
+					}
+				}				
+			}			
 		}
-		//else
-		// PB !
 		
 		
 	#endif
 	
-	
-	//On cherche a corriger l'erreur par une courbe ax^2+c
-	
-	/*a = (somme_ligne_moy-128*max_moy)/DENOMINATEUR_A;
-	
-	for (i = 0; i<128; i++)
-	{
-		valeurs_moy[i] = valeurs_moy[i]-(a*((i-64)^2)+max_moy);
-	}*/
-	
-	
-	
-
-	
-	
-	
-
+	#ifdef MODE_DERIV
 	// calcul de la dérivée
-    for(i = 0; i < 126; i++)
-   	{
-        valeurs_deriv[i+1] = valeurs_moy[i + 2] - valeurs_moy[i];
-    }
-    valeurs_deriv[0] = 0;
-    valeurs_deriv[127] = 0;
-    
-	
-	// recherche du min et du max
-	for(i = 0; i < 128; i++)
-	{
-		if(valeurs_deriv[i] > valeurs_deriv[pos_max])
-			pos_max = i;
-		if(valeurs_deriv[i] < valeurs_deriv[pos_min])
-			pos_min = i;
-	}
-	
-	
-	seuil = /*max(*/valeurs_deriv[pos_max]/*,abs(valeurs_deriv[pos_min]))*//2;
-	
-	
-	i=0;
-    while (i < 128)
-    {
-    	//on a atteint un pic de valeurs
-    	if(valeurs_deriv[i] > seuil)
-    	{
-    		max_possibles[j] = i;
-    		//on cherche le maximum du pic de valeurs
-    		while ((valeurs_deriv[i+k] > seuil)&&(i+k<128))
-    		{
-    			max_possibles[j] = max(valeurs_deriv[i], valeurs_deriv[i+k]);
-    			k++;
-    		}
-    		j++;
-    		i+=k-1;
-    		k=1;
-    	}
-    	
-    	
-    	if(valeurs_deriv[i] < -seuil)
-    	{
-    		min_possibles[k] = i;
-    		
-    		while ((valeurs_deriv[i+k] > seuil)&&(i+k<128))
-    		{
-    			min_possibles[j2] = min(valeurs_deriv[i], valeurs_deriv[i+k]);
-    			k++;
-    		}
-    		j2++;
-    		i+=k-1;
-    		k=1;
-    	}
-    	
-    	i++;
-    }
-    
-   
-    
-    for(i = 0; i<j; i++)
-    {
-    	for(l = 0; l<j2; l++)
-    	{    		
-    		milieu_possible=(min_possibles[i]+max_possibles[l])/2;
-    		ecart_reel = abs(i-l);
-    		proba_milieu=abs(milieu_possible-ancien_milieu) + abs(ecart_normal - ecart_reel);
-    		if (proba_milieu < proba_milieu_mini)
-    			proba_milieu_mini = proba_milieu;
-    	}
-    }
-    
-    
-    
-    //proba_milieu = (pos_max + pos_min)/2;
-    ancien_milieu = proba_milieu;
-    	
-    if (abs(proba_milieu - ancien_milieu) > 5) 
-    {
-    	*milieu = ancien_milieu;
-    }
-    else 
-    {
-    	*milieu = proba_milieu;
-    }
-	
-		if (print)
-	{
-		/*for (i = 0; i< 128; i++)
+	    for(i = 0; i < 126; i++)
+	   	{
+	        valeurs_deriv[i+1] = valeurs_moy[i + 2] - valeurs_moy[i];
+	    }
+	    valeurs_deriv[0] = 0;
+	    valeurs_deriv[127] = 0;
+	    
+		
+		// recherche du min et du max
+		for(i = 0; i < 128; i++)
 		{
-			printserialsigned(valeurs_deriv[i]);
+			if(valeurs_deriv[i] > valeurs_deriv[pos_max])
+				pos_max = i;
+			if(valeurs_deriv[i] < valeurs_deriv[pos_min])
+				pos_min = i;
+		}
+		
+		
+		seuil = /*max(*/valeurs_deriv[pos_max]/*,abs(valeurs_deriv[pos_min]))*//2;
+		
+		
+		i=0;
+	    while (i < 128)
+	    {
+	    	//on a atteint un pic de valeurs
+	    	if(valeurs_deriv[i] > seuil)
+	    	{
+	    		max_possibles[j] = i;
+	    		//on cherche le maximum du pic de valeurs
+	    		while ((valeurs_deriv[i+k] > seuil)&&(i+k<128))
+	    		{
+	    			max_possibles[j] = max(valeurs_deriv[i], valeurs_deriv[i+k]);
+	    			k++;
+	    		}
+	    		j++;
+	    		i+=k-1;
+	    		k=1;
+	    	}
+	    	
+	    	
+	    	if(valeurs_deriv[i] < -seuil)
+	    	{
+	    		min_possibles[k] = i;
+	    		
+	    		while ((valeurs_deriv[i+k] > seuil)&&(i+k<128))
+	    		{
+	    			min_possibles[j2] = min(valeurs_deriv[i], valeurs_deriv[i+k]);
+	    			k++;
+	    		}
+	    		j2++;
+	    		i+=k-1;
+	    		k=1;
+	    	}
+	    	
+	    	i++;
+	    }
+	    
+	   
+	    
+	    for(i = 0; i<j; i++)
+	    {
+	    	for(l = 0; l<j2; l++)
+	    	{    		
+	    		milieu_possible=(min_possibles[i]+max_possibles[l])/2;
+	    		ecart_reel = abs(i-l);
+	    		proba_milieu=abs(milieu_possible-ancien_milieu) + abs(ecart_normal - ecart_reel);
+	    		if (proba_milieu < proba_milieu_mini)
+	    			proba_milieu_mini = proba_milieu;
+	    	}
+	    }
+	    
+	    
+	    
+	    //proba_milieu = (pos_max + pos_min)/2;
+	    ancien_milieu = proba_milieu;
+	    	
+	    if (abs(proba_milieu - ancien_milieu) > 5) 
+	    {
+	    	*milieu = ancien_milieu;
+	    }
+	    else 
+	    {
+	    	*milieu = proba_milieu;
+	    }
+		
+			if (print)
+		{
+			/*for (i = 0; i< 128; i++)
+			{
+				printserialsigned(valeurs_deriv[i]);
+				TransmitCharacter('\n');
+			}*/
+			printserialsigned(proba_milieu);			
 			TransmitCharacter('\n');
-		}*/
-		printserialsigned(proba_milieu);			
-		TransmitCharacter('\n');
-		TransmitCharacter('\n');
-		TransmitCharacter('\n');
-	}
-	// recherche du plus gros pic en dehors de la ligne (incertitude)
-	for(i = 0; i < 126; i++)
-	{
-		if(abs((int8_t)(*milieu) - (int8_t)i) > LARGEUR_LIGNE + DELTA_LARGEUR_LIGNE && abs(valeurs_deriv[i]) > max_hors_ligne)
-			max_hors_ligne = abs(valeurs_deriv[i]);
-	}
-	
-	if(abs((int8_t)pos_min - (int8_t)pos_max - LARGEUR_LIGNE) < DELTA_LARGEUR_LIGNE)
-		*incertitude = 100 * max_hors_ligne / min(valeurs_deriv[pos_max], -valeurs_deriv[pos_min]);
-	else
-		*incertitude = 250;
-	
+			TransmitCharacter('\n');
+			TransmitCharacter('\n');
+		}
+		// recherche du plus gros pic en dehors de la ligne (incertitude)
+		for(i = 0; i < 126; i++)
+		{
+			if(abs((int8_t)(*milieu) - (int8_t)i) > LARGEUR_LIGNE + DELTA_LARGEUR_LIGNE && abs(valeurs_deriv[i]) > max_hors_ligne)
+				max_hors_ligne = abs(valeurs_deriv[i]);
+		}
+		
+		if(abs((int8_t)pos_min - (int8_t)pos_max - LARGEUR_LIGNE) < DELTA_LARGEUR_LIGNE)
+			*incertitude = 100 * max_hors_ligne / min(valeurs_deriv[pos_max], -valeurs_deriv[pos_min]);
+		else
+			*incertitude = 250;
+	#endif
 	
 	//ancien_milieu = *milieu
 }
 
 
+void detection_bandes(uint16_t camera_val[], uint8_t *nb_bandes, uint8_t bandes_noires[10][2], uint16_t *moy_ligne)
+{
+	uint8_t i;
+	
+	// moyennage
+	uint16_t valeurs_moy [128]; 
+	uint16_t moy;
+	uint32_t somme_ligne_moy = 0;
+	uint16_t max_moy = 0;
+	uint16_t min_moy = 0;
+	
+	// passage en tout ou rien
+	uint16_t seuil_moy, ampl_seuil_moy;
+	uint16_t seuil_moy_p, seuil_moy_n;
+	uint8_t valeurs_seuil [128];
+	
+	uint8_t compte_bande_noire = 0, etat_bande_noire = 0;
+	
+	
+	
+	/* ************************* moyennage ************************* */
+	
+	// fait la somme des 5 proches : 
+	// moy [i] = val[i-2] + val[i-1] + val[i] + val[i+1] + val[i+2]
+	// moy [i+1] = moy[i] - val[i-3] + val[i+2]
+	
+	// regarde en meme temps le max de ces valeurs et la somme globale de toutes 
+	
+	moy = 3*camera_val[0] + camera_val[1] + camera_val[2];
+	valeurs_moy[0] = moy;
+	max_moy = moy;
+	min_moy = moy;
+	somme_ligne_moy += moy;
+	
+	moy = moy - camera_val[0] + camera_val[3];
+	valeurs_moy[1] = moy;
+	max_moy = max(max_moy, moy);
+	min_moy = min(min_moy, moy);
+	somme_ligne_moy += moy;
+	
+	moy = moy - camera_val[0] + camera_val[4];
+	valeurs_moy[2] = moy;
+	max_moy = max(max_moy, moy);
+	min_moy = min(min_moy, moy);
+	somme_ligne_moy += moy;
+	
+	for (i = 3; i <= 125; i ++)
+	{
+		moy = moy - camera_val[i-3] + camera_val[i+2];
+		valeurs_moy[i] = moy;
+		max_moy = max(max_moy, moy);
+		min_moy = min(min_moy, moy);
+		somme_ligne_moy += moy;
+	}
+	
+	moy = moy - camera_val[123] + camera_val[127];
+	valeurs_moy[126] = moy;
+	max_moy = max(max_moy, moy);
+	min_moy = min(min_moy, moy);
+	somme_ligne_moy += moy;
+	
+	moy = moy - camera_val[124] + camera_val[127];
+	valeurs_moy[127] = moy;
+	max_moy = max(max_moy, moy);
+	min_moy = min(min_moy, moy);
+	somme_ligne_moy += moy;
+	
+	
+	*moy_ligne = (uint16_t)(somme_ligne_moy >> 7); // divise par 128 (utilisé pour asservir la rampe de led)
+	
+	/* ************************* passage en tout ou rien ************************* */
+	seuil_moy = (max_moy + min_moy) >> 1;	// seuil à la moitiée du min et max
+	ampl_seuil_moy = (max_moy - min_moy) >> 4;	// amplitude au 16eme
+	seuil_moy_p = seuil_moy + ampl_seuil_moy;
+	seuil_moy_n = seuil_moy - ampl_seuil_moy;
+	
+	// passage en tout ou rien
+	// blanc = 0, noir = 1;
+	for (i = 0; i <= 128; i++)
+	{
+		if (valeurs_moy[i] >= seuil_moy)
+			valeurs_seuil[i] = 0;
+		else
+			valeurs_seuil[i] = 1;
+	}
 
+	/* ************************* detection des bandes ************************* */
+	compte_bande_noire = 0;
+	etat_bande_noire = 0;
+	for (i = 0; i <= 127; i++)
+	{
+		if (etat_bande_noire == 0)
+		{
+			if (valeurs_seuil[i] == 1)	// si front montant (blanc => noir)
+			{
+				etat_bande_noire = 1;
+				bandes_noires[compte_bande_noire][0] = i;
+			}					
+		}
+		else
+		{
+			if (valeurs_seuil[i] == 0)	// si front descendant (noir => blanc)
+			{
+				etat_bande_noire = 0;
+				bandes_noires[compte_bande_noire][1] = i;
+				compte_bande_noire ++;
+			}
+		}				
+	}
+	if (etat_bande_noire == 1) // si la dernière bande est pas finie
+	{
+		bandes_noires[compte_bande_noire][1] = 127;
+		compte_bande_noire ++;
+	}
+	*nb_bandes = compte_bande_noire;
+}
+
+
+void analyse_bandes( uint8_t *milieu_ligne_trouve , uint8_t *stop, uint8_t *erreur, uint8_t bandes_noires[10][2])
+{
+	uint8_t i;
+}
 
 
 

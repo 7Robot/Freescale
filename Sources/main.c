@@ -26,14 +26,11 @@ void main (void)
 	
 	uint32_t Port;
 	int sens = 1;
-	uint16_t buff1[128], buff2[128];
+	uint16_t buff1[128];
+	float buff2[128];
 		
 	init();
-	
-	printfloat(1.0);
-	 printfloat(125615321.0);
-	 printfloat(0.000000005678);printfloat(DENOMINAT_A_DIVIDE);
-	
+
 	while (1)
 	{ 
 
@@ -42,28 +39,52 @@ void main (void)
 			
 			autorisation_aquiz = 0;
 			Acquisitions_Cameras();
-			Controle_Direction((toto == 255)); 
-			Asserv_Vitesse();
+			//Controle_Direction(0);
 			Set_PWM_Leds(led_power);
-			
+		/*	Asserv_Vitesse(bidule/30.0);
+			Set_Dir_Servo(bidule);
+			Set_PWM_Leds(50 + bidule/2.0);
+			bidule += 0.05;
+			if (bidule >=100)
+				bidule = -100;
+				*/
 			toto++;
-		/*	if (toto == 255)
+			if (toto == 255)
 			{
-				TransmitData("\n\n\nstart:\n\n");
 				for (i = 0; i< 128; i++)
 				{
-					printhex16(camera1_valeurs[i]);
-					TransmitCharacter(' ');
-					printhex16(camera2_valeurs[i]);
-					TransmitCharacter('\n');
-				}				
-				
-			}*/
+					buff1[i] = camera1_valeurs[i];
+					buff2[i] = camera2_valeurs[i];
+				}
+				TransmitData("\n\n\nstart:\n\n");
+			}
+			if (toto < 128)
+			{
+				printhex16(buff1[toto]);
+				TransmitCharacter(' ');
+				printhex16(buff2[toto]);
+				TransmitCharacter('\n');
+			}
+			else if (toto == 128)
+			{
+				TransmitCharacter('\n');
+				TransmitCharacter('\n');
+				TransmitCharacter('\n');
+				TransmitCharacter('\n');
+				TransmitCharacter('\n');				
+			}
+			
+			
+			if (autorisation_aquiz == 1)
+				set_led(2,1);
+			else
+				set_led(2,0);
+			
 		}
 	}	
 }
 
-void Pit1ISR(void) {		// interrupt every 10ms
+void Pit1ISR(void) {		// interrupt every ms
     autorisation_aquiz = 1;
   	blink_led(0);
   	PIT.CH[1].TFLG.B.TIF = 1;    // MPC56xxP/B/S: CLear PIT 1 flag by writing 1 

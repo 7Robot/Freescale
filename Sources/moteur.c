@@ -2,9 +2,18 @@
 #include "liaison_serie.h"
 #include "extern_globals.h"
 
+#define MODE_VITESSE
+#define MODE_POSITION
+
 int32_t moteur_compteur = 0;
-float moteur_integrale = 0;
+float moteur_integrale_vit = 0;
+float moteur_integrale_pos = 0;
 float moteur_derniere_erreur = 0;
+
+float distance_parcourue = 0;
+float distance_consigne = 0;
+
+
 
 
 //************************************************* Capteur1_Roue_ISR **************************************************************
@@ -71,34 +80,64 @@ void Capteur2_Roue_ISR(void)
 
 
 
-void Asserv_Vitesse(void)
+void Asserv_Vitesse(float consigne)
 {
 	float erreur;
 	float derivee;
-	float commande;
+	float commande = 0;
 	int32_t moteur_compteur_temp;
-    
-    // calcul erreur
-    moteur_compteur_temp = moteur_compteur;
-    moteur_compteur = 0;
-    erreur = objectif_vitesse - moteur_compteur_temp;
-    
-/*	TransmitData("mot_c: ");
+	
+	// récupération de l'avancement
+	moteur_compteur_temp = moteur_compteur;
+	moteur_compteur = 0;
+	/*	TransmitData("mot_c: ");
 	printfloat((float)moteur_compteur_temp);
 	TransmitCharacter('\n');*/
-	// partie dérivée
-	derivee = erreur - moteur_derniere_erreur;
-	moteur_derniere_erreur = erreur;
+    
+    #ifdef MODE_VITESSE
+    
+	    // calcul erreur	    
+	    erreur = consigne - moteur_compteur_temp;	    
+
+		// partie dérivée
+		derivee = erreur - moteur_derniere_erreur;
+		moteur_derniere_erreur = erreur;
+		
+		// partie intégrale
+		moteur_integrale_vit +=  erreur;
+		
+		// calcul global
+		commande = 
+		moteur_kp_vit * erreur + 
+		moteur_kd_vit * derivee + 
+		moteur_ki_vit * moteur_integrale_vit; 
 	
-	// partie intégrale
-	moteur_integrale +=  erreur;
+	#endif
 	
-	// calcul global
-	commande = 
-	moteur_kp * erreur + 
-	moteur_kd * derivee + 
-	moteur_ki * moteur_integrale;
-	
+	#ifdef MODE_POSITION
+		// intégration de la consigne (100 passages par seconde)
+		distance_consigne += consigne * 0.01;
+		
+		// intégration du déplacement
+		distance_parcourue += moteur_compteur_temp * METER_BY_TICS;
+		
+		// calcul erreur
+		erreur = distance_consigne - distance_parcourue;
+		
+		// partie dérivée
+		derivee = erreur - moteur_derniere_erreur;
+		moteur_derniere_erreur = erreur;
+		
+		// partie intégrale
+		moteur_integrale_pos +=  erreur;
+		
+		// calcul global
+		commande = 
+		moteur_kp_pos * erreur + 
+		moteur_kd_pos * derivee + 
+		moteur_ki_pos * moteur_integrale_pos; 
+		
+	#endif
 /*	TransmitData("err : ");
 	printfloat(erreur);
 	TransmitCharacter('\n');

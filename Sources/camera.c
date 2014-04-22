@@ -1,10 +1,14 @@
 #include "extern_globals.h"
 #include "MPC5604B_M27V.h"
 #include "camera.h"
+#include "coeff_cam.h"
+
+//#define COEFFS
 
 void Acquisitions_Cameras()
 {
     uint8_t i;
+    uint8_t coeff;
     
     /* rappel des pattes conectées
     SIU.PCR[82].R = 0x0200;				// PF[2]  = SI  cam 1 
@@ -14,8 +18,6 @@ void Acquisitions_Cameras()
 	
 	
 	//SIU.PGPD[2].R = PORT[E] & PORT[F];// mappage du port pour visualisation
-	
-
 	
 	
 	// début de la séquence : coup de clock avec bit de start (SI)
@@ -42,17 +44,24 @@ void Acquisitions_Cameras()
 		delay(DELAY_CLK_CAM);
 		while (ADC.MCR.B.NSTART);								// vérifie que les 2 conversion sont finies
 		SIU.PGPDO[2].R = SIU.PGPDO[2].R | BITS_CLK;				// CLK = 1
-		camera1_valeurs[127-i] = ADC.CDR[40].B.CDATA;					// on récupère les données converties par l'ADC
-		camera2_valeurs[i] = ADC.CDR[41].B.CDATA;						// la première CAM est montée en inverse de la première => il faut inverser les indices
+		#ifdef COEFFS
+			coeff = coeff_cam[i];
+			camera1_valeurs[127-i] = (coeff * ADC.CDR[40].B.CDATA) >> 4;					// on récupère les données converties par l'ADC
+			camera2_valeurs[i] = (coeff * ADC.CDR[41].B.CDATA) >> 4;						// la première CAM est montée en inverse de la première => il faut inverser les indices
+		#else
+			camera1_valeurs[i] = ADC.CDR[40].B.CDATA;					// on récupère les données converties par l'ADC
+			camera2_valeurs[i] = ADC.CDR[41].B.CDATA;						// la première CAM est montée en inverse de la première => il faut inverser les indices
+		#endif
+			
 		delay(DELAY_CLK_CAM);		
 	}
 	
 	// remise de la clock à 0 à la fin de la séquence
 	SIU.PGPDO[2].R = SIU.PGPDO[2].R & ~BITS_CLK;			// CLK = 0
-	delay(DELAY_CLK_CAM);
-	SIU.PGPDO[2].R = SIU.PGPDO[2].R | BITS_CLK;				// CLK = 1
-	delay(DELAY_CLK_CAM);
-	SIU.PGPDO[2].R = SIU.PGPDO[2].R & ~BITS_CLK;			// CLK = 0
+	//delay(DELAY_CLK_CAM);
+	//SIU.PGPDO[2].R = SIU.PGPDO[2].R | BITS_CLK;				// CLK = 1
+	//delay(DELAY_CLK_CAM);
+	//SIU.PGPDO[2].R = SIU.PGPDO[2].R & ~BITS_CLK;			// CLK = 0
     // old version avec 1 seule caméra
    /* // En passant directement sur la carte mère 
     SIU.PGPDO[1].R &= ~0x0000000C;          // All port line low 

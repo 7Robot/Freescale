@@ -1,0 +1,96 @@
+// #define MODE_PROJ
+
+
+	#ifdef MODE_PROJ
+		float coef_0 = 0.0883883476483184;
+		float proj_0 = 0.0;
+		float proj_1 = 0.0;
+		float proj_2 = 0.0;
+		float proj_4 = 0.0;
+		float proj_6 = 0.0;
+		float moy_proj[128];
+		float min_moy = 10000000;
+		uint8_t pos_min_moy = 0;
+		
+		float max_1_proj = 0.0,max_2_proj = 0.0;
+		float proj_prev = 0.0, proj_actu = 0.0, proj_next = 0.0;
+		uint8_t pos_max_1, pos_max_2, max_en_cours = 1;
+		float offset, pente;
+	#endif
+
+
+
+
+	#ifdef MODE_PROJ
+		for (i = 0; i < 128; i ++)
+		{
+			proj_0 += coef_0*valeurs_moy[i];
+			proj_1 += vector_X1[i]*valeurs_moy[i];
+			proj_2 += vector_X2[i]*valeurs_moy[i];
+			proj_4 += vector_X4[i]*valeurs_moy[i];
+			//proj_6 += vector_X6[i]*valeurs_moy[i];	
+		}
+		
+		for (i = 0; i < 128; i++)
+		{
+			projection[i] = coef_0*proj_0 + proj_1*vector_X1[i] + proj_2*vector_X2[i] + proj_4*vector_X4[i];// + proj_6*vector_X6[i];
+		}
+		
+		proj_prev = projection[0];
+		proj_actu = projection[1];
+		proj_next = projection[2];
+		i = 1;
+		while (max_en_cours == 1 && i < 64)
+		{
+			if (proj_actu > proj_prev && proj_actu >= proj_next)
+			{
+				max_en_cours = 2;
+				max_1_proj = proj_actu;
+				pos_max_1 = i;
+			}
+			i++;
+			proj_prev = proj_actu;
+			proj_actu = proj_next;
+			proj_next = projection[i+1];
+		}
+		
+		while (max_en_cours == 2 && i < 126)
+		{
+			i++;
+			proj_prev = proj_actu;
+			proj_actu = proj_next;
+			proj_next = projection[i+1];
+			
+			if (proj_actu >= proj_prev && proj_actu > proj_next)
+			{
+				max_en_cours = 3;
+				max_2_proj = proj_actu;
+				pos_max_2 = i;
+			}
+		}
+		
+		if (max_en_cours == 3)
+		{
+			pente = (max_2_proj - max_1_proj)/(pos_max_2 - pos_max_1);
+			offset = max_1_proj - pente * pos_max_1;
+			for (i = pos_max_1; i <= pos_max_2; i++)
+			{
+				projection[i] = offset + i * pente;
+			}
+			
+			
+			for (i = 0; i < 127; i++)
+			{
+				moy_proj[i] = valeurs_moy[i] - projection[i];
+				if (moy_proj[i] < min_moy)
+				{
+					min_moy = moy_proj[i];
+					pos_min_moy = i;
+				}
+			}
+		}
+		//else
+		// PB !
+		
+		
+	#endif
