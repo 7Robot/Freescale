@@ -3,12 +3,13 @@
 #include "camera.h"
 #include "coeff_cam.h"
 
-//#define COEFFS
+#define max(i, j) (i > j ? i : j)
+#define min(i,j) (i > j ? j : i)
 
-void Acquisitions_Cameras()
+uint16_t Acquisitions_Cameras()
 {
     uint8_t i;
-    uint8_t coeff;
+    uint16_t max_cam1 = 0;
     
     /* rappel des pattes conectées
     SIU.PCR[82].R = 0x0200;				// PF[2]  = SI  cam 1 
@@ -44,15 +45,11 @@ void Acquisitions_Cameras()
 		delay(DELAY_CLK_CAM);
 		while (ADC.MCR.B.NSTART);								// vérifie que les 2 conversion sont finies
 		SIU.PGPDO[2].R = SIU.PGPDO[2].R | BITS_CLK;				// CLK = 1
-		#ifdef COEFFS
-			coeff = coeff_cam[i];
-			camera1_valeurs[127-i] = (coeff * ADC.CDR[40].B.CDATA) >> 4;					// on récupère les données converties par l'ADC
-			camera2_valeurs[i] = (coeff * ADC.CDR[41].B.CDATA) >> 4;						// la première CAM est montée en inverse de la première => il faut inverser les indices
-		#else
-			camera1_valeurs[i] = ADC.CDR[40].B.CDATA;					// on récupère les données converties par l'ADC
-			camera2_valeurs[i] = ADC.CDR[41].B.CDATA;						// la première CAM est montée en inverse de la première => il faut inverser les indices
-		#endif
-			
+
+		camera1_valeurs[i] = ADC.CDR[40].B.CDATA;					// on récupère les données converties par l'ADC
+		max_cam1 = max(max_cam1, camera1_valeurs[i]);					// on prends en meme temps le max de luminosité de la caméra pour lasserv des leds
+		camera2_valeurs[i] = ADC.CDR[41].B.CDATA;						// la première CAM est montée en inverse de la première => il faudra inverser les indices
+		
 		delay(DELAY_CLK_CAM);		
 	}
 	
@@ -63,36 +60,27 @@ void Acquisitions_Cameras()
 	//delay(DELAY_CLK_CAM);
 	//SIU.PGPDO[2].R = SIU.PGPDO[2].R & ~BITS_CLK;			// CLK = 0
     // old version avec 1 seule caméra
-   /* // En passant directement sur la carte mère 
-    SIU.PGPDO[1].R &= ~0x0000000C;          // All port line low 
-    SIU.PGPDO[1].R |= 0x00000008;           // Sensor read start High 
-    delay(250);
-    SIU.PGPDO[1].R |= 0x00000004;           // Sensor Clock High 
-    delay(250);
-    SIU.PGPDO[1].R &= ~0x00000008;          // Sensor read start Low  
-    delay(250);
-    SIU.PGPDO[1].R &= ~0x00000004;          // Sensor Clock Low 
-  
-    delay(250);
-    
-    for (i=0;i<128;i++)
-    {
-        delay(250);
-        SIU.PGPDO[1].R |= 0x00000004;   // Sensor Clock High 
-        ADC.MCR.B.NSTART=1;                     // Trigger normal conversions for ADC0 
-        while (ADC.MCR.B.NSTART == 1) {};
-        adcdata = ADC.CDR[14].B.CDATA; // Mettre la sortie de la camera sur PD[10] 
-        delay(250);
-        SIU.PGPDO[1].R &= ~0x00000004;  // Sensor Clock Low 
-        //if(balance_des_blancs)
-        //    camera_valeurs_blanc[i] = adcdata;
-        //else
-            camera_valeurs[i] = adcdata ; 
-        // j'ai enlevé cette division
-        // je divise par deux pour éviter un overflow
-		// deux ou quatre?
-     }*/
-     
+
+ 	return max_cam1;    
+}
+
+void asserv_leds(uint16_t max_lum)
+{
+	static float consigne_led = 0;
+	
+	// mix entre un intégrale et un proportionnel
+	consigne_led += (consigne_lum - max_lum) * k_lum;
+	
+	if (consigne_led >= 95)
+		consigne_led = 95;
+	else if (consigne_led < 0)
+		consigne_led = 0;
+	
+	if (!mode_led)
+		Set_PWM_Leds (led_power);
+	else
+		Set_PWM_Leds (consigne_led);
+		
 }
 
 // attends une valeur en %
@@ -105,6 +93,135 @@ void Set_PWM_Leds(float consigne)
 	
 	// valeur max : 1000 => * 10
 	EMIOS_1.CH[11].CBDR.R = (uint16_t)(consigne * 10);
+}
+
+void coeffs_moy_cam (uint8_t do_coeffs)
+{
+	uint8_t i;
+	uint16_t moy;
+	uint16_t moy_c;
+	
+	// passage pour la caméra 1
+	// moyenne par circulairesur 5 pixels
+	moy = 3*camera1_valeurs[0] + camera1_valeurs[1] + camera1_valeurs[2];
+	if (do_coeffs)
+		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[0])) >> 7);
+	else
+		moy_c = moy;
+	camera1_valeurs_t[0] = moy_c;
+	max_moy1 = moy_c;
+	min_moy1 = moy_c;
+	
+	moy = moy - camera1_valeurs[0] + camera1_valeurs[3];
+	if (do_coeffs)
+		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[1])) >> 7);
+	else
+		moy_c = moy;
+	camera1_valeurs_t[1] = moy_c;
+	max_moy1 = max(max_moy1, moy_c);
+	min_moy1 = min(min_moy1, moy_c);
+	
+	moy = moy - camera1_valeurs[0] + camera1_valeurs[4];
+	if (do_coeffs)
+		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[2])) >> 7);
+	else
+		moy_c = moy;
+	camera1_valeurs_t[2] = moy_c;
+	max_moy1 = max(max_moy1, moy_c);
+	min_moy1 = min(min_moy1, moy_c);
+	
+	for (i = 3; i <= 125; i ++)
+	{
+		moy = moy - camera1_valeurs[i-3] + camera1_valeurs[i+2];
+		if (do_coeffs)
+		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[i])) >> 7);
+		else
+			moy_c = moy;
+		camera1_valeurs_t[i] = moy_c;
+		max_moy1 = max(max_moy1, moy_c);
+		min_moy1 = min(min_moy1, moy_c);
+	}
+	
+	moy = moy - camera1_valeurs[123] + camera1_valeurs[127];
+	if (do_coeffs)
+		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[126])) >> 7);
+	else
+		moy_c = moy;
+	camera1_valeurs_t[126] = moy_c;
+	max_moy1 = max(max_moy1, moy_c);
+	min_moy1 = min(min_moy1, moy_c);
+	
+	moy = moy - camera1_valeurs[124] + camera1_valeurs[127];
+	if (do_coeffs)
+		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[127])) >> 7);
+	else
+		moy_c = moy;
+	camera1_valeurs_t[127] = moy_c;
+	max_moy1 = max(max_moy1, moy_c);
+	min_moy1 = min(min_moy1, moy_c);
+	
+	
+	
+
+
+
+	// camera 2
+	moy = 3*camera2_valeurs[0] + camera2_valeurs[1] + camera2_valeurs[2];
+	if (do_coeffs)
+		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[0])) >> 7);
+	else
+		moy_c = moy;
+	camera2_valeurs_t[0] = moy_c;
+	max_moy2 = moy_c;
+	min_moy2 = moy_c;
+	
+	moy = moy - camera2_valeurs[0] + camera2_valeurs[3];
+	if (do_coeffs)
+		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[1])) >> 7);
+	else
+		moy_c = moy;
+	camera2_valeurs_t[1] = moy_c;
+	max_moy2 = max(max_moy2, moy_c);
+	min_moy2 = min(min_moy2, moy_c);
+	
+	moy = moy - camera2_valeurs[0] + camera2_valeurs[4];
+	if (do_coeffs)
+		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[2])) >> 7);
+	else
+		moy_c = moy;
+	camera2_valeurs_t[2] = moy_c;
+	max_moy2 = max(max_moy2, moy_c);
+	min_moy2 = min(min_moy2, moy_c);
+	
+	for (i = 3; i <= 125; i ++)
+	{
+		moy = moy - camera2_valeurs[i-3] + camera2_valeurs[i+2];
+		if (do_coeffs)
+		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[i])) >> 7);
+		else
+			moy_c = moy;
+		camera2_valeurs_t[i] = moy_c;
+		max_moy2 = max(max_moy2, moy_c);
+		min_moy2 = min(min_moy2, moy_c);
+	}
+	
+	moy = moy - camera2_valeurs[123] + camera2_valeurs[127];
+	if (do_coeffs)
+		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[126])) >> 7);
+	else
+		moy_c = moy;
+	camera2_valeurs_t[126] = moy_c;
+	max_moy2 = max(max_moy2, moy_c);
+	min_moy2 = min(min_moy2, moy_c);
+	
+	moy = moy - camera2_valeurs[124] + camera2_valeurs[127];
+	if (do_coeffs)
+		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[127])) >> 7);
+	else
+		moy_c = moy;
+	camera2_valeurs_t[127] = moy_c;
+	max_moy2 = max(max_moy2, moy_c);
+	min_moy2 = min(min_moy2, moy_c);
 }
 
 void delay(uint32_t nb_tours)

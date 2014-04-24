@@ -3,6 +3,15 @@
 
 uint16_t camera1_valeurs[128];
 uint16_t camera2_valeurs[128];
+
+uint16_t camera1_valeurs_t[128];
+uint16_t camera2_valeurs_t[128];
+
+uint16_t max_moy1;
+uint16_t min_moy1;
+uint16_t max_moy2;
+uint16_t min_moy2;
+
 uint8_t ancien_milieu=64;//ancien milieu
 
 uint16_t pos_min_servo = POS_MILIEU_SERVO - AMPLITUDE_SERVO;
@@ -43,6 +52,8 @@ float led_power = 0;
 
 uint8_t ecart_normal = 15;//valeur incertaine, a recalculer
 	
-	
+uint8_t mode_led = 1;
+uint16_t consigne_lum = 300;
+float k_lum = 0.01;
 	
 float projection[128];

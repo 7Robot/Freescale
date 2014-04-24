@@ -462,6 +462,12 @@ void SwIrq4ISR(void)
 							printfloat(led_power);
 							TransmitCharacter('\n');
 						break;
+					case 'm' : mode_led = !(data == 0);
+							TransmitData("led_mode: ");
+							printhex16(mode_led);
+							TransmitCharacter('\n');
+						break;
+						//ajouter consigne et K
 					}
 				break;
 		}

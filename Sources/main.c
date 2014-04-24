@@ -26,8 +26,9 @@ void main (void)
 	
 	uint32_t Port;
 	int sens = 1;
-	uint16_t buff1[128];
-	float buff2[128];
+	uint16_t buff1[128], buff2[128], buff3[128],buff4[128];
+	uint16_t max_lum;
+
 		
 	init();
 
@@ -38,7 +39,10 @@ void main (void)
 		{
 			
 			autorisation_aquiz = 0;
-			Acquisitions_Cameras();
+			max_lum = Acquisitions_Cameras();
+			asserv_leds(max_lum);
+			
+			coeffs_moy_cam(1);
 			//Controle_Direction(0);
 			Set_PWM_Leds(led_power);
 		/*	Asserv_Vitesse(bidule/30.0);
@@ -55,6 +59,8 @@ void main (void)
 				{
 					buff1[i] = camera1_valeurs[i];
 					buff2[i] = camera2_valeurs[i];
+					buff3[i] = camera1_valeurs_t[i];
+					buff4[i] = camera2_valeurs_t[i];
 				}
 				TransmitData("\n\n\nstart:\n\n");
 			}
@@ -63,10 +69,16 @@ void main (void)
 				printhex16(buff1[toto]);
 				TransmitCharacter(' ');
 				printhex16(buff2[toto]);
+				TransmitCharacter(' ');
+				printhex16(buff3[toto]);
+				TransmitCharacter(' ');
+				printhex16(buff4[toto]);
 				TransmitCharacter('\n');
 			}
 			else if (toto == 128)
 			{
+				TransmitData("\nlum : ");
+				printhex16(max_lum);
 				TransmitCharacter('\n');
 				TransmitCharacter('\n');
 				TransmitCharacter('\n');

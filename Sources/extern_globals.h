@@ -3,6 +3,15 @@
 
 extern uint16_t camera1_valeurs[128];
 extern uint16_t camera2_valeurs[128];
+
+extern uint16_t camera1_valeurs_t[128];
+extern uint16_t camera2_valeurs_t[128];
+
+extern uint16_t max_moy1;
+extern uint16_t min_moy1;
+extern uint16_t max_moy2;
+extern uint16_t min_moy2;
+
 extern uint8_t ancien_milieu;//ancien milieu
 
 extern uint16_t pos_min_servo; 
@@ -42,5 +51,8 @@ extern float led_power;
 
 extern uint8_t ecart_normal;
 
+extern uint8_t mode_led;
+extern uint16_t consigne_lum;
+extern float k_lum;
 
 extern float projection[128];
