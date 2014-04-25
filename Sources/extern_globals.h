@@ -4,8 +4,11 @@
 extern uint16_t camera1_valeurs[128];
 extern uint16_t camera2_valeurs[128];
 
-extern uint16_t camera1_valeurs_t[128];
-extern uint16_t camera2_valeurs_t[128];
+extern uint16_t camera1_valeurs_m[128];
+extern uint16_t camera2_valeurs_m[128];
+
+extern uint16_t camera1_courbe[128];
+extern uint16_t camera2_courbe[128];
 
 extern uint16_t max_moy1;
 extern uint16_t min_moy1;
@@ -34,6 +37,7 @@ extern uint8_t Capteurs_resultat;
 
 extern uint8_t nb_receive;
 extern 	vuint8_t autorisation_aquiz;
+extern uint8_t mode_spam;
 
 extern uint16_t controle_kp ;
 extern uint16_t controle_kd ;
@@ -54,5 +58,7 @@ extern uint8_t ecart_normal;
 extern uint8_t mode_led;
 extern uint16_t consigne_lum;
 extern float k_lum;
+extern uint16_t max_lum;
+extern float consigne_led;
 
 extern float projection[128];

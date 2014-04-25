@@ -4,8 +4,11 @@
 uint16_t camera1_valeurs[128];
 uint16_t camera2_valeurs[128];
 
-uint16_t camera1_valeurs_t[128];
-uint16_t camera2_valeurs_t[128];
+uint16_t camera1_valeurs_m[128];
+uint16_t camera2_valeurs_m[128];
+
+uint16_t camera1_courbe[128];
+uint16_t camera2_courbe[128];
 
 uint16_t max_moy1;
 uint16_t min_moy1;
@@ -35,6 +38,8 @@ uint8_t	Capteurs_resultat;
 uint8_t nb_receive = 0;
 vuint8_t autorisation_aquiz = 0;
 
+uint8_t mode_spam = 0;
+
 uint16_t controle_kp = CONTROLE_KP;
 uint16_t controle_kd = CONTROLE_KD;
 uint16_t controle_ki = CONTROLE_KI;
@@ -53,7 +58,10 @@ float led_power = 0;
 uint8_t ecart_normal = 15;//valeur incertaine, a recalculer
 	
 uint8_t mode_led = 1;
-uint16_t consigne_lum = 300;
-float k_lum = 0.01;
+uint16_t consigne_lum = 200;
+uint16_t max_lum = 0;
+float k_lum = 0.05;
+
+float consigne_led = 0;
 	
 float projection[128];

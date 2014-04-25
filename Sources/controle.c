@@ -11,7 +11,7 @@
  
 void Controle_Direction(uint8_t print)
 {
-    uint8_t pos_milieu;
+    uint8_t pos_milieu = 0;
     uint8_t incertitude;
     uint8_t pos_milieu_loin;
     uint8_t incertitude_loin;

@@ -46,9 +46,9 @@ uint16_t Acquisitions_Cameras()
 		while (ADC.MCR.B.NSTART);								// vérifie que les 2 conversion sont finies
 		SIU.PGPDO[2].R = SIU.PGPDO[2].R | BITS_CLK;				// CLK = 1
 
-		camera1_valeurs[i] = ADC.CDR[40].B.CDATA;					// on récupère les données converties par l'ADC
+		camera1_valeurs[i] = ADC.CDR[41].B.CDATA;					// on récupère les données converties par l'ADC
 		max_cam1 = max(max_cam1, camera1_valeurs[i]);					// on prends en meme temps le max de luminosité de la caméra pour lasserv des leds
-		camera2_valeurs[i] = ADC.CDR[41].B.CDATA;						// la première CAM est montée en inverse de la première => il faudra inverser les indices
+		camera2_valeurs[i] = ADC.CDR[40].B.CDATA;						// la première CAM est montée en inverse de la première => il faudra inverser les indices
 		
 		delay(DELAY_CLK_CAM);		
 	}
@@ -64,22 +64,24 @@ uint16_t Acquisitions_Cameras()
  	return max_cam1;    
 }
 
-void asserv_leds(uint16_t max_lum)
+void asserv_leds(uint16_t max_cam)
 {
-	static float consigne_led = 0;
-	
 	// mix entre un intégrale et un proportionnel
-	consigne_led += (consigne_lum - max_lum) * k_lum;
+	consigne_led += (consigne_lum - max_cam) * k_lum;
 	
-	if (consigne_led >= 95)
-		consigne_led = 95;
+	if ( consigne_led>= 100)
+		 consigne_led= 100;
 	else if (consigne_led < 0)
-		consigne_led = 0;
+		 consigne_led= 0;
 	
 	if (!mode_led)
+	{
 		Set_PWM_Leds (led_power);
+	}		
 	else
+	{
 		Set_PWM_Leds (consigne_led);
+	}
 		
 }
 
@@ -108,7 +110,7 @@ void coeffs_moy_cam (uint8_t do_coeffs)
 		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[0])) >> 7);
 	else
 		moy_c = moy;
-	camera1_valeurs_t[0] = moy_c;
+	camera1_valeurs_m[0] = moy_c;
 	max_moy1 = moy_c;
 	min_moy1 = moy_c;
 	
@@ -117,7 +119,7 @@ void coeffs_moy_cam (uint8_t do_coeffs)
 		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[1])) >> 7);
 	else
 		moy_c = moy;
-	camera1_valeurs_t[1] = moy_c;
+	camera1_valeurs_m[1] = moy_c;
 	max_moy1 = max(max_moy1, moy_c);
 	min_moy1 = min(min_moy1, moy_c);
 	
@@ -126,7 +128,7 @@ void coeffs_moy_cam (uint8_t do_coeffs)
 		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[2])) >> 7);
 	else
 		moy_c = moy;
-	camera1_valeurs_t[2] = moy_c;
+	camera1_valeurs_m[2] = moy_c;
 	max_moy1 = max(max_moy1, moy_c);
 	min_moy1 = min(min_moy1, moy_c);
 	
@@ -137,7 +139,7 @@ void coeffs_moy_cam (uint8_t do_coeffs)
 		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[i])) >> 7);
 		else
 			moy_c = moy;
-		camera1_valeurs_t[i] = moy_c;
+		camera1_valeurs_m[i] = moy_c;
 		max_moy1 = max(max_moy1, moy_c);
 		min_moy1 = min(min_moy1, moy_c);
 	}
@@ -147,7 +149,7 @@ void coeffs_moy_cam (uint8_t do_coeffs)
 		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[126])) >> 7);
 	else
 		moy_c = moy;
-	camera1_valeurs_t[126] = moy_c;
+	camera1_valeurs_m[126] = moy_c;
 	max_moy1 = max(max_moy1, moy_c);
 	min_moy1 = min(min_moy1, moy_c);
 	
@@ -156,7 +158,7 @@ void coeffs_moy_cam (uint8_t do_coeffs)
 		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[127])) >> 7);
 	else
 		moy_c = moy;
-	camera1_valeurs_t[127] = moy_c;
+	camera1_valeurs_m[127] = moy_c;
 	max_moy1 = max(max_moy1, moy_c);
 	min_moy1 = min(min_moy1, moy_c);
 	
@@ -171,7 +173,7 @@ void coeffs_moy_cam (uint8_t do_coeffs)
 		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[0])) >> 7);
 	else
 		moy_c = moy;
-	camera2_valeurs_t[0] = moy_c;
+	camera2_valeurs_m[0] = moy_c;
 	max_moy2 = moy_c;
 	min_moy2 = moy_c;
 	
@@ -180,7 +182,7 @@ void coeffs_moy_cam (uint8_t do_coeffs)
 		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[1])) >> 7);
 	else
 		moy_c = moy;
-	camera2_valeurs_t[1] = moy_c;
+	camera2_valeurs_m[1] = moy_c;
 	max_moy2 = max(max_moy2, moy_c);
 	min_moy2 = min(min_moy2, moy_c);
 	
@@ -189,7 +191,7 @@ void coeffs_moy_cam (uint8_t do_coeffs)
 		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[2])) >> 7);
 	else
 		moy_c = moy;
-	camera2_valeurs_t[2] = moy_c;
+	camera2_valeurs_m[2] = moy_c;
 	max_moy2 = max(max_moy2, moy_c);
 	min_moy2 = min(min_moy2, moy_c);
 	
@@ -200,7 +202,7 @@ void coeffs_moy_cam (uint8_t do_coeffs)
 		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[i])) >> 7);
 		else
 			moy_c = moy;
-		camera2_valeurs_t[i] = moy_c;
+		camera2_valeurs_m[i] = moy_c;
 		max_moy2 = max(max_moy2, moy_c);
 		min_moy2 = min(min_moy2, moy_c);
 	}
@@ -210,7 +212,7 @@ void coeffs_moy_cam (uint8_t do_coeffs)
 		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[126])) >> 7);
 	else
 		moy_c = moy;
-	camera2_valeurs_t[126] = moy_c;
+	camera2_valeurs_m[126] = moy_c;
 	max_moy2 = max(max_moy2, moy_c);
 	min_moy2 = min(min_moy2, moy_c);
 	
@@ -219,7 +221,7 @@ void coeffs_moy_cam (uint8_t do_coeffs)
 		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[127])) >> 7);
 	else
 		moy_c = moy;
-	camera2_valeurs_t[127] = moy_c;
+	camera2_valeurs_m[127] = moy_c;
 	max_moy2 = max(max_moy2, moy_c);
 	min_moy2 = min(min_moy2, moy_c);
 }
@@ -230,3 +232,127 @@ void delay(uint32_t nb_tours)
     for(i = 0; i < nb_tours; i++) {};
 }
 
+
+void calcul_courbe(void)
+{
+	uint16_t courbe[2][128];
+	float pente_courbe[128];
+	uint8_t index = 0, index_max;
+	uint8_t i;
+	float pente;
+	
+	courbe[0][0] = 0;
+	courbe[0][1] = camera1_valeurs_m[0];
+	//pente_courbe[0] = 10000;// peut pas être plus grand que cette valeur (even if 5 * max)
+	courbe[1][0] = 1;
+	courbe[1][1] = camera1_valeurs_m[1];
+	pente_courbe[0] = (float)(courbe[1][1] - courbe[0][1]);
+	
+	index = 1;
+	i = 2;
+	
+	while(i < 128)
+	{
+		pente = (float)(camera1_valeurs_m[i] - courbe[index][1]) / (float)(i - courbe[index][0]);
+		if (index != 0)
+		{
+			if(pente < pente_courbe[index - 1])
+			{
+				
+				pente_courbe[index] = pente;
+				index++;
+				courbe[index][0] = i;
+				courbe[index][1] = camera1_valeurs_m[i];
+				i++;
+			}
+			else
+			{
+				index--;
+			}
+		}
+		else
+		{
+			
+			pente_courbe[0] = pente;
+			index++;
+			courbe[1][0] = i;
+			courbe[1][1] = camera1_valeurs_m[i];
+			i++;
+		}
+		
+	}
+	
+	i = 0;
+	index_max = index;
+	index = 0;
+	while (index < index_max)
+	{
+		while (i < courbe[index + 1][0])
+		{
+			camera1_courbe[i] = courbe[index][1] + (int16_t)((i - courbe[index][0]) * pente_courbe[index]);
+			i++;
+		}
+		index++;
+	}
+	camera1_courbe[127] = courbe[index_max][1];
+	
+	
+	
+	/**************************************/
+	//cam2
+	
+	courbe[0][0] = 0;
+	courbe[0][1] = camera2_valeurs_m[0];
+	pente_courbe[0] = 10000;// peut pas être plus grand que cette valeur (even if 5 * max)
+	courbe[1][0] = 1;
+	courbe[1][1] = camera2_valeurs_m[1];
+	pente_courbe[1] = (float)(courbe[1][1] - courbe[0][1]);
+	
+	index = 1;
+	i = 2;
+	
+	while(i < 128)
+	{
+		pente = (float)(camera2_valeurs_m[i] - courbe[index][1]) / (float)(i - courbe[index][0]);
+		if (index != 0)
+		{
+			if(pente < pente_courbe[index - 1])
+			{
+				
+				pente_courbe[index] = pente;
+				index++;
+				courbe[index][0] = i;
+				courbe[index][1] = camera2_valeurs_m[i];
+				i++;
+			}
+			else
+			{
+				index--;
+			}
+		}
+		else
+		{
+			
+			pente_courbe[0] = pente;
+			index++;
+			courbe[1][0] = i;
+			courbe[1][1] = camera2_valeurs_m[i];
+			i++;
+		}
+		
+	}
+	
+	i = 0;
+	index_max = index;
+	index = 0;
+	while (index < index_max)
+	{
+		while (i < courbe[index + 1][0])
+		{
+			camera2_courbe[i] = courbe[index][1] + (int16_t)((i - courbe[index][0]) * pente_courbe[index]);
+			i++;
+		}
+		index++;
+	}
+	camera2_courbe[127] = courbe[index_max][1];
+}

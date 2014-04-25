@@ -201,11 +201,11 @@ void initADC(void) {
 	ADC.CTR[1].R = 0x00008606;       	// Conversion times for 32MHz ADClock	for standards chanels
 	
 	ADC.CTR[0].B.INPLATCH = 1;
-	ADC.CTR[0].B.INPCMP = 3;
+	ADC.CTR[0].B.INPCMP = 1;
 	ADC.CTR[0].B.INPSAMP = 25;
 	
 	ADC.CTR[1].B.INPLATCH = 1;
-	ADC.CTR[1].B.INPCMP = 3;
+	ADC.CTR[1].B.INPCMP = 1;
 	ADC.CTR[1].B.INPSAMP = 25;
 	
 }

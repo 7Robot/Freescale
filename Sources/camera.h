@@ -9,9 +9,11 @@ uint16_t Acquisitions_Cameras(void);
 
 void coeffs_moy_cam (uint8_t do_coeffs);
 
+void calcul_courbe(void);
+
 void delay(uint32_t nb_tours);
 
-void asserv_leds(uint16_t max_lum);
+void asserv_leds(uint16_t max_cam);
 void Set_PWM_Leds(float consigne);
 
 #endif

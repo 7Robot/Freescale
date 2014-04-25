@@ -387,6 +387,21 @@ void UART_RXI_ISR(void)
 void SwIrq4ISR(void)
 {
 	uint16_t data = 0;
+	/*
+	TransmitCharacter(buffer_rx_lecture[0]); 
+	TransmitCharacter('\n');
+	TransmitCharacter(buffer_rx_lecture[1]); 
+	TransmitCharacter('\n');
+	TransmitCharacter(buffer_rx_lecture[2]); 
+	TransmitCharacter('\n');
+	TransmitCharacter(buffer_rx_lecture[3]); 
+	TransmitCharacter('\n');
+	TransmitCharacter(buffer_rx_lecture[4]); 
+	TransmitCharacter('\n');
+	TransmitCharacter(buffer_rx_lecture[5]); 
+	TransmitCharacter('\n');*/
+
+	
 	if (	buffer_rx_lecture[2] >=48 && buffer_rx_lecture[2] <= 57 &&
 			buffer_rx_lecture[3] >=48 && buffer_rx_lecture[3] <= 57 &&
 			buffer_rx_lecture[4] >=48 && buffer_rx_lecture[4] <= 57 &&
@@ -398,6 +413,7 @@ void SwIrq4ISR(void)
 				(buffer_rx_lecture[5] - 48);
 		
 		printfloat(data);
+		TransmitCharacter('\n');
 		
 		switch (buffer_rx_lecture[0])
 		{
@@ -458,22 +474,63 @@ void SwIrq4ISR(void)
 					{
 
 					case 'p' : led_power = data/10.0;
-							TransmitData("led: ");
+							TransmitData("\nled_power: ");
 							printfloat(led_power);
 							TransmitCharacter('\n');
 						break;
 					case 'm' : mode_led = !(data == 0);
-							TransmitData("led_mode: ");
+							TransmitData("\nled_mode: ");
 							printhex16(mode_led);
+							TransmitData("   \n");
+						break;
+					case 'c' : consigne_lum = data;
+							TransmitData("\nconsigne_lum: ");
+							printfloat(consigne_lum);
 							TransmitCharacter('\n');
 						break;
-						//ajouter consigne et K
+					case 'k' : k_lum = data/1000.0;
+							TransmitData("\nk_lum: ");
+							printfloat(k_lum);
+							TransmitCharacter('\n');
+						break;
+					case 's' : 
+							TransmitData("\nmode_led: ");
+							printhex16(mode_led);
+							TransmitData("\nmax_lum: ");
+							printfloat(max_lum);
+							TransmitData("\nconsigne_lum: ");
+							printfloat(consigne_lum);
+							TransmitData("\nconsigne_led: ");
+							printfloat(consigne_led);
+							TransmitData("\nk_lum: ");
+							printfloat(k_lum);
+							TransmitData("\nled_power: ");
+							printfloat(led_power);							
+							TransmitData("\nPWM_led: ");
+							printfloat((EMIOS_1.CH[11].CBDR.R)/10.0);
+							TransmitCharacter('\n');
+							TransmitCharacter('\n');
+							TransmitCharacter('\n');
+							TransmitCharacter('\n');
+						break;
+					}
+				break;
+			case 's' :
+					if (mode_spam)
+					{
+						mode_spam = 0;					
+						TransmitData("\nspam OFF\n");						
+					}
+					else
+					{
+						mode_spam = 1;					
+						TransmitData("\nspam ON\n");						
 					}
 				break;
 		}
 	}
 	else 
-		TransmitData("Error_receive\n");
+		TransmitData("\nError_receive\n");
 	
 	INTC.SSCIR[4].B.CLR = 1;		// Clear channel's flag   
 }

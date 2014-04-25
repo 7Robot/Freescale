@@ -26,12 +26,16 @@ void main (void)
 	
 	uint32_t Port;
 	int sens = 1;
-	uint16_t buff1[128], buff2[128], buff3[128],buff4[128];
-	uint16_t max_lum;
-
+	//uint16_t buff1[128], buff2[128], buff5[128],buff6[128];//, buff5[128],buff6[128];
+	uint16_t buff6[128];
+	for (i = 0; i < 128; i++)
+	{
+		buff6[128] = 0;
+	}
 		
 	init();
-
+	TransmitData("\nI AM ALIVE !\n");
+	
 	while (1)
 	{ 
 
@@ -40,11 +44,13 @@ void main (void)
 			
 			autorisation_aquiz = 0;
 			max_lum = Acquisitions_Cameras();
-			asserv_leds(max_lum);
+		//	asserv_leds(max_lum);
 			
-			coeffs_moy_cam(1);
+			//coeffs_moy_cam(0);
+			calcul_courbe();
+			
 			//Controle_Direction(0);
-			Set_PWM_Leds(led_power);
+			//Set_PWM_Leds(led_power);
 		/*	Asserv_Vitesse(bidule/30.0);
 			Set_Dir_Servo(bidule);
 			Set_PWM_Leds(50 + bidule/2.0);
@@ -55,42 +61,53 @@ void main (void)
 			toto++;
 			if (toto == 255)
 			{
+					
+						
 				for (i = 0; i< 128; i++)
 				{
-					buff1[i] = camera1_valeurs[i];
+				/*	buff1[i] = camera1_valeurs[i];
 					buff2[i] = camera2_valeurs[i];
-					buff3[i] = camera1_valeurs_t[i];
-					buff4[i] = camera2_valeurs_t[i];
+					//buff3[i] = camera1_valeurs_t[i];
+				//	buff4[i] = camera2_valeurs_t[i];
+					buff5[i] = camera1_courbe[i];
+					buff6[i] = camera2_courbe[i];*/
+					
 				}
-				TransmitData("\n\n\nstart:\n\n");
+			/*	if (mode_spam)
+					TransmitData("\n\n\nstart:\n\n");*/
+				for (i = 0; i < 128; i++)
+						buff6[i] = 0;
+					
+				//toto = 0;
 			}
-			if (toto < 128)
+			if (toto < 128 && mode_spam)
 			{
-				printhex16(buff1[toto]);
+			/*	printhex16(buff1[toto]);
 				TransmitCharacter(' ');
 				printhex16(buff2[toto]);
 				TransmitCharacter(' ');
-				printhex16(buff3[toto]);
+			/*	printhex16(buff3[toto]);
 				TransmitCharacter(' ');
 				printhex16(buff4[toto]);
 				TransmitCharacter('\n');
+				printhex16(buff5[toto]);
+				TransmitCharacter(' ');*/
+				printhex16(buff6[toto]);
+				TransmitCharacter('\n');
+
 			}
-			else if (toto == 128)
+			else if (toto == 128 && mode_spam)
 			{
-				TransmitData("\nlum : ");
-				printhex16(max_lum);
-				TransmitCharacter('\n');
-				TransmitCharacter('\n');
-				TransmitCharacter('\n');
-				TransmitCharacter('\n');
-				TransmitCharacter('\n');				
+			//	TransmitData("\nlum : ");
+			//	printhex16(max_lum);
+			//	TransmitData("\n    ");
 			}
 			
 			
-			if (autorisation_aquiz == 1)
+		/*	if (autorisation_aquiz == 1)
 				set_led(2,1);
 			else
-				set_led(2,0);
+				set_led(2,0);*/
 			
 		}
 	}	
