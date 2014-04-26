@@ -1,6 +1,7 @@
 #include "liaison_serie.h"
 #include "extern_globals.h" 
 #include "leds_boutons.h"
+#include "moteur.h"
 
 
 // *************************  Fonctions de transmission de données *****************************
@@ -421,17 +422,17 @@ void SwIrq4ISR(void)
 					{
 
 					case 'p' : controle_kp = data/10.0;
-							TransmitData("C_Kp: ");
+							TransmitData("\nC_Kp: ");
 							printfloat(controle_kp);  
 							TransmitCharacter('\n');
 						break;
 					case 'i' : controle_ki = data/10.0;
-							TransmitData("C_Ki: ");
+							TransmitData("\nC_Ki: ");
 							printfloat(controle_ki);
 							TransmitCharacter('\n');
 						break;
 					case 'd' : controle_kd = data/10.0;
-							TransmitData("C_Kd: ");
+							TransmitData("\nC_Kd: ");
 							printfloat(controle_kd);
 							TransmitCharacter('\n');
 						break;
@@ -442,30 +443,42 @@ void SwIrq4ISR(void)
 					{
 
 					case 'p' : moteur_kp_vit = data/10.0;
-							TransmitData("M_Kp: ");
+							TransmitData("\nM_Kp_V: ");
 							printfloat(moteur_kp_vit);  
 							TransmitCharacter('\n');
 						break;
 					case 'i' : moteur_ki_vit = data/10.0;
-							TransmitData("M_Ki: ");
+							TransmitData("\nM_Ki_V: ");
 							printfloat(moteur_ki_vit);
 							TransmitCharacter('\n');
 						break;
 					case 'd' : moteur_kd_vit = data/10.0;
-							TransmitData("M_Kd: ");
+							TransmitData("\nM_Kd_V: ");
 							printfloat(moteur_kd_vit);
 							TransmitCharacter('\n');
 						break;
 					}
 				break;
 				
-			case 'o' : switch (buffer_rx_lecture[1])
+			case 'v' : switch (buffer_rx_lecture[1])
 					{
 
-					case 'v' : objectif_vitesse = data/10.0;
-							TransmitData("Obj_v: ");
+					case 'o' : objectif_vitesse = data/10.0;
+							TransmitData("\nObj_v: ");
 							printfloat(objectif_vitesse);
 							TransmitCharacter('\n');
+						break;
+					case 'm' :
+							mode_asserv_vitesse = !mode_asserv_vitesse;
+							reset_asserv_motor_state();
+							if (mode_asserv_vitesse)
+								TransmitData("\nMode Vitesse\n");
+							else
+								TransmitData("\nMode Position\n");
+						break;
+					case 's' :
+							TransmitData("\nMotor_Status :\n");
+							send_asserv_motor_status();
 						break;
 					}
 				break;
@@ -515,16 +528,21 @@ void SwIrq4ISR(void)
 						break;
 					}
 				break;
-			case 's' :
-					if (mode_spam)
+			case 's' :switch (buffer_rx_lecture[1])
 					{
-						mode_spam = 0;					
-						TransmitData("\nspam OFF\n");						
-					}
-					else
-					{
-						mode_spam = 1;					
-						TransmitData("\nspam ON\n");						
+
+					case 'p' : 
+							if (mode_spam)
+							{
+								mode_spam = 0;					
+								TransmitData("\nspam OFF    \n");						
+							}
+							else
+							{
+								mode_spam = 1;					
+								TransmitData("\nspam ON    \n");						
+							}
+						break;
 					}
 				break;
 		}

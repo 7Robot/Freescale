@@ -1,10 +1,13 @@
 #include "extern_globals.h"
 #include "MPC5604B_M27V.h"
 #include "camera.h"
-#include "coeff_cam.h"
+#include "leds_boutons.h"
+//#include "coeff_cam.h"
+#include "un_sur.h"
 
 #define max(i, j) (i > j ? i : j)
 #define min(i,j) (i > j ? j : i)
+
 
 uint16_t Acquisitions_Cameras()
 {
@@ -48,7 +51,7 @@ uint16_t Acquisitions_Cameras()
 
 		camera1_valeurs[i] = ADC.CDR[41].B.CDATA;					// on récupère les données converties par l'ADC
 		max_cam1 = max(max_cam1, camera1_valeurs[i]);					// on prends en meme temps le max de luminosité de la caméra pour lasserv des leds
-		camera2_valeurs[i] = ADC.CDR[40].B.CDATA;						// la première CAM est montée en inverse de la première => il faudra inverser les indices
+		camera2_valeurs[127-i] = ADC.CDR[40].B.CDATA;						// la première CAM est montée en inverse de la première => il faudra inverser les indices
 		
 		delay(DELAY_CLK_CAM);		
 	}
@@ -97,133 +100,116 @@ void Set_PWM_Leds(float consigne)
 	EMIOS_1.CH[11].CBDR.R = (uint16_t)(consigne * 10);
 }
 
-void coeffs_moy_cam (uint8_t do_coeffs)
+void moy_cam (uint8_t do_moy)
 {
 	uint8_t i;
 	uint16_t moy;
-	uint16_t moy_c;
 	
-	// passage pour la caméra 1
-	// moyenne par circulairesur 5 pixels
-	moy = 3*camera1_valeurs[0] + camera1_valeurs[1] + camera1_valeurs[2];
-	if (do_coeffs)
-		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[0])) >> 7);
-	else
-		moy_c = moy;
-	camera1_valeurs_m[0] = moy_c;
-	max_moy1 = moy_c;
-	min_moy1 = moy_c;
-	
-	moy = moy - camera1_valeurs[0] + camera1_valeurs[3];
-	if (do_coeffs)
-		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[1])) >> 7);
-	else
-		moy_c = moy;
-	camera1_valeurs_m[1] = moy_c;
-	max_moy1 = max(max_moy1, moy_c);
-	min_moy1 = min(min_moy1, moy_c);
-	
-	moy = moy - camera1_valeurs[0] + camera1_valeurs[4];
-	if (do_coeffs)
-		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[2])) >> 7);
-	else
-		moy_c = moy;
-	camera1_valeurs_m[2] = moy_c;
-	max_moy1 = max(max_moy1, moy_c);
-	min_moy1 = min(min_moy1, moy_c);
-	
-	for (i = 3; i <= 125; i ++)
+	if (do_moy)
 	{
-		moy = moy - camera1_valeurs[i-3] + camera1_valeurs[i+2];
-		if (do_coeffs)
-		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[i])) >> 7);
-		else
-			moy_c = moy;
-		camera1_valeurs_m[i] = moy_c;
-		max_moy1 = max(max_moy1, moy_c);
-		min_moy1 = min(min_moy1, moy_c);
+		// passage pour la caméra 1
+		// moyenne par circulairesur 5 pixels
+		moy = 3*camera1_valeurs[0] + camera1_valeurs[1] + camera1_valeurs[2];
+
+		camera1_valeurs_m[0] = moy;
+		max_moy1 = moy;
+		min_moy1 = moy;
+		
+		moy = moy - camera1_valeurs[0] + camera1_valeurs[3];
+
+		camera1_valeurs_m[1] = moy;
+		max_moy1 = max(max_moy1, moy);
+		min_moy1 = min(min_moy1, moy);
+		
+		moy = moy - camera1_valeurs[0] + camera1_valeurs[4];
+
+		camera1_valeurs_m[2] = moy;
+		max_moy1 = max(max_moy1, moy);
+		min_moy1 = min(min_moy1, moy);
+		
+		for (i = 3; i <= 125; i ++)
+		{
+			moy = moy - camera1_valeurs[i-3] + camera1_valeurs[i+2];
+
+			camera1_valeurs_m[i] = moy;
+			max_moy1 = max(max_moy1, moy);
+			min_moy1 = min(min_moy1, moy);
+		}
+		
+		moy = moy - camera1_valeurs[123] + camera1_valeurs[127];
+
+		camera1_valeurs_m[126] = moy;
+		max_moy1 = max(max_moy1, moy);
+		min_moy1 = min(min_moy1, moy);
+		
+		moy = moy - camera1_valeurs[124] + camera1_valeurs[127];
+
+		camera1_valeurs_m[127] = moy;
+		max_moy1 = max(max_moy1, moy);
+		min_moy1 = min(min_moy1, moy);
+		
+		
+		
+
+
+
+		// camera 2
+		moy = 3*camera2_valeurs[0] + camera2_valeurs[1] + camera2_valeurs[2];
+		
+		camera2_valeurs_m[0] = moy;
+		max_moy2 = moy;
+		min_moy2 = moy;
+		
+		moy = moy - camera2_valeurs[0] + camera2_valeurs[3];
+		
+		camera2_valeurs_m[1] = moy;
+		max_moy2 = max(max_moy2, moy);
+		min_moy2 = min(min_moy2, moy);
+		
+		moy = moy - camera2_valeurs[0] + camera2_valeurs[4];
+		camera2_valeurs_m[2] = moy;
+		max_moy2 = max(max_moy2, moy);
+		min_moy2 = min(min_moy2, moy);
+		
+		for (i = 3; i <= 125; i ++)
+		{
+			moy = moy - camera2_valeurs[i-3] + camera2_valeurs[i+2];
+			camera2_valeurs_m[i] = moy;
+			max_moy2 = max(max_moy2, moy);
+			min_moy2 = min(min_moy2, moy);
+		}
+		
+		moy = moy - camera2_valeurs[123] + camera2_valeurs[127];
+		camera2_valeurs_m[126] = moy;
+		max_moy2 = max(max_moy2, moy);
+		min_moy2 = min(min_moy2, moy);
+		
+		moy = moy - camera2_valeurs[124] + camera2_valeurs[127];
+		camera2_valeurs_m[127] = moy;
+		max_moy2 = max(max_moy2, moy);
+		min_moy2 = min(min_moy2, moy);
 	}
-	
-	moy = moy - camera1_valeurs[123] + camera1_valeurs[127];
-	if (do_coeffs)
-		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[126])) >> 7);
 	else
-		moy_c = moy;
-	camera1_valeurs_m[126] = moy_c;
-	max_moy1 = max(max_moy1, moy_c);
-	min_moy1 = min(min_moy1, moy_c);
-	
-	moy = moy - camera1_valeurs[124] + camera1_valeurs[127];
-	if (do_coeffs)
-		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[127])) >> 7);
-	else
-		moy_c = moy;
-	camera1_valeurs_m[127] = moy_c;
-	max_moy1 = max(max_moy1, moy_c);
-	min_moy1 = min(min_moy1, moy_c);
-	
-	
-	
-
-
-
-	// camera 2
-	moy = 3*camera2_valeurs[0] + camera2_valeurs[1] + camera2_valeurs[2];
-	if (do_coeffs)
-		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[0])) >> 7);
-	else
-		moy_c = moy;
-	camera2_valeurs_m[0] = moy_c;
-	max_moy2 = moy_c;
-	min_moy2 = moy_c;
-	
-	moy = moy - camera2_valeurs[0] + camera2_valeurs[3];
-	if (do_coeffs)
-		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[1])) >> 7);
-	else
-		moy_c = moy;
-	camera2_valeurs_m[1] = moy_c;
-	max_moy2 = max(max_moy2, moy_c);
-	min_moy2 = min(min_moy2, moy_c);
-	
-	moy = moy - camera2_valeurs[0] + camera2_valeurs[4];
-	if (do_coeffs)
-		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[2])) >> 7);
-	else
-		moy_c = moy;
-	camera2_valeurs_m[2] = moy_c;
-	max_moy2 = max(max_moy2, moy_c);
-	min_moy2 = min(min_moy2, moy_c);
-	
-	for (i = 3; i <= 125; i ++)
 	{
-		moy = moy - camera2_valeurs[i-3] + camera2_valeurs[i+2];
-		if (do_coeffs)
-		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[i])) >> 7);
-		else
-			moy_c = moy;
-		camera2_valeurs_m[i] = moy_c;
-		max_moy2 = max(max_moy2, moy_c);
-		min_moy2 = min(min_moy2, moy_c);
+		max_moy1 = 0;
+		max_moy2 = 0;
+		min_moy1 = 6000;	// max en sortie de l'ADC : 1023 => * 5 donne 5k et des poussieres => on met 6k
+		min_moy2 = 6000;
+		// fonction qui ne fait pas la moyenne
+		// recopie en mutlipliant par 5 (pour garder une cohérence avec la moyenne)
+		for (i = 0; i < 128; i++)
+		{
+			moy = 5 * camera1_valeurs[i];
+			camera1_valeurs_m[127] = moy;
+			max_moy1 = max(max_moy1, moy);
+			min_moy1 = min(min_moy1, moy);
+			
+			moy = 5 * camera2_valeurs[i];
+			camera2_valeurs_m[127] = moy;
+			max_moy2 = max(max_moy2, moy);
+			min_moy2 = min(min_moy2, moy);
+		}
 	}
-	
-	moy = moy - camera2_valeurs[123] + camera2_valeurs[127];
-	if (do_coeffs)
-		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[126])) >> 7);
-	else
-		moy_c = moy;
-	camera2_valeurs_m[126] = moy_c;
-	max_moy2 = max(max_moy2, moy_c);
-	min_moy2 = min(min_moy2, moy_c);
-	
-	moy = moy - camera2_valeurs[124] + camera2_valeurs[127];
-	if (do_coeffs)
-		moy_c = (uint16_t)(((uint32_t)(moy * coeffs_cam[127])) >> 7);
-	else
-		moy_c = moy;
-	camera2_valeurs_m[127] = moy_c;
-	max_moy2 = max(max_moy2, moy_c);
-	min_moy2 = min(min_moy2, moy_c);
 }
 
 void delay(uint32_t nb_tours)
@@ -235,34 +221,43 @@ void delay(uint32_t nb_tours)
 
 void calcul_courbe(void)
 {
-	uint16_t courbe[2][128];
-	float pente_courbe[128];
+	
+	uint16_t courbe[128][2];
+	float pente_courbe[127];		// pente_courbe(0) = pente entre 0 et 1
 	uint8_t index = 0, index_max;
 	uint8_t i;
 	float pente;
+	uint8_t xa, xb, xc;
+	uint16_t ya, yb, yc;
+	int32_t p1,p2;
+	
 	
 	courbe[0][0] = 0;
 	courbe[0][1] = camera1_valeurs_m[0];
-	//pente_courbe[0] = 10000;// peut pas être plus grand que cette valeur (even if 5 * max)
+	
 	courbe[1][0] = 1;
 	courbe[1][1] = camera1_valeurs_m[1];
-	pente_courbe[0] = (float)(courbe[1][1] - courbe[0][1]);
 	
 	index = 1;
 	i = 2;
 	
 	while(i < 128)
 	{
-		pente = (float)(camera1_valeurs_m[i] - courbe[index][1]) / (float)(i - courbe[index][0]);
 		if (index != 0)
 		{
-			if(pente < pente_courbe[index - 1])
+			ya = courbe[index-1][1];
+			yb = courbe[index][1];
+			yc = camera1_valeurs_m[i];
+			xa = courbe[index-1][0];
+			xb = courbe[index][0];
+			xc = i;
+			p2 = (yc - yb) * (xb - xa);		//	pente entre B et C
+			p1 = (yb - ya) * (xc - xb);		//	pente entre A et B
+			if(p2 < p1)
 			{
-				
-				pente_courbe[index] = pente;
 				index++;
 				courbe[index][0] = i;
-				courbe[index][1] = camera1_valeurs_m[i];
+				courbe[index][1] = yc;
 				i++;
 			}
 			else
@@ -272,8 +267,6 @@ void calcul_courbe(void)
 		}
 		else
 		{
-			
-			pente_courbe[0] = pente;
 			index++;
 			courbe[1][0] = i;
 			courbe[1][1] = camera1_valeurs_m[i];
@@ -285,16 +278,22 @@ void calcul_courbe(void)
 	i = 0;
 	index_max = index;
 	index = 0;
+	
 	while (index < index_max)
 	{
-		while (i < courbe[index + 1][0])
+		xa = courbe[index][0];
+		xb = courbe[index+1][0];
+		ya = courbe[index][1];
+		yb = courbe[index+1][1];
+		
+		while (i < xb)
 		{
-			camera1_courbe[i] = courbe[index][1] + (int16_t)((i - courbe[index][0]) * pente_courbe[index]);
+			camera1_courbe[i] = ya + (((yb - ya)*(i - xa)) / (xb - xa));
 			i++;
 		}
 		index++;
 	}
-	camera1_courbe[127] = courbe[index_max][1];
+	camera1_courbe[127] = yb;
 	
 	
 	
@@ -303,26 +302,30 @@ void calcul_courbe(void)
 	
 	courbe[0][0] = 0;
 	courbe[0][1] = camera2_valeurs_m[0];
-	pente_courbe[0] = 10000;// peut pas être plus grand que cette valeur (even if 5 * max)
+	
 	courbe[1][0] = 1;
 	courbe[1][1] = camera2_valeurs_m[1];
-	pente_courbe[1] = (float)(courbe[1][1] - courbe[0][1]);
 	
 	index = 1;
 	i = 2;
 	
 	while(i < 128)
 	{
-		pente = (float)(camera2_valeurs_m[i] - courbe[index][1]) / (float)(i - courbe[index][0]);
 		if (index != 0)
 		{
-			if(pente < pente_courbe[index - 1])
+			ya = courbe[index-1][1];
+			yb = courbe[index][1];
+			yc = camera2_valeurs_m[i];
+			xa = courbe[index-1][0];
+			xb = courbe[index][0];
+			xc = i;
+			p2 = (yc - yb) * (xb - xa);		//	pente entre B et C
+			p1 = (yb - ya) * (xc - xb);		//	pente entre A et B
+			if(p2 < p1)
 			{
-				
-				pente_courbe[index] = pente;
 				index++;
 				courbe[index][0] = i;
-				courbe[index][1] = camera2_valeurs_m[i];
+				courbe[index][1] = yc;
 				i++;
 			}
 			else
@@ -332,8 +335,6 @@ void calcul_courbe(void)
 		}
 		else
 		{
-			
-			pente_courbe[0] = pente;
 			index++;
 			courbe[1][0] = i;
 			courbe[1][1] = camera2_valeurs_m[i];
@@ -345,14 +346,51 @@ void calcul_courbe(void)
 	i = 0;
 	index_max = index;
 	index = 0;
+	
 	while (index < index_max)
 	{
-		while (i < courbe[index + 1][0])
+		xa = courbe[index][0];
+		xb = courbe[index+1][0];
+		ya = courbe[index][1];
+		yb = courbe[index+1][1];
+		
+		while (i < xb)
 		{
-			camera2_courbe[i] = courbe[index][1] + (int16_t)((i - courbe[index][0]) * pente_courbe[index]);
+			camera2_courbe[i] = ya + (((yb - ya)*(i - xa)) / (xb - xa));
 			i++;
 		}
 		index++;
 	}
-	camera2_courbe[127] = courbe[index_max][1];
+	camera2_courbe[127] = yb;
+	
+}
+
+
+void retranche_courbe(void)
+{
+	uint8_t i;
+	uint16_t a,b;
+	max_p1 =0;
+	max_p2 =0;
+	for (i = 0; i < 128; i++)
+	{
+		a = camera1_courbe[i] - camera1_valeurs_m[i];
+		b = camera2_courbe[i] - camera2_valeurs_m[i];
+		max_p1 = max(max_p1, a);
+		max_p2 = max(max_p2, b);
+		camera1_p[i] = a;
+		camera2_p[i] = b;
+	}
+}
+
+void analyse_cam(void)
+{
+	if (max_p1 > (max_moy1 / 5))
+	{
+		
+	}
+	if (max_p2 > (max_moy2 / 5))
+	{
+		
+	}
 }

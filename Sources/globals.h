@@ -10,10 +10,16 @@ uint16_t camera2_valeurs_m[128];
 uint16_t camera1_courbe[128];
 uint16_t camera2_courbe[128];
 
+uint16_t camera1_p[128];
+uint16_t camera2_p[128];
+
 uint16_t max_moy1;
 uint16_t min_moy1;
 uint16_t max_moy2;
 uint16_t min_moy2;
+
+uint16_t max_p1;
+uint16_t max_p2;
 
 uint8_t ancien_milieu=64;//ancien milieu
 
@@ -24,6 +30,7 @@ uint16_t amplitude_servo = AMPLITUDE_SERVO;
 
 float objectif_vitesse = 0;
 
+uint8_t mode_asserv_vitesse = 1;
 
 int8_t controle_derniere_erreur;
 int16_t controle_integrale;
@@ -38,7 +45,7 @@ uint8_t	Capteurs_resultat;
 uint8_t nb_receive = 0;
 vuint8_t autorisation_aquiz = 0;
 
-uint8_t mode_spam = 0;
+uint8_t mode_spam = 1;
 
 uint16_t controle_kp = CONTROLE_KP;
 uint16_t controle_kd = CONTROLE_KD;
@@ -64,4 +71,3 @@ float k_lum = 0.05;
 
 float consigne_led = 0;
 	
-float projection[128];

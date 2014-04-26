@@ -7,9 +7,10 @@
 
 uint16_t Acquisitions_Cameras(void);
 
-void coeffs_moy_cam (uint8_t do_coeffs);
+void moy_cam (uint8_t do_moy);
 
 void calcul_courbe(void);
+void retranche_courbe(void);
 
 void delay(uint32_t nb_tours);
 

@@ -2,8 +2,6 @@
 #include "liaison_serie.h"
 #include "extern_globals.h"
 
-#define MODE_VITESSE
-#define MODE_POSITION
 
 int32_t moteur_compteur = 0;
 float moteur_integrale_vit = 0;
@@ -13,6 +11,7 @@ float moteur_derniere_erreur = 0;
 float distance_parcourue = 0;
 float distance_consigne = 0;
 
+float last_consigne = 0;
 
 
 
@@ -87,6 +86,8 @@ void Asserv_Vitesse(float consigne)
 	float commande = 0;
 	int32_t moteur_compteur_temp;
 	
+	last_consigne = consigne;
+	
 	// récupération de l'avancement
 	moteur_compteur_temp = moteur_compteur;
 	moteur_compteur = 0;
@@ -94,8 +95,8 @@ void Asserv_Vitesse(float consigne)
 	printfloat((float)moteur_compteur_temp);
 	TransmitCharacter('\n');*/
     
-    #ifdef MODE_VITESSE
-    
+    if (mode_asserv_vitesse)
+    {
 	    // calcul erreur	    
 	    erreur = consigne - moteur_compteur_temp;	    
 
@@ -111,10 +112,9 @@ void Asserv_Vitesse(float consigne)
 		moteur_kp_vit * erreur + 
 		moteur_kd_vit * derivee + 
 		moteur_ki_vit * moteur_integrale_vit; 
-	
-	#endif
-	
-	#ifdef MODE_POSITION
+    }
+	else
+	{
 		// intégration de la consigne (100 passages par seconde)
 		distance_consigne += consigne * 0.01;
 		
@@ -136,8 +136,8 @@ void Asserv_Vitesse(float consigne)
 		moteur_kp_pos * erreur + 
 		moteur_kd_pos * derivee + 
 		moteur_ki_pos * moteur_integrale_pos; 
-		
-	#endif
+	}
+	
 /*	TransmitData("err : ");
 	printfloat(erreur);
 	TransmitCharacter('\n');
@@ -224,4 +224,69 @@ void Commande_Moteur(float C_Moteur_D, float C_Moteur_G)
 float get_moteur_compteur(void)
 {
 	return (float)(moteur_compteur);
+}
+
+float get_distance_parcourue(void)
+{
+	return distance_parcourue;
+}
+
+void reset_asserv_motor_state(void)
+{
+	moteur_compteur = 0;
+	moteur_integrale_vit = 0;
+	moteur_integrale_pos = 0;
+	moteur_derniere_erreur = 0;
+
+	distance_parcourue = 0;
+	distance_consigne = 0;
+}
+
+void send_asserv_motor_status(void)
+{
+	if (mode_asserv_vitesse)
+	{
+		TransmitData("Mode Vitesse\nintegrale_vit : ");
+		printfloat(moteur_integrale_vit);
+		TransmitData("\nmoteur_consigne : ");
+		printfloat(last_consigne);
+		
+		TransmitData("\nmoteur_derniere_erreur : ");
+		printfloat(moteur_derniere_erreur);
+		TransmitData("\nKp : ");
+		printfloat(moteur_kp_vit);
+		TransmitData("\nKi : ");
+		printfloat(moteur_ki_vit);
+		TransmitData("\nKd : ");
+		printfloat(moteur_kd_vit);
+		TransmitData("\nPWM moteur : ");
+		printfloat((EMIOS_0.CH[7].CBDR.R/10.0) - (EMIOS_0.CH[5].CBDR.R/10.0));
+		TransmitCharacter('\n');
+		
+	}
+	else
+	{
+		TransmitData("Mode Position\nintegrale_pos : ");
+		printfloat(moteur_integrale_pos);
+		TransmitData("\nmoteur_consigne : ");
+		printfloat(last_consigne);
+		TransmitData("\ndistance_consigne : ");
+		printfloat(distance_consigne);
+		TransmitData("\ndistance_parcourue : ");
+		printfloat(distance_parcourue);
+		
+		
+		TransmitData("\nmoteur_derniere_erreur : ");
+		printfloat(moteur_derniere_erreur);
+		TransmitData("\nKp : ");
+		printfloat(moteur_kp_pos);
+		TransmitData("\nKi : ");
+		printfloat(moteur_ki_pos);
+		TransmitData("\nKd : ");
+		printfloat(moteur_kd_pos);
+		TransmitData("\nPWM moteur : ");
+		printfloat((EMIOS_0.CH[7].CBDR.R/10.0) - (EMIOS_0.CH[5].CBDR.R/10.0));
+		TransmitCharacter('\n');
+		
+	}
 }

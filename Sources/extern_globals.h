@@ -10,10 +10,16 @@ extern uint16_t camera2_valeurs_m[128];
 extern uint16_t camera1_courbe[128];
 extern uint16_t camera2_courbe[128];
 
+extern uint16_t camera1_p[128];
+extern uint16_t camera2_p[128];
+
 extern uint16_t max_moy1;
 extern uint16_t min_moy1;
 extern uint16_t max_moy2;
 extern uint16_t min_moy2;
+
+extern uint16_t max_p1;
+extern uint16_t max_p2;
 
 extern uint8_t ancien_milieu;//ancien milieu
 
@@ -23,7 +29,7 @@ extern uint16_t pos_milieu_servo;
 extern uint16_t amplitude_servo;
 
 extern float objectif_vitesse;
-
+extern uint8_t mode_asserv_vitesse;
 
 extern int8_t controle_derniere_erreur;
 extern int16_t controle_integrale;
@@ -60,5 +66,3 @@ extern uint16_t consigne_lum;
 extern float k_lum;
 extern uint16_t max_lum;
 extern float consigne_led;
-
-extern float projection[128];
