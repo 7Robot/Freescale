@@ -20,6 +20,8 @@ uint16_t min_moy2;
 
 uint16_t max_p1;
 uint16_t max_p2;
+uint8_t pos_max_p1;
+uint8_t pos_max_p2;
 
 uint8_t ancien_milieu=64;//ancien milieu
 
@@ -70,4 +72,7 @@ uint16_t max_lum = 0;
 float k_lum = 0.05;
 
 float consigne_led = 0;
+
+uint8_t milieu1, milieu2, milieu1_ok, milieu2_ok, old_milieu1, old_milieu2;
+
 	

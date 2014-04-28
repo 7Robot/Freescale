@@ -372,12 +372,21 @@ void retranche_courbe(void)
 	uint16_t a,b;
 	max_p1 =0;
 	max_p2 =0;
+	pos_max_p1 = 0;
+	pos_max_p2 = 0;
+	
 	for (i = 0; i < 128; i++)
 	{
 		a = camera1_courbe[i] - camera1_valeurs_m[i];
 		b = camera2_courbe[i] - camera2_valeurs_m[i];
-		max_p1 = max(max_p1, a);
-		max_p2 = max(max_p2, b);
+		
+		if (a > max_p1)
+		{	max_p1 = a;
+			pos_max_p1 = i; 	}
+		if (b > max_p2)
+		{	max_p2 = b;
+			pos_max_p2 = i; 	}
+			
 		camera1_p[i] = a;
 		camera2_p[i] = b;
 	}
@@ -385,11 +394,32 @@ void retranche_courbe(void)
 
 void analyse_cam(void)
 {
-	if (max_p1 > (max_moy1 / 5))
+	uint8_t i;
+	uint8_t pos1A, pos1B, pos2A, pos2B;
+	uint16_t seuil1, seuil2;
+	
+	old_milieu1 = milieu1;
+	old_milieu2 = milieu2;
+	// conditions pour estimer que l'acquisition est bonne 
+	// contraste >= 800
+	// cad max_moy - min_moy 
+	// moy veut dire que c'est la version *5
+	// la profondeur du trou > contraste / 2
+	if ((max_p1 > ((max_moy1 - min_moy1) >> 1 )) && (max_moy1 - min_moy1) >= 800 )
 	{
+		seuil1 = max_p1 >> 1;
+		pos1A = pos_max_p1;
+		pos1B = pos_max_p1;
+		while (camera1_p[pos1A] > seuil1 && pos1A >= 0)
+			pos1A --;
+		while (camera1_p[pos1B] > seuil1 && pos1B <= 127)
+			pos1B ++;
+		
+	
+		milieu1 = (pos1B + pos1A) >> 1;
 		
 	}
-	if (max_p2 > (max_moy2 / 5))
+	if ((max_p2 > ((max_moy2 - min_moy2) >> 1)) && (max_moy2 - min_moy2) >= 800 )
 	{
 		
 	}

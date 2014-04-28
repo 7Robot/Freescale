@@ -23,6 +23,7 @@ void main (void)
 	uint32_t i = 0;			    // Dummy idle counter 
 	uint8_t toto = 0;
 	float bidule = 0;
+	uint16_t pb_calculs = 0;
 
 	uint16_t buff1[128], buff2[128], buff4[128],buff3[128], buff5[128],buff6[128], buff7[128],buff8[128];
 		
@@ -58,7 +59,6 @@ void main (void)
 			set_led(3,0);
 			
 			//Controle_Direction(0);
-			//Set_PWM_Leds(led_power);
 		/*	Asserv_Vitesse(bidule/30.0);*/
 
 			toto++;
@@ -111,10 +111,18 @@ void main (void)
 			}
 			
 			
-			if (autorisation_aquiz == 1)
+			if (autorisation_aquiz == 1)		// si l'autorisation de commencer les calculs a été donnée durant les calculs
+				pb_calculs = 500;	// 5 sec		// ça veut dire que la boucle prends plus de 10 ms pour se faire
+			
+			
+			if (pb_calculs)
+			{
 				set_led(2,1);
+				pb_calculs --;
+			}
 			else
 				set_led(2,0);
+			
 			
 		}
 	}	

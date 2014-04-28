@@ -21,6 +21,9 @@ extern uint16_t min_moy2;
 extern uint16_t max_p1;
 extern uint16_t max_p2;
 
+extern uint8_t pos_max_p1;
+extern uint8_t pos_max_p2;
+
 extern uint8_t ancien_milieu;//ancien milieu
 
 extern uint16_t pos_min_servo; 
@@ -66,3 +69,5 @@ extern uint16_t consigne_lum;
 extern float k_lum;
 extern uint16_t max_lum;
 extern float consigne_led;
+
+extern uint8_t milieu1, milieu2, milieu1_ok, milieu2_ok, old_milieu1, old_milieu2;

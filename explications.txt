@@ -1,0 +1,17 @@
+comment que ça marche
+interruptions toutes les 10ms qui donne l'autorisation de faire la boucle de calculs (autorisation_aquiz)
+cameras => cameraX_valeurs via une boucle sur l'ADC : Acquisitions_Cameras();
+cette fontion renvoie en meme temps le maximum de luminosité reçu par la caméra juste devant
+=> ce qui permet d'asservir la puissance sur la rampe de led avant asserv_leds(max_lum);
+on fait une moyenne des valeurs des pixels sur les 5 (2 de chaque coté du pixel voulu)
+pour ce faire, on fait la somme des 5 pixels consécutifs (mais on ne divise pas par 5 ensuite pour gagner du temps de calcul)
+pour passer d'un pixel à l'autre, l'algo repart de la précedente valeur calculée car d'une moyenne à l'autre seuls 2 pixels sur 5 changent, et 3 sont toujours là..
+fonction moy_cam(1);   
+le paramètre permet d'activer ou non la réalisation de la moyenne, si pas de moyenne voulue,
+les valeurs sont simplements multipliées par 5 (pour garder l'aordre de grandeur par la suite)
+cette fonction utilise les tableaux cameraX_valeurs pour remplir les tableaux cameraX_valeurs_m (m pour moyenne ^^)
+
+ensuite, on calcule l'envellope de la courbe avec des comparaisons de pentes, de manière à créer une courbe uniquement convexe
+cela rempli les tableaux cameraX_courbe
+
+calcul_courbe();
