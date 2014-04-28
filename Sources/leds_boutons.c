@@ -23,3 +23,19 @@ void blink_led(uint8_t led)
 	led &= 3;
 	SIU.GPDO[68+led].B.PDO = !SIU.GPDO[68+led].B.PDO;
 }
+
+uint16_t get_potar(void)
+{
+	uint16_t toto;
+	ADC.JCMR[0].R = 0x10;		// définie l'acquisition voulue sur l'AN4 (PD0)
+	ADC.MCR.B.JSTART = 1;			// déclenche la conversion
+	while (ADC.MSR.B.JSTART);		// boucle tant qu'elle est pas finie
+	
+	toto = ADC.CDR[4].B.CDATA;	// premiere aquiz poubelle => préchargement du condo
+	
+	ADC.JCMR[0].R = 0x10;		// définie l'acquisition voulue sur l'AN4 (PD0)
+	ADC.MCR.B.JSTART = 1;			// déclenche la conversion
+	while (ADC.MSR.B.JSTART);		// boucle tant qu'elle est pas finie
+	
+	return ADC.CDR[4].B.CDATA;
+}

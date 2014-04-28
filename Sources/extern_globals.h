@@ -46,7 +46,7 @@ extern uint8_t Capteurs_resultat;
 
 extern uint8_t nb_receive;
 extern 	vuint8_t autorisation_aquiz;
-extern uint8_t mode_spam;
+extern int16_t mode_spam;
 
 extern uint16_t controle_kp ;
 extern uint16_t controle_kd ;
@@ -71,3 +71,4 @@ extern uint16_t max_lum;
 extern float consigne_led;
 
 extern uint8_t milieu1, milieu2, milieu1_ok, milieu2_ok, old_milieu1, old_milieu2;
+extern uint8_t pb_aquiz1, pb_aquiz2;

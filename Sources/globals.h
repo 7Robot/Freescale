@@ -47,7 +47,7 @@ uint8_t	Capteurs_resultat;
 uint8_t nb_receive = 0;
 vuint8_t autorisation_aquiz = 0;
 
-uint8_t mode_spam = 1;
+int16_t mode_spam = 0;
 
 uint16_t controle_kp = CONTROLE_KP;
 uint16_t controle_kd = CONTROLE_KD;
@@ -67,12 +67,12 @@ float led_power = 0;
 uint8_t ecart_normal = 15;//valeur incertaine, a recalculer
 	
 uint8_t mode_led = 1;
-uint16_t consigne_lum = 200;
+uint16_t consigne_lum = 00;
 uint16_t max_lum = 0;
 float k_lum = 0.05;
 
 float consigne_led = 0;
 
 uint8_t milieu1, milieu2, milieu1_ok, milieu2_ok, old_milieu1, old_milieu2;
-
+uint8_t pb_aquiz1 = 0, pb_aquiz2 = 0;
 	
