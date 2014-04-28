@@ -1,6 +1,7 @@
 # GENERIC files
 *~
 *.swp
+.~lock*
 
 #documentation
 *.pdf
