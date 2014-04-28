@@ -392,18 +392,19 @@ void retranche_courbe(void)
 	}
 }
 
-void analyse_cam(void)
+uint8_t analyse_cam(void)
 {
 	uint8_t i;
 	uint8_t pos1A, pos1B, pos2A, pos2B;
 	uint16_t seuil1, seuil2;
+	uint8_t ligne_stop = 0;
 	
 	old_milieu1 = milieu1;
 	old_milieu2 = milieu2;
 	// conditions pour estimer que l'acquisition est bonne 
 	// contraste >= 800
 	// cad max_moy - min_moy 
-	// moy veut dire que c'est la version *5
+	// moy veut dire que c'est la version *5  (d'ou le *5)
 	// la profondeur du trou > contraste / 2
 	if ((max_p1 > ((max_moy1 - min_moy1) >> 1 )) && (max_moy1 - min_moy1) >= 800 )
 	{
@@ -418,9 +419,56 @@ void analyse_cam(void)
 	
 		milieu1 = (pos1B + pos1A) >> 1;
 		
-	}
-	if ((max_p2 > ((max_moy2 - min_moy2) >> 1)) && (max_moy2 - min_moy2) >= 800 )
-	{
+		// detection ligne arret
+		seuil1 = max_p1 / 3;
+		if (milieu1 > 40 && milieu1 < 87)		// si à peu pres au milieu, on vérifie la présence de la ligne de stop
+		{
+			if (camera1_p[milieu1 - 40] > seuil1)
+				ligne_stop ++;
+			if (camera1_p[milieu1 - 35] > seuil1)
+				ligne_stop ++;
+			if (camera1_p[milieu1 - 30] > seuil1)
+				ligne_stop ++;
+
+			if (camera1_p[milieu1 + 40] > seuil1)
+				ligne_stop ++;
+			if (camera1_p[milieu1 + 35] > seuil1)
+				ligne_stop ++;
+			if (camera1_p[milieu1 + 30] > seuil1)
+				ligne_stop ++;
+			
+			if (ligne_stop != 6)	// faut absolument que les 6 conditions soeint remplies pour prendre en compte la ligne d'arret => revoir peut être par ici 
+				ligne_stop = 0;
+			
+			pb_aquiz1 = 0;
+		}
 		
 	}
+	else
+	{
+		// milieu1 = milieu1;	// pour l'idée, si on touche pas au milieu, il se garde sa valeur d'avant
+		pb_aquiz1 = 1;
+	}
+	
+	if ((max_p2 > ((max_moy2 - min_moy2) >> 1)) && (max_moy2 - min_moy2) >= 800 )
+	{
+		seuil2 = max_p2 >> 1;
+		pos2A = pos_max_p2;
+		pos2B = pos_max_p2;
+		while (camera2_p[pos2A] > seuil2 && pos2A >= 0)
+			pos2A --;
+		while (camera2_p[pos2B] > seuil2 && pos2B <= 127)
+			pos2B ++;
+		
+	
+		milieu2 = (pos2B + pos2A) >> 1;
+	}
+	else
+	{
+		// milieu2 = milieu2;	// pour l'idée, si on touche pas au milieu, il se garde sa valeur d'avant
+		pb_aquiz2 = 1;
+	}
+	
+	
+	return ligne_stop;
 }

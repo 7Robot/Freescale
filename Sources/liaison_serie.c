@@ -347,7 +347,7 @@ void UART_RXI_ISR(void)
 	blink_led(1);
 	if(LINFLEX_3.UARTSR.B.DRF == 1 || LINFLEX_3.UARTSR.B.RMB == 1)
 	{
-
+		
 		rx = LINFLEX_3.BDRM.B.DATA4;
 		LINFLEX_3.UARTSR.B.DRF = 1;
 		LINFLEX_3.UARTSR.B.RMB = 1;
@@ -360,19 +360,21 @@ void UART_RXI_ISR(void)
 		}
 		if (rx != 0x1b || rx != 0x7e || rx != 0x7f) // si le caractere reçu n'est ni echap, ni suppr, ni effacer....
 		{	
-			i_buffer_r ++;
-			buffer_rx[i_buffer_r] = rx;				// ajoute le dernier mot reçu à la fin du buffer
 			
+			buffer_rx[i_buffer_r] = rx;				// ajoute le dernier mot reçu à la fin du buffer
+			i_buffer_r ++;
 			//TransmitData("received\n");
 			
 			TransmitCharacter('r');
-			TransmitCharacter(rx);
-			printhex8(rx);
+			TransmitCharacter(':');
+			for (i = 0; i < i_buffer_r; i++)
+				TransmitCharacter(buffer_rx[i]);
+			TransmitData("    \n");
 			
 			if (rx == '\n' || rx == '\r')						// si le dernier caractère reçu est \n ça veut dire que normalement une commade est prete
 			{
 				i_buffer_r = 0;
-				for (i=0;i<=6;i++)
+				for (i=0;i<=5;i++)
 					buffer_rx_lecture[i] = buffer_rx[i];
 				INTC.SSCIR[4].B.SET = 1;			// Declenche l'interruption software 4
 			}
@@ -388,7 +390,7 @@ void UART_RXI_ISR(void)
 void SwIrq4ISR(void)
 {
 	uint16_t data = 0;
-	/*
+	
 	TransmitCharacter(buffer_rx_lecture[0]); 
 	TransmitCharacter('\n');
 	TransmitCharacter(buffer_rx_lecture[1]); 
@@ -400,7 +402,7 @@ void SwIrq4ISR(void)
 	TransmitCharacter(buffer_rx_lecture[4]); 
 	TransmitCharacter('\n');
 	TransmitCharacter(buffer_rx_lecture[5]); 
-	TransmitCharacter('\n');*/
+	TransmitCharacter('\n');
 
 	
 	if (	buffer_rx_lecture[2] >=48 && buffer_rx_lecture[2] <= 57 &&
@@ -532,20 +534,42 @@ void SwIrq4ISR(void)
 					{
 
 					case 'p' : 
-							if (mode_spam)
+							if (data == 0)
 							{
-								mode_spam = 0;					
-								TransmitData("\nspam OFF    \n");						
+								if (mode_spam)
+								{
+									mode_spam = 0;					
+									TransmitData("\nspam OFF    \n");						
+								}
+								else
+								{
+									mode_spam = - 1;					
+									TransmitData("\nspam ON    \n");						
+								}
 							}
 							else
 							{
-								mode_spam = 1;					
-								TransmitData("\nspam ON    \n");						
+								mode_spam = data;
+								TransmitData("\nspam for ");
+								printfloat(data);
+								TransmitData("  times    \n");
 							}
+							
+						break;
+					}
+				break;
+			case 'g' :switch (buffer_rx_lecture[1])
+					{
+
+					case 'p' : 
+							TransmitData("\nPotar à :");
+							printfloat((float)get_potar());							TransmitData("    \n");
+							
 						break;
 					}
 				break;
 		}
+		
 	}
 	else 
 		TransmitData("\nError_receive\n");

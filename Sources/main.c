@@ -28,7 +28,7 @@ void main (void)
 	uint16_t buff1[128], buff2[128], buff4[128],buff3[128], buff5[128],buff6[128], buff7[128],buff8[128];
 		
 	init();
-	for (i = 0; i < 1000000; i++);	// petit delai à la noix
+	for (i = 0; i < 10000000; i++);	// petit delai à la noix
 	
 	TransmitData("\nI AM ALIVE !\n");
 	
@@ -107,7 +107,13 @@ void main (void)
 			{
 				TransmitData("\nlum : ");
 				printhex16(max_lum);
-				TransmitData("\n    ");
+				TransmitData("    \n");
+				
+				if (mode_spam != -1 && mode_spam != 0)
+					mode_spam --;
+				if (mode_spam == 0)
+					TransmitData("\nspam OFF\n");
+				
 			}
 			
 			

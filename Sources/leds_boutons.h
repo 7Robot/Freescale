@@ -9,4 +9,6 @@ uint8_t get_led(uint8_t led);
 void set_led(uint8_t led, uint8_t val);
 void blink_led(uint8_t led);
 
+uint16_t get_potar(void);
+
 #endif
