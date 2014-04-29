@@ -72,3 +72,11 @@ extern float consigne_led;
 
 extern uint8_t milieu1, milieu2, milieu1_ok, milieu2_ok, old_milieu1, old_milieu2;
 extern uint8_t pb_aquiz1, pb_aquiz2;
+
+
+// camera analyse_2
+extern int bandes_1[128][2]; // bandes (0,1 et leur largeur)
+extern int bandes_2[128][2]; // bandes (0,1 et leur largeur)
+extern int nb_bandes_1;
+extern int nb_bandes_2;
+int ligne_arrivee;

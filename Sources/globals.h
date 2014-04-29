@@ -76,3 +76,10 @@ float consigne_led = 0;
 uint8_t milieu1, milieu2, milieu1_ok, milieu2_ok, old_milieu1, old_milieu2;
 uint8_t pb_aquiz1 = 0, pb_aquiz2 = 0;
 	
+
+// camera analyse_2
+int bandes_1[128][2]={0}; // bandes (0,1 et leur largeur)
+int bandes_2[128][2]={0}; // bandes (0,1 et leur largeur)
+int nb_bandes_1=0;
+int nb_bandes_2=0;
+int ligne_arrivee=0;

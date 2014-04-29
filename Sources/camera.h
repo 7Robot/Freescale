@@ -13,6 +13,8 @@ void calcul_courbe(void);
 void retranche_courbe(void);
 
 uint8_t analyse_cam(void);
+void analyse_cam_bis(void);
+void centre_et_arrivee(void);
 
 void delay(uint32_t nb_tours);
 
