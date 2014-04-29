@@ -11,11 +11,13 @@ extern uint32_t __IVPR_VALUE; // Interrupt Vector Prefix value from link file
 void init()
 {
 
+	uint32_t i;
     // ************************ Initialisation de la carte ****************************
-
+	disableWatchdog(); 					// Disable watchdog  
+  	
   	initModesAndClock(); 				// Initialize mode entries and system clock   
-	initPeriClkGen();  					// Initialize peripheral clock generation for DSPIs   
-	disableWatchdog(); 					// Disable watchdog   
+  	
+	initPeriClkGen();  					// Initialize peripheral clock generation for DSPIs  
 	
     initPads();             			// Initialize pads   
   	initADC();              			// Init. ADC for normal conversions but don't start yet  
@@ -57,10 +59,13 @@ void init()
 // *********************  Initialisation de la carte    ***********************   
 
 void initModesAndClock(void) {
+	uint16_t i=1;
 	ME.MER.R = 0x0000001D;          	// Enable DRUN, RUN0, SAFE, RESET modes   
 	                              		// Initialize PLL before turning it on:   
 	CGM.FMPLL_CR.R = 0x02400100;    	// 8 MHz xtal: Set PLL0 to 64 MHz      
 	ME.RUN[0].R = 0x001F0074;       	// RUN0 cfg: 16MHzIRCON,OSC0ON,PLL0ON,syclk=PLL   
+	
+	while (i!=0) i++;
 	
 	ME.RUNPC[1].R = 0x00000010;     	// Peri. Cfg. 1 settings: only run in RUN0 mode   
 	ME.PCTL[32].R = 0x01;       		// MPC56xxB ADC 0: select ME.RUNPC[1]   
@@ -128,6 +133,9 @@ void initPads (void) {
 	SIU.PCR[24].R = 0x2000;          	// MPC56xxB: Initialize PB[8] as AD4 : current sense for motor 2   => ANS0
 	
 	//SIU.PCR[42].R = 0x0200;				// Initialise la pin de contrôle du freinage en sortie -> PC[10]  
+	
+	// secours pour desactiver le servo
+	//SIU.PCR[28].R = 0x0100;           		// MPC56xxS: Assign EMIOS_0 ch 4 to pad PB[12]  
 	
 	// potar (si remapé au fil .... )
 	SIU.PCR[48].R = 0x2000;          	// MPC56xxB: Initialize PD[0] as ANP4 -> potentiomètre  
@@ -358,7 +366,7 @@ void initEMIOS_0ch7(void) {        		// EMIOS 0 CH 7: Motor Right Forward
 void initEMIOS_1ch11(void)        		// EMIOS 0 CH 18: LED
 {
 	EMIOS_1.CH[11].CADR.R = 0;    		// Leading edge when channel counter bus=0  
-	EMIOS_1.CH[11].CBDR.R = 500;		// Trailing edge when channel's counter bus=500 // max à 999
+	EMIOS_1.CH[11].CBDR.R = 0;		// Trailing edge when channel's counter bus=500 // max à 999
 	EMIOS_1.CH[11].CCR.B.BSL = 0x0; 	// Use counter bus A -> Time base channel 23   
 	EMIOS_1.CH[11].CCR.B.EDPOL = 1; 	// Polarity-leading edge sets output  
 	EMIOS_1.CH[11].CCR.B.MODE = 0x60; 	// Mode is OPWM Buffered   

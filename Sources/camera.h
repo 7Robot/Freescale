@@ -12,7 +12,7 @@ void moy_cam (uint8_t do_moy);
 void calcul_courbe(void);
 void retranche_courbe(void);
 
-uint8_t analyse_cam(void);
+//uint8_t analyse_cam(void);
 void analyse_cam_bis(void);
 void centre_et_arrivee(void);
 

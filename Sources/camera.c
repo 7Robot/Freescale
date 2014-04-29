@@ -389,6 +389,7 @@ void retranche_courbe(void)
 	}
 }
 
+/*
 uint8_t analyse_cam(void)
 {
 	uint8_t i;
@@ -469,7 +470,7 @@ uint8_t analyse_cam(void)
 	
 	return ligne_stop;
 }
-
+*/
 
 
 
@@ -485,7 +486,7 @@ void analyse_cam_bis(void)
 	old_milieu1 = milieu1;
 	old_milieu2 = milieu2;
 
-	if ((max_p1 > ((max_moy1 - min_moy1) >> 1 )) && (max_moy1 - min_moy1) >= 500 )
+	if ((max_p1 > ((max_moy1 - min_moy1) >> 1 )) && (max_moy1 - min_moy1) >= 300 )
 	{
 		// contsruction des bandes claires sombres
 		etat_bande = (camera1_p[0]<seuil1);
@@ -496,9 +497,9 @@ void analyse_cam_bis(void)
 		{
 			etat_bande_old = etat_bande;
 			if (etat_bande_old==1)
-				etat_bande = (camera1_p[i]<(1.1*seuil1));
+				etat_bande = (camera1_p[i]<(1.05*seuil1));
 			else
-				etat_bande = (camera1_p[i]<(0.9*seuil1));
+				etat_bande = (camera1_p[i]<(0.95*seuil1));
 			
 			//etat_bande = (camera1_p[i] < seuil1); 
 
@@ -515,7 +516,7 @@ void analyse_cam_bis(void)
 	else
 		pb_aquiz1 = 1;
    	
-	if ((max_p2 > ((max_moy2 - min_moy2) >> 1)) && (max_moy2 - min_moy2) >= 500 )
+	if ((max_p2 > ((max_moy2 - min_moy2) >> 1)) && (max_moy2 - min_moy2) >= 300 )
 	{
 		// contsruction des bandes claires sombres
 		etat_bande = camera2_p[0]<seuil2;
@@ -527,9 +528,9 @@ void analyse_cam_bis(void)
 			etat_bande_old = etat_bande;
 
 			if (etat_bande_old==1)
-				etat_bande = (camera2_p[i]<(1.1*seuil2));
+				etat_bande = (camera2_p[i]<(1.05*seuil2));
 			else 
-				etat_bande = (camera2_p[i]<(0.9*seuil2));
+				etat_bande = (camera2_p[i]<(0.95*seuil2));
 			
 
 			//etat_bande = (camera2_p[i] < seuil2); 
