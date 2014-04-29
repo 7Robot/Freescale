@@ -21,6 +21,7 @@ void Controle_Direction(uint8_t print)
 	int16_t commande_bornee;
 
 
+    if (mode_controle)
     
 
     
