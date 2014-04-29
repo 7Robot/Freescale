@@ -2,12 +2,10 @@
 #include "MPC5604B_M27V.h"
 #include "camera.h"
 #include "leds_boutons.h"
-//#include "coeff_cam.h"
-#include "un_sur.h"
-#include <math.h>
 
 #define max(i, j) (i > j ? i : j)
 #define min(i,j) (i > j ? j : i)
+//#define abs(i) (i >= 0 ? i : (-i))
 
 
 uint16_t Acquisitions_Cameras()
@@ -201,12 +199,12 @@ void moy_cam (uint8_t do_moy)
 		for (i = 0; i < 128; i++)
 		{
 			moy = 5 * camera1_valeurs[i];
-			camera1_valeurs_m[127] = moy;
+			camera1_valeurs_m[i] = moy;
 			max_moy1 = max(max_moy1, moy);
 			min_moy1 = min(min_moy1, moy);
 			
 			moy = 5 * camera2_valeurs[i];
-			camera2_valeurs_m[127] = moy;
+			camera2_valeurs_m[i] = moy;
 			max_moy2 = max(max_moy2, moy);
 			min_moy2 = min(min_moy2, moy);
 		}
@@ -224,10 +222,8 @@ void calcul_courbe(void)
 {
 	
 	uint16_t courbe[128][2];
-	float pente_courbe[127];		// pente_courbe(0) = pente entre 0 et 1
 	uint8_t index = 0, index_max;
 	uint8_t i;
-	float pente;
 	uint8_t xa, xb, xc;
 	uint16_t ya, yb, yc;
 	int32_t p1,p2;
@@ -472,4 +468,151 @@ uint8_t analyse_cam(void)
 	
 	
 	return ligne_stop;
+}
+
+
+
+
+
+
+void analyse_cam_bis(void)
+{
+	uint16_t seuil1 = max_p1/3;
+	uint16_t seuil2 = max_p2/3;
+	int16_t etat_bande = 0;
+	int16_t etat_bande_old = 0;
+	int16_t i = 0;
+	old_milieu1 = milieu1;
+	old_milieu2 = milieu2;
+
+	if ((max_p1 > ((max_moy1 - min_moy1) >> 1 )) && (max_moy1 - min_moy1) >= 500 )
+	{
+		// contsruction des bandes claires sombres
+		etat_bande = (camera1_p[0]<seuil1);
+		nb_bandes_1 = 1;
+		bandes_1[0][0] = etat_bande;
+		bandes_1[0][1] = 1;
+		for (i=1; i<128; i++)
+		{
+			etat_bande_old = etat_bande;
+			if (etat_bande_old==1)
+				etat_bande = (camera1_p[i]<(1.1*seuil1));
+			else
+				etat_bande = (camera1_p[i]<(0.9*seuil1));
+			
+			//etat_bande = (camera1_p[i] < seuil1); 
+
+			if (etat_bande != etat_bande_old)
+			{
+				bandes_1[nb_bandes_1][0] = etat_bande;
+				bandes_1[nb_bandes_1][1] = 1;
+				nb_bandes_1++;
+			} 
+			else 
+				bandes_1[nb_bandes_1-1][1]++;
+		}
+	}
+	else
+		pb_aquiz1 = 1;
+   	
+	if ((max_p2 > ((max_moy2 - min_moy2) >> 1)) && (max_moy2 - min_moy2) >= 500 )
+	{
+		// contsruction des bandes claires sombres
+		etat_bande = camera2_p[0]<seuil2;
+		nb_bandes_2 = 1;
+		bandes_2[0][0] = etat_bande;
+		bandes_2[0][1] = 1;
+		for (i=1; i<128; i++)
+		{
+			etat_bande_old = etat_bande;
+
+			if (etat_bande_old==1)
+				etat_bande = (camera2_p[i]<(1.1*seuil2));
+			else 
+				etat_bande = (camera2_p[i]<(0.9*seuil2));
+			
+
+			//etat_bande = (camera2_p[i] < seuil2); 
+
+			if (etat_bande != etat_bande_old)
+			{
+				bandes_2[nb_bandes_2][0] = etat_bande;
+				bandes_2[nb_bandes_2][1] = 1;
+				nb_bandes_2++;
+			}
+			else
+				bandes_2[nb_bandes_2-1][1]++;
+		}
+	}
+	else 
+		pb_aquiz2 = 1;
+
+
+	// calcul du centre de la ligne et detection ligne d'arrivee
+	centre_et_arrivee();
+   
+}
+
+
+
+
+void centre_et_arrivee(void){
+   int16_t i = 0;
+   int16_t pos = 0;
+   static int16_t ecart = 128;
+   static int16_t ecart_old = 128;
+   int16_t seuil1 = 30, seuil2 = 40;
+   int16_t milieu1_temp = milieu1;
+   int16_t milieu2_temp = milieu2;
+   int16_t bande_milieu1_indice=-1;
+   // si on a moins de 5 bandes ca ne peut pas etre la ligne d'arrivee
+   // on se contente de regarder les bandes sombres
+   // on garde celle qui a le plus de probabilites d'etre la bonne
+   //
+   // camera 1 milieu
+   ecart = 128;
+   ecart_old = 128;
+   for (i=0;i<nb_bandes_1;i++){
+      if (bandes_1[i][0]==0){
+         ecart_old = ecart;
+         ecart = abs(pos+bandes_1[i][1]/2 - milieu1);
+         // si on a ecart < ecart_old et ecart < seuil1
+         if (ecart<ecart_old && ecart<seuil1){
+            milieu1_temp = pos+bandes_1[i][1]/2;
+            bande_milieu1_indice = i;
+         }
+      }
+      // maj de pos : ajout de la largeur de la bande actuelle
+      pos += bandes_1[i][1];
+   }
+   milieu1 = milieu1_temp;
+
+   // camera 2 milieu
+   ecart = 128;
+   ecart_old = 128;
+   pos = 0;
+   for (i=0;i<nb_bandes_2;i++){
+      if (bandes_2[i][0]==0){
+         ecart_old = ecart;
+         ecart = abs(pos+bandes_2[i][1]/2 - milieu2);
+         // si on a ecart < ecart_old et ecart < seuil2
+         if (ecart<ecart_old && ecart<seuil2){
+            milieu2_temp = pos+bandes_2[i][1]/2;
+         }
+      }
+      // maj de pos : ajout de la largeur de la bande actuelle
+      pos += bandes_2[i][1];
+   }
+   milieu2 = milieu2_temp;
+
+   // detection ligne arrivée camera 1
+   ligne_arrivee = 0;
+   i = bande_milieu1_indice;
+   if (nb_bandes_1>=5 && i-2 >= 0 && i+2<nb_bandes_1){
+      ligne_arrivee = (
+            bandes_1[i-2][0] == 0 &&
+            bandes_1[i-1][0] == 1 &&
+            bandes_1[i+1][0] == 1 &&
+            bandes_1[i+2][0] == 0 );
+   }
 }

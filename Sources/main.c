@@ -18,7 +18,7 @@
 
 extern IVOR4Handler();
 
-uint8_t autor_blink = 0;
+uint8_t autor_blink = 1;
 
 
 void main (void)
@@ -41,7 +41,7 @@ void main (void)
 	uint16_t raccourciAffichage;
 		
 	init();
-	for (i = 0; i < 10000000; i++);	// petit delai à la noix
+	for (i = 0; i < 5000000; i++);	// petit delai à la noix
 	
 	TransmitData("\nI AM ALIVE !\n");
 	
@@ -55,7 +55,8 @@ void main (void)
 	
 	// **********************************************************
 	
-	while(menu[15] == 0) 
+	//while(menu[15] == 0) 
+	while(0)
 	{
 		// limite : un tour de boucle toute les 10 ms
 		while (autorisation_aquiz == 0);
@@ -105,10 +106,10 @@ void main (void)
 
 		if (R) // on doit afficher le numero de paramètre
 		{
-			ld[3] = parametreARegler % 2;
-			ld[2] = (parametreARegler % 4)>1;
-			ld[1] = (parametreARegler % 8)>2;
-			ld[0] = parametreARegler >= 8;	
+			ld[3] = (parametreARegler&1);
+			ld[2] = (parametreARegler&2)>>1;
+			ld[1] = (parametreARegler&4)>>2;
+			ld[0] = (parametreARegler&8)>>3;	
 		}
 		else
 		{
@@ -117,10 +118,10 @@ void main (void)
 			else
 				raccourciAffichage = menu[parametreARegler];
 			
-			ld[3] = raccourciAffichage % 2;
-			ld[2] = (raccourciAffichage % 4)>1;
-			ld[1] = (raccourciAffichage % 8)>2;
-			ld[0] = raccourciAffichage >= 8;	
+			ld[3] = (raccourciAffichage&1);
+			ld[2] = ((raccourciAffichage&2) !=0);
+			ld[1] = ((raccourciAffichage&4) !=0);
+			ld[0] = ((raccourciAffichage&8) !=0);	
 
 		}
 		set_led(0,ld[0]);
@@ -172,6 +173,8 @@ void main (void)
 			set_led(3,1);
 			retranche_courbe();
 			set_led(3,0);
+			
+			analyse_cam_bis();
 			
 			Asserv_Vitesse(autor_vitesse * calcul_consigne_vitesse());
 			
@@ -232,6 +235,7 @@ void main (void)
 					TransmitData("\nspam OFF\n");
 				
 			}
+			
 			
 			
 			if (autorisation_aquiz == 1)		// si l'autorisation de commencer les calculs a été donnée durant les calculs
