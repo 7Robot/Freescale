@@ -512,6 +512,7 @@ void analyse_cam_bis(void)
 			else 
 				bandes_1[nb_bandes_1-1][1]++;
 		}
+		pb_aquiz1 = 0;
 	}
 	else
 		pb_aquiz1 = 1;
@@ -544,6 +545,7 @@ void analyse_cam_bis(void)
 			else
 				bandes_2[nb_bandes_2-1][1]++;
 		}
+		pb_aquiz2 = 0;
 	}
 	else 
 		pb_aquiz2 = 1;

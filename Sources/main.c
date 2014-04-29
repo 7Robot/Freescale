@@ -268,7 +268,7 @@ void main (void)
 				else
 					TransmitData("\nErreur Cam 1\n");
 				
-				if (pb_aquiz1 == 0)
+				if (pb_aquiz2 == 0)
 				{
 					TransmitData("\n\ncam2 :");
 					for (i = 0; i < nb_bandes_2; i++)
@@ -291,7 +291,7 @@ void main (void)
 				if (mode_spam != -1 && mode_spam != 0)
 					mode_spam --;
 				if (mode_spam == 0)
-					TransmitData("\nspam OFF\n");
+					TransmitData("\nspam OFF   \n");
 			}
 					
 				
