@@ -235,8 +235,43 @@ void main (void)
 					TransmitData("\nspam OFF\n");
 				
 			}
-			
-			
+			else if (toto == 135 && mode_spam)
+			{
+				TransmitData("\n\nmilieu1 : ");
+				printfloat(milieu1);
+				TransmitData("\nmilieu2 : ");
+				printfloat(milieu2);
+				
+				TransmitData("\n\n\nbandes 1\n");
+				
+				for (i = 0; i < nb_bandes_1; i++)
+				{
+					TransmitData("\nBande ");
+					if (bandes_1[i][0] == 1)
+						TransmitData("blanche ");
+					else
+						TransmitData("noire ");
+					
+						TransmitData("de ");
+					printfloat(bandes_1[i][1]);
+					TransmitData("pixels");
+				}
+				
+				TransmitData("\nbandes 2\n");
+				
+				for (i = 0; i < nb_bandes_2; i++)
+				{
+					TransmitData("\nBande ");
+					if (bandes_2[i][0] == 1)
+						TransmitData("blanche ");
+					else
+						TransmitData("noire ");
+					
+						TransmitData("de ");
+					printfloat(bandes_2[i][1]);
+					TransmitData("pixels");
+				}
+			}
 			
 			if (autorisation_aquiz == 1)		// si l'autorisation de commencer les calculs a été donnée durant les calculs
 				pb_calculs = 500;	// 5 sec		// ça veut dire que la boucle prends plus de 10 ms pour se faire
