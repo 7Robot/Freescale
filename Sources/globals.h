@@ -4,14 +4,14 @@
 uint16_t camera1_valeurs[128];
 uint16_t camera2_valeurs[128];
 
-uint16_t camera1_valeurs_m[128];
-uint16_t camera2_valeurs_m[128];
+uint16_t camera1_valeurs_m[120];
+uint16_t camera2_valeurs_m[120];
 
-uint16_t camera1_courbe[128];
-uint16_t camera2_courbe[128];
+uint16_t camera1_courbe[120];
+uint16_t camera2_courbe[120];
 
-uint16_t camera1_p[128];
-uint16_t camera2_p[128];
+uint16_t camera1_p[120];
+uint16_t camera2_p[120];
 
 uint16_t max_moy1;
 uint16_t min_moy1;
@@ -76,7 +76,7 @@ uint8_t ecart_normal = 15;//valeur incertaine, a recalculer
 float led_power = 0;
 
 uint8_t mode_led = 1;
-uint16_t consigne_lum = 00;
+uint16_t consigne_lum = 0;
 uint16_t max_lum = 0;
 float k_lum = 0.05;
 
@@ -88,8 +88,8 @@ uint8_t pb_aquiz1 = 0, pb_aquiz2 = 0;
 uint16_t old_btn[3] = {0};
 
 // camera analyse_2
-int bandes_1[128][2]={0}; // bandes (0,1 et leur largeur)
-int bandes_2[128][2]={0}; // bandes (0,1 et leur largeur)
-int nb_bandes_1=0;
-int nb_bandes_2=0;
-int ligne_arrivee=0;
+int16_t bandes_1[120][2]={0}; // bandes (0,1 et leur largeur)
+int16_t bandes_2[120][2]={0}; // bandes (0,1 et leur largeur)
+int16_t nb_bandes_1=0;
+int16_t nb_bandes_2=0;
+int16_t ligne_arrivee=0;

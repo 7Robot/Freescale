@@ -82,9 +82,10 @@ extern uint8_t milieu1, milieu2, milieu1_ok, milieu2_ok, old_milieu1, old_milieu
 extern uint8_t pb_aquiz1, pb_aquiz2;
 
 extern uint16_t old_btn[3];
+
 // camera analyse_2
-extern int bandes_1[128][2]; // bandes (0,1 et leur largeur)
-extern int bandes_2[128][2]; // bandes (0,1 et leur largeur)
-extern int nb_bandes_1;
-extern int nb_bandes_2;
-int ligne_arrivee;
+extern int16_t bandes_1[120][2]; // bandes (0,1 et leur largeur)
+extern int16_t bandes_2[120][2]; // bandes (0,1 et leur largeur)
+extern int16_t nb_bandes_1;
+extern int16_t nb_bandes_2;
+extern int16_t ligne_arrivee;

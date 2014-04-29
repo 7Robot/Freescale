@@ -3,11 +3,10 @@
 #include "camera.h"
 #include "leds_boutons.h"
 //#include "coeff_cam.h"
-#include "un_sur.h"
-#include <math.h>
 
 #define max(i, j) (i > j ? i : j)
 #define min(i,j) (i > j ? j : i)
+#define abs(i) (i > 0 ? i : -i)
 
 
 uint16_t Acquisitions_Cameras()
@@ -35,7 +34,7 @@ uint16_t Acquisitions_Cameras()
 	SIU.PGPDO[2].R = SIU.PGPDO[2].R & ~BITS_SI;					// start = 0
 	delay(DELAY_CLK_CAM/2);
 	
-	// fist acquiz pour précharger le condo dans l'ADC...
+	// first acquiz pour précharger le condo dans l'ADC...
 	ADC.MCR.B.NSTART=1; 
 	while (ADC.MCR.B.NSTART);
 	i = (ADC.CDR[40].B.CDATA == 0);
@@ -109,43 +108,43 @@ void moy_cam (uint8_t do_moy)
 	if (do_moy)
 	{
 		// passage pour la caméra 1
-		// moyenne par circulairesur 5 pixels
-		moy = 3*camera1_valeurs[0] + camera1_valeurs[1] + camera1_valeurs[2];
+		// moyenne par circulaire sur 5 pixels
+		moy = 3*camera1_valeurs[8] + camera1_valeurs[9] + camera1_valeurs[10];
 
 		camera1_valeurs_m[0] = moy;
 		max_moy1 = moy;
 		min_moy1 = moy;
 		
-		moy = moy - camera1_valeurs[0] + camera1_valeurs[3];
+		moy = moy - camera1_valeurs[8] + camera1_valeurs[11];
 
 		camera1_valeurs_m[1] = moy;
 		max_moy1 = max(max_moy1, moy);
 		min_moy1 = min(min_moy1, moy);
 		
-		moy = moy - camera1_valeurs[0] + camera1_valeurs[4];
+		moy = moy - camera1_valeurs[8] + camera1_valeurs[12];
 
 		camera1_valeurs_m[2] = moy;
 		max_moy1 = max(max_moy1, moy);
 		min_moy1 = min(min_moy1, moy);
 		
-		for (i = 3; i <= 125; i ++)
+		for (i = 3+8; i <= 125; i ++)
 		{
 			moy = moy - camera1_valeurs[i-3] + camera1_valeurs[i+2];
 
-			camera1_valeurs_m[i] = moy;
+			camera1_valeurs_m[i-8] = moy;
 			max_moy1 = max(max_moy1, moy);
 			min_moy1 = min(min_moy1, moy);
 		}
 		
 		moy = moy - camera1_valeurs[123] + camera1_valeurs[127];
 
-		camera1_valeurs_m[126] = moy;
+		camera1_valeurs_m[118] = moy;
 		max_moy1 = max(max_moy1, moy);
 		min_moy1 = min(min_moy1, moy);
 		
 		moy = moy - camera1_valeurs[124] + camera1_valeurs[127];
 
-		camera1_valeurs_m[127] = moy;
+		camera1_valeurs_m[119] = moy;
 		max_moy1 = max(max_moy1, moy);
 		min_moy1 = min(min_moy1, moy);
 		
@@ -155,38 +154,38 @@ void moy_cam (uint8_t do_moy)
 
 
 		// camera 2
-		moy = 3*camera2_valeurs[0] + camera2_valeurs[1] + camera2_valeurs[2];
+		moy = 3*camera2_valeurs[8] + camera2_valeurs[9] + camera2_valeurs[10];
 		
 		camera2_valeurs_m[0] = moy;
 		max_moy2 = moy;
 		min_moy2 = moy;
 		
-		moy = moy - camera2_valeurs[0] + camera2_valeurs[3];
+		moy = moy - camera2_valeurs[8] + camera2_valeurs[11];
 		
 		camera2_valeurs_m[1] = moy;
 		max_moy2 = max(max_moy2, moy);
 		min_moy2 = min(min_moy2, moy);
 		
-		moy = moy - camera2_valeurs[0] + camera2_valeurs[4];
+		moy = moy - camera2_valeurs[8] + camera2_valeurs[12];
 		camera2_valeurs_m[2] = moy;
 		max_moy2 = max(max_moy2, moy);
 		min_moy2 = min(min_moy2, moy);
 		
-		for (i = 3; i <= 125; i ++)
+		for (i = 3+8; i <= 125; i ++)
 		{
 			moy = moy - camera2_valeurs[i-3] + camera2_valeurs[i+2];
-			camera2_valeurs_m[i] = moy;
+			camera2_valeurs_m[i-8] = moy;
 			max_moy2 = max(max_moy2, moy);
 			min_moy2 = min(min_moy2, moy);
 		}
 		
 		moy = moy - camera2_valeurs[123] + camera2_valeurs[127];
-		camera2_valeurs_m[126] = moy;
+		camera2_valeurs_m[118] = moy;
 		max_moy2 = max(max_moy2, moy);
 		min_moy2 = min(min_moy2, moy);
 		
 		moy = moy - camera2_valeurs[124] + camera2_valeurs[127];
-		camera2_valeurs_m[127] = moy;
+		camera2_valeurs_m[119] = moy;
 		max_moy2 = max(max_moy2, moy);
 		min_moy2 = min(min_moy2, moy);
 	}
@@ -198,15 +197,15 @@ void moy_cam (uint8_t do_moy)
 		min_moy2 = 6000;
 		// fonction qui ne fait pas la moyenne
 		// recopie en mutlipliant par 5 (pour garder une cohérence avec la moyenne)
-		for (i = 0; i < 128; i++)
+		for (i = 0; i < 120; i++)
 		{
-			moy = 5 * camera1_valeurs[i];
-			camera1_valeurs_m[127] = moy;
+			moy = 5 * camera1_valeurs[i+8];
+			camera1_valeurs_m[i] = moy;
 			max_moy1 = max(max_moy1, moy);
 			min_moy1 = min(min_moy1, moy);
 			
 			moy = 5 * camera2_valeurs[i];
-			camera2_valeurs_m[127] = moy;
+			camera2_valeurs_m[i] = moy;
 			max_moy2 = max(max_moy2, moy);
 			min_moy2 = min(min_moy2, moy);
 		}
@@ -223,11 +222,9 @@ void delay(uint32_t nb_tours)
 void calcul_courbe(void)
 {
 	
-	uint16_t courbe[128][2];
-	float pente_courbe[127];		// pente_courbe(0) = pente entre 0 et 1
+	uint16_t courbe[120][2];
 	uint8_t index = 0, index_max;
 	uint8_t i;
-	float pente;
 	uint8_t xa, xb, xc;
 	uint16_t ya, yb, yc;
 	int32_t p1,p2;
@@ -242,7 +239,7 @@ void calcul_courbe(void)
 	index = 1;
 	i = 2;
 	
-	while(i < 128)
+	while(i < 120)
 	{
 		if (index != 0)
 		{
@@ -294,7 +291,7 @@ void calcul_courbe(void)
 		}
 		index++;
 	}
-	camera1_courbe[127] = yb;
+	camera1_courbe[119] = yb;
 	
 	
 	
@@ -310,7 +307,7 @@ void calcul_courbe(void)
 	index = 1;
 	i = 2;
 	
-	while(i < 128)
+	while(i < 120)
 	{
 		if (index != 0)
 		{
@@ -362,7 +359,7 @@ void calcul_courbe(void)
 		}
 		index++;
 	}
-	camera2_courbe[127] = yb;
+	camera2_courbe[119] = yb;
 	
 }
 
@@ -376,7 +373,7 @@ void retranche_courbe(void)
 	pos_max_p1 = 0;
 	pos_max_p2 = 0;
 	
-	for (i = 0; i < 128; i++)
+	for (i = 0; i < 120; i++)
 	{
 		a = camera1_courbe[i] - camera1_valeurs_m[i];
 		b = camera2_courbe[i] - camera2_valeurs_m[i];
@@ -475,27 +472,28 @@ uint8_t analyse_cam(void)
 }
 
 void centre_et_arrivee(void){
-   int i = 0;
-   int pos = 0;
-   static int ecart = 128;
-   static int ecart_old = 128;
-   int seuil1 = 30, seuil2 = 40;
-   int milieu1_temp = milieu1;
-   int milieu2_temp = milieu2;
-   int bande_milieu1_indice=-1;
+   int16_t i = 0;
+   int16_t pos = 0;
+   int16_t ecart = 128;
+   int16_t ecart_old = 128;
+   int16_t seuil1 = 20, seuil2 = 30;
+   int16_t milieu1_temp = milieu1;
+   int16_t milieu2_temp = milieu2;
+   int16_t bande_milieu1_indice=-1;
    // si on a moins de 5 bandes ca ne peut pas etre la ligne d'arrivee
    // on se contente de regarder les bandes sombres
    // on garde celle qui a le plus de probabilites d'etre la bonne
-   //
+   
+
    // camera 1 milieu
    ecart = 128;
    ecart_old = 128;
    for (i=0;i<nb_bandes_1;i++){
       if (bandes_1[i][0]==0){
          ecart_old = ecart;
-         ecart = fabs(pos+bandes_1[i][1]/2 - milieu1);
+         ecart = abs(pos+bandes_1[i][1]/2 - milieu1);
          // si on a ecart < ecart_old et ecart < seuil1
-         if (ecart<ecart_old && ecart<seuil1){
+         if (ecart<ecart_old && ecart<seuil1 && bandes_1[i][1]>15){
             milieu1_temp = pos+bandes_1[i][1]/2;
             bande_milieu1_indice = i;
          }
@@ -505,6 +503,7 @@ void centre_et_arrivee(void){
    }
    milieu1 = milieu1_temp;
 
+
    // camera 2 milieu
    ecart = 128;
    ecart_old = 128;
@@ -512,9 +511,9 @@ void centre_et_arrivee(void){
    for (i=0;i<nb_bandes_2;i++){
       if (bandes_2[i][0]==0){
          ecart_old = ecart;
-         ecart = fabs(pos+bandes_2[i][1]/2 - milieu2);
+         ecart = abs(pos+bandes_2[i][1]/2 - milieu2);
          // si on a ecart < ecart_old et ecart < seuil2
-         if (ecart<ecart_old && ecart<seuil2){
+         if (ecart<ecart_old && ecart<seuil2 && bandes_1[i][1]>10){
             milieu2_temp = pos+bandes_2[i][1]/2;
          }
       }
@@ -522,6 +521,7 @@ void centre_et_arrivee(void){
       pos += bandes_2[i][1];
    }
    milieu2 = milieu2_temp;
+
 
    // detection ligne arrivée camera 1
    ligne_arrivee = 0;
@@ -540,8 +540,8 @@ void centre_et_arrivee(void){
 void analyse_cam_bis(void) {
 	uint16_t seuil1 = max_p1/3;
 	uint16_t seuil2 = max_p2/3;
-   int etat_bande = 0, etat_bande_old = 0;
-   int i = 0;
+   int16_t etat_bande = 0, etat_bande_old = 0;
+   int16_t i = 0;
 	old_milieu1 = milieu1;
 	old_milieu2 = milieu2;
 
@@ -551,12 +551,12 @@ void analyse_cam_bis(void) {
       nb_bandes_1 = 1;
       bandes_1[0][0] = etat_bande;
       bandes_1[0][1] = 1;
-      for (i=1; i<128; i++){
+      for (i=1; i<120; i++){
          etat_bande_old = etat_bande;
          if (etat_bande_old==1){
-            etat_bande = (camera1_p[i]<(1.1*seuil1));
+            etat_bande = (camera1_p[i]<(1.05*seuil1));
          } else {
-            etat_bande = (camera1_p[i]<(0.9*seuil1));
+            etat_bande = (camera1_p[i]<(0.95*seuil1));
          }
          if (etat_bande != etat_bande_old){
             bandes_1[nb_bandes_1][0] = etat_bande;
@@ -575,12 +575,12 @@ void analyse_cam_bis(void) {
       nb_bandes_2 = 1;
       bandes_2[0][0] = etat_bande;
       bandes_2[0][1] = 1;
-      for (i=1; i<128; i++){
+      for (i=1; i<120; i++){
          etat_bande_old = etat_bande;
          if (etat_bande_old==1){
-            etat_bande = (camera2_p[i]<(1.1*seuil2));
+            etat_bande = (camera2_p[i]<(1.05*seuil2));
          } else {
-            etat_bande = (camera2_p[i]<(0.9*seuil2));
+            etat_bande = (camera2_p[i]<(0.95*seuil2));
          }
          if (etat_bande != etat_bande_old){
             bandes_2[nb_bandes_2][0] = etat_bande;
