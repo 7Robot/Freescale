@@ -18,6 +18,7 @@
 
 extern IVOR4Handler();
 
+
 uint8_t autor_blink = 1;
 
 
@@ -41,22 +42,32 @@ void main (void)
 	uint16_t raccourciAffichage;
 		
 	init();
-	for (i = 0; i < 5000000; i++);	// petit delai à la noix
 	
-	TransmitData("\nI AM ALIVE !\n");
+	Set_PWM_Leds(0);
+	for (i = 0; i < 50000; i++);	// petit delai à la noix
+	
+	
+	
+
+	Set_Dir_Servo(0);
+	
+	Commande_Moteur(0,0);
 	
 	// attend avant de partir faire le premier tour de boucle (évite de déclencher le pb_calculs dès le debut) 
-	autorisation_aquiz = 0;
-	while (!autorisation_aquiz);
+	for (i = 0; i < 50; i++)
+	{
+		autorisation_aquiz = 0;
+		while (!autorisation_aquiz);
+	}
 	
-	
-	Set_Dir_Servo(0);
-	Commande_Moteur(0,0);
+	//initEMIOS_0ch4(); 					// Initialize eMIOS 0 channel 4 as OPWM, Servo moteur  
+	TransmitData("\nI AM ALIVE !\n");
+
 	
 	// **********************************************************
 	
 	//while(menu[15] == 0) 
-	while(0)
+/*	while(0)
 	{
 		// limite : un tour de boucle toute les 10 ms
 		while (autorisation_aquiz == 0);
@@ -102,7 +113,7 @@ void main (void)
 		}
 		
 
-		//*******************************************  affichage leds  ***********************************************//
+		// *******************************************  affichage leds  *********************************************** //
 
 		if (R) // on doit afficher le numero de paramètre
 		{
@@ -142,7 +153,7 @@ void main (void)
 			}
 			TransmitData("    \n");
 		}
-	}
+	}*/
 	
 	
 	
@@ -178,7 +189,7 @@ void main (void)
 			
 			Asserv_Vitesse(autor_vitesse * calcul_consigne_vitesse());
 			
-			//Controle_Direction(0);
+			Controle_Direction(0);
 		/*	Asserv_Vitesse(bidule/30.0);*/
 
 			toto++;
@@ -203,7 +214,7 @@ void main (void)
 					
 				//toto = 0;
 			}
-			if (toto < 128 && mode_spam)
+			else if (toto < 128 && mode_spam)
 			{
 				printhex16(buff1[toto]);
 				TransmitCharacter(' ');
@@ -229,49 +240,61 @@ void main (void)
 				printhex16(max_lum);
 				TransmitData("    \n");
 				
+				
+				
+			}
+			else if (toto == 150 && mode_spam)
+			{
+				TransmitData("\nmilieu1 ");
+				printfloat(milieu1);
+				TransmitData("\nmilieu2 ");
+				printfloat(milieu2);
+				
+				
+				if (pb_aquiz1 == 0)
+				{
+					TransmitData("\n\ncam1 :");
+					for (i = 0; i < nb_bandes_1; i++)
+					{
+						TransmitData("\nBande ");
+						if (bandes_1[i][0])
+							TransmitData("blanche de ");
+						else
+							TransmitData("noire de ");
+						printfloat(bandes_1[i][1]);
+						TransmitData(" pixels");
+					}
+				}
+				else
+					TransmitData("\nErreur Cam 1\n");
+				
+				if (pb_aquiz1 == 0)
+				{
+					TransmitData("\n\ncam2 :");
+					for (i = 0; i < nb_bandes_2; i++)
+					{
+						TransmitData("\nBande ");
+						if (bandes_2[i][0])
+							TransmitData("blanche de ");
+						else
+							TransmitData("noire de ");
+						printfloat(bandes_2[i][1]);
+						TransmitData(" pixels");
+					}
+				}
+				else
+					TransmitData("\nErreur Cam 2\n");
+				TransmitData("    \n");
+			}
+			else if (toto == 250 && mode_spam)
+			{
 				if (mode_spam != -1 && mode_spam != 0)
 					mode_spam --;
 				if (mode_spam == 0)
 					TransmitData("\nspam OFF\n");
-				
 			}
-			else if (toto == 135 && mode_spam)
-			{
-				TransmitData("\n\nmilieu1 : ");
-				printfloat(milieu1);
-				TransmitData("\nmilieu2 : ");
-				printfloat(milieu2);
-				
-				TransmitData("\n\n\nbandes 1\n");
-				
-				for (i = 0; i < nb_bandes_1; i++)
-				{
-					TransmitData("\nBande ");
-					if (bandes_1[i][0] == 1)
-						TransmitData("blanche ");
-					else
-						TransmitData("noire ");
 					
-						TransmitData("de ");
-					printfloat(bandes_1[i][1]);
-					TransmitData("pixels");
-				}
 				
-				TransmitData("\nbandes 2\n");
-				
-				for (i = 0; i < nb_bandes_2; i++)
-				{
-					TransmitData("\nBande ");
-					if (bandes_2[i][0] == 1)
-						TransmitData("blanche ");
-					else
-						TransmitData("noire ");
-					
-						TransmitData("de ");
-					printfloat(bandes_2[i][1]);
-					TransmitData("pixels");
-				}
-			}
 			
 			if (autorisation_aquiz == 1)		// si l'autorisation de commencer les calculs a été donnée durant les calculs
 				pb_calculs = 500;	// 5 sec		// ça veut dire que la boucle prends plus de 10 ms pour se faire
