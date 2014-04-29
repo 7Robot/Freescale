@@ -445,6 +445,12 @@ void SwIrq4ISR(void)
 							else
 								TransmitData("\nControle direction desactivé   \n");
 						break;
+					case 'm' : mode_controle = !(mode_controle);
+							if (mode_controle)
+								TransmitData("\nControle direction Proportionnel Derivé   \n");
+							else
+								TransmitData("\nControle direction Carré   \n");
+						break;
 					}
 				break;
 				
