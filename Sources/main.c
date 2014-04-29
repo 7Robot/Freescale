@@ -13,9 +13,12 @@
 #include "controle.h"
 #include "leds_boutons.h"
 
+#define FALSE 0
+#define TRUE 1
 
 extern IVOR4Handler();
 
+uint8_t autor_blink = 0;
 
 
 void main (void)
@@ -26,12 +29,124 @@ void main (void)
 	uint16_t pb_calculs = 0;
 
 	uint16_t buff1[128], buff2[128], buff4[128],buff3[128], buff5[128],buff6[128], buff7[128],buff8[128];
+	
+	
+	// partie interface
+	
+	uint16_t menu[16] = {0};
+	uint16_t parametreARegler=0, valeurDuParam=0;
+	uint16_t R = TRUE; //La rampe de leds
+	uint16_t ld[4] = {0};
+	uint16_t nb_btn = 5; 
+	uint16_t raccourciAffichage;
 		
 	init();
 	for (i = 0; i < 10000000; i++);	// petit delai à la noix
 	
 	TransmitData("\nI AM ALIVE !\n");
 	
+	// attend avant de partir faire le premier tour de boucle (évite de déclencher le pb_calculs dès le debut) 
+	autorisation_aquiz = 0;
+	while (!autorisation_aquiz);
+	
+	
+	Set_Dir_Servo(0);
+	Commande_Moteur(0,0);
+	
+	// **********************************************************
+	
+	while(menu[15] == 0) 
+	{
+		// limite : un tour de boucle toute les 10 ms
+		while (autorisation_aquiz == 0);
+		autorisation_aquiz = 0;
+		toto ++;
+
+		nb_btn = get_buttons(); 
+		
+		if ((nb_btn == 3)&&(!R))
+			menu[parametreARegler] = get_potar();
+		
+		else
+		{
+			//traitement des modifs
+			if (R) // On est dans le menu de choix des paramètres
+			{
+				switch (nb_btn)
+				{
+					case 0 : 	R = !R;
+							valeurDuParam = 0;
+						break;
+					case 1 : 	parametreARegler = (parametreARegler+1) % 16; 
+						break;
+					case 2 : 	parametreARegler = (parametreARegler+15) % 16;
+						break;
+				}
+			}
+			else // On est dans le menu de modif du param actuel
+			{
+				switch (nb_btn)
+				{
+				case 0 : 	R = !R;
+						parametreARegler = 0; 
+					break;
+				case 1 : 	valeurDuParam = (valeurDuParam+1) % 16;
+						menu[parametreARegler] = valeurDuParam;
+					break;
+				case 2 : 	valeurDuParam = (valeurDuParam+15) % 16;
+						menu[parametreARegler] = valeurDuParam;
+					break;
+				}
+			}
+		}
+		
+
+		//*******************************************  affichage leds  ***********************************************//
+
+		if (R) // on doit afficher le numero de paramètre
+		{
+			ld[3] = parametreARegler % 2;
+			ld[2] = (parametreARegler % 4)>1;
+			ld[1] = (parametreARegler % 8)>2;
+			ld[0] = parametreARegler >= 8;	
+		}
+		else
+		{
+			if (raccourciAffichage = menu[parametreARegler] > 15)
+				raccourciAffichage = menu[parametreARegler] / 64;
+			else
+				raccourciAffichage = menu[parametreARegler];
+			
+			ld[3] = raccourciAffichage % 2;
+			ld[2] = (raccourciAffichage % 4)>1;
+			ld[1] = (raccourciAffichage % 8)>2;
+			ld[0] = raccourciAffichage >= 8;	
+
+		}
+		set_led(0,ld[0]);
+		set_led(1,ld[1]);
+		set_led(2,ld[2]);
+		set_led(3,ld[3]);
+		
+		Set_PWM_Leds(50.0 * R);
+		
+		autor_blink = (menu[1] != 0);
+		
+		if (toto == 0)
+		{
+			for (i = 0; i <= 15; i++)
+			{
+				TransmitData("\n");
+				printhex16(menu[i]);
+			}
+			TransmitData("    \n");
+		}
+	}
+	
+	
+	
+	// ***************************************************************************************
+	// ************************* boucle principale ************************
 	while (1)
 	{ 
 
@@ -57,6 +172,8 @@ void main (void)
 			set_led(3,1);
 			retranche_courbe();
 			set_led(3,0);
+			
+			Asserv_Vitesse(autor_vitesse * calcul_consigne_vitesse());
 			
 			//Controle_Direction(0);
 		/*	Asserv_Vitesse(bidule/30.0);*/
@@ -136,7 +253,8 @@ void main (void)
 
 void Pit1ISR(void) {		// interrupt every ms
     autorisation_aquiz = 1;
-  	blink_led(0);
+  	if (autor_blink)
+  		blink_led(0);
   	PIT.CH[1].TFLG.B.TIF = 1;    // MPC56xxP/B/S: CLear PIT 1 flag by writing 1 
 }
 

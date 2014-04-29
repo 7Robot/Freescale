@@ -13,6 +13,7 @@ float distance_consigne = 0;
 
 float last_consigne = 0;
 
+#define max(i, j) (i > j ? i : j)
 
 
 //************************************************* Capteur1_Roue_ISR **************************************************************
@@ -77,7 +78,7 @@ void Capteur2_Roue_ISR(void)
 //************************************************* Asserv_Vitesse **************************************************************
 
 
-
+// consigne en m/s
 
 void Asserv_Vitesse(float consigne)
 {
@@ -98,7 +99,7 @@ void Asserv_Vitesse(float consigne)
     if (mode_asserv_vitesse)
     {
 	    // calcul erreur	    
-	    erreur = consigne - moteur_compteur_temp;	    
+	    erreur = consigne - (moteur_compteur_temp * METER_BY_TICS * 100);	    
 
 		// partie dérivée
 		derivee = erreur - moteur_derniere_erreur;
@@ -220,6 +221,31 @@ void Commande_Moteur(float C_Moteur_D, float C_Moteur_G)
 }
 
 
+// va donner une consigne de vitesse entre min et max
+// en fonction de l'écart entre la ligne vue sur la caméra 2 (ou de l'absence de ligne)
+
+float calcul_consigne_vitesse(void)
+{
+	int8_t ecart;
+	
+	ecart = 64 - milieu2;
+	if (ecart < 0)
+		ecart = - ecart;
+	
+	if (pb_aquiz2)
+		return consigne_vitesse_min;
+	else
+	{
+		if (ecart < 10)
+			return consigne_vitesse_max;
+		else
+			return max(consigne_vitesse_min, consigne_vitesse_max - (ecart - 10) * pente_consigne_vitesse);
+					// ne pas aller plus bas que la vitesse min, 
+	}
+
+}
+
+
 
 float get_moteur_compteur(void)
 {
@@ -290,3 +316,4 @@ void send_asserv_motor_status(void)
 		
 	}
 }
+

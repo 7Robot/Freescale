@@ -1,4 +1,5 @@
-#include "leds_boutons.h";
+#include "extern_globals.h"
+#include "leds_boutons.h"
 
 uint8_t get_bouton(uint8_t but)
 {
@@ -38,4 +39,23 @@ uint16_t get_potar(void)
 	while (ADC.MSR.B.JSTART);		// boucle tant qu'elle est pas finie
 	
 	return ADC.CDR[4].B.CDATA;
+}
+
+
+uint16_t get_buttons (void)
+{
+	uint16_t btn[3] = {0};
+	uint16_t j;
+	uint16_t val_btn = 5;
+	
+	for (j=0;j<4;j++)
+	{
+		btn[j] = get_bouton(j);
+		if ((btn[j] == 1) && (old_btn[j] != 1))
+		{
+			val_btn = j;
+		}
+		old_btn[j] = btn[j];
+	}
+	return val_btn;
 }

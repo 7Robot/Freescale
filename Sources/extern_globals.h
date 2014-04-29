@@ -52,6 +52,9 @@ extern uint16_t controle_kp ;
 extern uint16_t controle_kd ;
 extern uint16_t controle_ki ;
 
+extern uint8_t autor_controle;
+extern uint8_t mode_controle;
+
 extern float moteur_kp_vit;
 extern float moteur_ki_vit;
 extern float moteur_kd_vit;
@@ -60,9 +63,14 @@ extern float moteur_kp_pos;
 extern float moteur_ki_pos;
 extern float moteur_kd_pos;
 
-extern float led_power;
+extern float consigne_vitesse_min;
+extern float consigne_vitesse_max;
+extern float pente_consigne_vitesse;
+extern uint8_t autor_vitesse;
 
 extern uint8_t ecart_normal;
+
+extern float led_power;
 
 extern uint8_t mode_led;
 extern uint16_t consigne_lum;
@@ -73,7 +81,7 @@ extern float consigne_led;
 extern uint8_t milieu1, milieu2, milieu1_ok, milieu2_ok, old_milieu1, old_milieu2;
 extern uint8_t pb_aquiz1, pb_aquiz2;
 
-
+extern uint16_t old_btn[3];
 // camera analyse_2
 extern int bandes_1[128][2]; // bandes (0,1 et leur largeur)
 extern int bandes_2[128][2]; // bandes (0,1 et leur largeur)
