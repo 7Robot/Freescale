@@ -53,21 +53,30 @@ uint16_t controle_kp = CONTROLE_KP;
 uint16_t controle_kd = CONTROLE_KD;
 uint16_t controle_ki = CONTROLE_KI;
 
+uint8_t autor_controle = 0;
+uint8_t mode_controle = 0;
 
-float moteur_kp_vit = MOTEUR_KP;
-float moteur_ki_vit = MOTEUR_KI;
-float moteur_kd_vit = MOTEUR_KD;
 
-float moteur_kp_pos = MOTEUR_KP;
-float moteur_ki_pos = MOTEUR_KI;
-float moteur_kd_pos = MOTEUR_KD;
+float moteur_kp_vit = MOTEUR_KP_VIT;
+float moteur_ki_vit = MOTEUR_KI_VIT;
+float moteur_kd_vit = MOTEUR_KD_VIT;
 
-float led_power = 0;
+float moteur_kp_pos = MOTEUR_KP_POS;
+float moteur_ki_pos = MOTEUR_KI_POS;
+float moteur_kd_pos = MOTEUR_KD_POS;
+
+float consigne_vitesse_min = 0.05;
+float consigne_vitesse_max = 1.0;
+float pente_consigne_vitesse = 0.05;
+uint8_t autor_vitesse = 0;
+
 
 uint8_t ecart_normal = 15;//valeur incertaine, a recalculer
 	
+float led_power = 0;
+
 uint8_t mode_led = 1;
-uint16_t consigne_lum = 00;
+uint16_t consigne_lum = 0;
 uint16_t max_lum = 0;
 float k_lum = 0.05;
 
@@ -76,3 +85,5 @@ float consigne_led = 0;
 uint8_t milieu1, milieu2, milieu1_ok, milieu2_ok, old_milieu1, old_milieu2;
 uint8_t pb_aquiz1 = 0, pb_aquiz2 = 0;
 	
+uint16_t old_btn[3] = {0};
+

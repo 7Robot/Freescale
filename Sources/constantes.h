@@ -4,9 +4,14 @@
 
 #define CONTROLE_DIFFERENCE_POS_MAX 30
 
-#define MOTEUR_KP 10
-#define MOTEUR_KD 0
-#define MOTEUR_KI 0.1
+#define MOTEUR_KP_POS 500
+#define MOTEUR_KD_POS 0
+#define MOTEUR_KI_POS 10
+
+#define MOTEUR_KP_VIT 10
+#define MOTEUR_KD_VIT 0
+#define MOTEUR_KI_VIT 0.1
+
 #define MAX_MOTEUR 90
 
 

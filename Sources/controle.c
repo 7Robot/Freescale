@@ -19,23 +19,10 @@ void Controle_Direction(uint8_t print)
 	int8_t derivee;
 	int16_t commande;
 	int16_t commande_bornee;
-	static uint32_t compteur_ligne_arrivee = 0; // On regarde combien de fois on croise la ligne d'arrivé
-	uint16_t camera1_val[128] ;
-	uint16_t camera2_val[128] ;
-    int i;
-    
-    for (i=0; i<=128; i++)
-    {
-    	camera1_val[i] = camera2_valeurs[i];
-    	//camera2_val[i] = camera2_valeurs[i];
-    }
-	
-	if (print != 0) 
-		TransmitData("cam1:\n");
-    //milieu_ligne(&pos_milieu, &incertitude, camera2_valeurs, 0);
+
+
     
 
-    // objectif_vitesse = max(6-abs((int16_t)(pos_milieu)-64)/10, 2);
     
     // PID pour la direction
     // zieger-nicols
@@ -49,8 +36,7 @@ void Controle_Direction(uint8_t print)
     commande = -controle_kp * erreur + controle_kd*derivee + controle_ki*controle_integrale;
     
     
-	//Set_Dir_Servo((float)commande);
-	Set_Dir_Servo(0);
+	Set_Dir_Servo((float)commande * autor_controle);
 }
 
 

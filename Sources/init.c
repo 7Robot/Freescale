@@ -484,7 +484,6 @@ void init_LinFLEX_3_UART (void)
 
 }
 
-
 void initPIT1(void) {
 	PIT.PITMCR.B.MDIS = 0;			// PIT Master_Disable = 0
 	PIT.PITMCR.B.FRZ = 1;	     	// Freeze in debug = 1

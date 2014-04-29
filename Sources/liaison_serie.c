@@ -352,13 +352,13 @@ void UART_RXI_ISR(void)
 		LINFLEX_3.UARTSR.B.DRF = 1;
 		LINFLEX_3.UARTSR.B.RMB = 1;
 		//TransmitCharacterIfInf(rx,80);			// debug
-		if (i_buffer_r >= 6)					// si le buffer est plein, on drop la première valeur reçue (fifo)
+		if (i_buffer_r >= 7)					// si le buffer est plein, on drop la première valeur reçue (fifo)
 		{
 			i_buffer_r --;
-			for (i = 0; i <=5; i++)
+			for (i = 0; i < 6; i++)
 				buffer_rx[i] = buffer_rx[i+1];
 		}
-		if (rx != 0x1b || rx != 0x7e || rx != 0x7f) // si le caractere reçu n'est ni echap, ni suppr, ni effacer....
+		if (rx != 0x1b && rx != 0x7e && rx != 0x7f) // si le caractere reçu n'est ni echap, ni suppr, ni effacer....
 		{	
 			
 			buffer_rx[i_buffer_r] = rx;				// ajoute le dernier mot reçu à la fin du buffer
@@ -369,12 +369,13 @@ void UART_RXI_ISR(void)
 			TransmitCharacter(':');
 			for (i = 0; i < i_buffer_r; i++)
 				TransmitCharacter(buffer_rx[i]);
-			TransmitData("    \n");
+				
+			TransmitData("\n    ");
 			
 			if (rx == '\n' || rx == '\r')						// si le dernier caractère reçu est \n ça veut dire que normalement une commade est prete
 			{
 				i_buffer_r = 0;
-				for (i=0;i<=5;i++)
+				for (i = 0; i < 6; i++)
 					buffer_rx_lecture[i] = buffer_rx[i];
 				INTC.SSCIR[4].B.SET = 1;			// Declenche l'interruption software 4
 			}
@@ -390,7 +391,7 @@ void UART_RXI_ISR(void)
 void SwIrq4ISR(void)
 {
 	uint16_t data = 0;
-	
+	/*
 	TransmitCharacter(buffer_rx_lecture[0]); 
 	TransmitCharacter('\n');
 	TransmitCharacter(buffer_rx_lecture[1]); 
@@ -402,7 +403,7 @@ void SwIrq4ISR(void)
 	TransmitCharacter(buffer_rx_lecture[4]); 
 	TransmitCharacter('\n');
 	TransmitCharacter(buffer_rx_lecture[5]); 
-	TransmitCharacter('\n');
+	TransmitCharacter('\n');*/
 
 	
 	if (	buffer_rx_lecture[2] >=48 && buffer_rx_lecture[2] <= 57 &&
@@ -415,8 +416,8 @@ void SwIrq4ISR(void)
 				10*(buffer_rx_lecture[4] - 48) + 
 				(buffer_rx_lecture[5] - 48);
 		
-		printfloat(data);
-		TransmitCharacter('\n');
+		//printfloat(data);
+		//TransmitCharacter('\n');
 		
 		switch (buffer_rx_lecture[0])
 		{
@@ -425,7 +426,7 @@ void SwIrq4ISR(void)
 
 					case 'p' : controle_kp = data/10.0;
 							TransmitData("\nC_Kp: ");
-							printfloat(controle_kp);  
+							printfloat(controle_kp); 
 							TransmitCharacter('\n');
 						break;
 					case 'i' : controle_ki = data/10.0;
@@ -438,26 +439,65 @@ void SwIrq4ISR(void)
 							printfloat(controle_kd);
 							TransmitCharacter('\n');
 						break;
+					case 'a' : autor_controle = !(autor_controle);
+							if (autor_controle)
+								TransmitData("\nControle direction activé   \n");
+							else
+								TransmitData("\nControle direction desactivé   \n");
+						break;
 					}
 				break;
 				
 			case 'm' : switch (buffer_rx_lecture[1])
 					{
 
-					case 'p' : moteur_kp_vit = data/10.0;
-							TransmitData("\nM_Kp_V: ");
-							printfloat(moteur_kp_vit);  
-							TransmitCharacter('\n');
+					case 'p' :
+							if (mode_asserv_vitesse)
+							{
+								moteur_kp_vit = data/10.0;
+								TransmitData("\nM_Kp_V: ");
+								printfloat(moteur_kp_vit);  
+								TransmitCharacter('\n');	
+							}
+							else
+							{
+								moteur_kp_pos = data/10.0;
+								TransmitData("\nM_Kp_P: ");
+								printfloat(moteur_kp_pos);  
+								TransmitCharacter('\n');	
+							}
 						break;
-					case 'i' : moteur_ki_vit = data/10.0;
-							TransmitData("\nM_Ki_V: ");
-							printfloat(moteur_ki_vit);
-							TransmitCharacter('\n');
+					case 'i' :
+							if (mode_asserv_vitesse)
+							{
+								moteur_ki_vit = data/10.0;
+								TransmitData("\nM_Ki_V: ");
+								printfloat(moteur_ki_vit);
+								TransmitCharacter('\n');
+							}
+							else
+							{
+								moteur_ki_pos = data/10.0;
+								TransmitData("\nM_Ki_P: ");
+								printfloat(moteur_ki_pos);
+								TransmitCharacter('\n');								
+							}
 						break;
-					case 'd' : moteur_kd_vit = data/10.0;
-							TransmitData("\nM_Kd_V: ");
-							printfloat(moteur_kd_vit);
-							TransmitCharacter('\n');
+					case 'd' : 
+							if (mode_asserv_vitesse)
+							{
+								moteur_kd_vit = data/10.0;
+								TransmitData("\nM_Kd_V: ");
+								printfloat(moteur_kd_vit);
+								TransmitCharacter('\n');
+							}
+							else
+							{
+								moteur_kd_pos = data/10.0;
+								TransmitData("\nM_Kd_P: ");
+								printfloat(moteur_kd_pos);
+								TransmitCharacter('\n');								
+							}
 						break;
 					}
 				break;
@@ -481,6 +521,22 @@ void SwIrq4ISR(void)
 					case 's' :
 							TransmitData("\nMotor_Status :\n");
 							send_asserv_motor_status();
+						break;
+						
+					case 't' : consigne_vitesse_max = data/1000.0;
+							TransmitData("\nconsigne_vitesse_max: ");
+							printfloat(consigne_vitesse_max);
+							TransmitCharacter('\n');
+						break;
+					case 'b' : consigne_vitesse_min = data/1000.0;
+							TransmitData("\nconsigne_vitesse_min: ");
+							printfloat(consigne_vitesse_min);
+							TransmitCharacter('\n');
+						break;
+					case 'p' : pente_consigne_vitesse = data/1000.0;
+							TransmitData("\npente_consigne_vitesse: ");
+							printfloat(pente_consigne_vitesse);
+							TransmitCharacter('\n');
 						break;
 					}
 				break;
@@ -563,7 +619,8 @@ void SwIrq4ISR(void)
 
 					case 'p' : 
 							TransmitData("\nPotar à :");
-							printfloat((float)get_potar());							TransmitData("    \n");
+							printfloat((float)get_potar());
+							TransmitData("    \n");
 							
 						break;
 					}
