@@ -4,14 +4,14 @@
 extern uint16_t camera1_valeurs[128];
 extern uint16_t camera2_valeurs[128];
 
-extern uint16_t camera1_valeurs_m[128];
-extern uint16_t camera2_valeurs_m[128];
+extern uint16_t camera1_valeurs_m[120];
+extern uint16_t camera2_valeurs_m[120];
 
-extern uint16_t camera1_courbe[128];
-extern uint16_t camera2_courbe[128];
+extern uint16_t camera1_courbe[120];
+extern uint16_t camera2_courbe[120];
 
-extern uint16_t camera1_p[128];
-extern uint16_t camera2_p[128];
+extern uint16_t camera1_p[120];
+extern uint16_t camera2_p[120];
 
 extern uint16_t max_moy1;
 extern uint16_t min_moy1;
@@ -84,8 +84,8 @@ extern uint8_t pb_aquiz1, pb_aquiz2;
 extern uint16_t old_btn[3];
 
 // camera analyse_2
-extern int16_t bandes_1[120][2]; // bandes (0,1 et leur largeur)
-extern int16_t bandes_2[120][2]; // bandes (0,1 et leur largeur)
-extern int16_t nb_bandes_1;
-extern int16_t nb_bandes_2;
-extern int16_t ligne_arrivee;
+extern uint8_t bandes_1[120][2]; // bandes (0,1 et leur largeur)
+extern uint8_t bandes_2[120][2]; // bandes (0,1 et leur largeur)
+extern uint8_t nb_bandes_1;
+extern uint8_t nb_bandes_2;
+extern uint8_t ligne_arrivee;
