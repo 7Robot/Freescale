@@ -224,10 +224,10 @@ void Commande_Moteur(float C_Moteur_D, float C_Moteur_G)
 // va donner une consigne de vitesse entre min et max
 // en fonction de l'écart entre la ligne vue sur la caméra 2 (ou de l'absence de ligne)
 
-float calcul_consigne_vitesse(void)
+float calcul_consigne_vitesse(uint8_t print)
 {
 	int8_t ecart;
-	
+	float consigne;
 	ecart = 64 - milieu2;
 	if (ecart < 0)
 		ecart = - ecart;

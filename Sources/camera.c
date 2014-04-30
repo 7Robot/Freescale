@@ -476,7 +476,7 @@ uint8_t analyse_cam(void)
 
 
 
-void analyse_cam_bis(void)
+void analyse_cam_bis(uint8_t print)
 {
 	uint16_t seuil1 = max_p1/3;
 	uint16_t seuil2 = max_p2/3;
@@ -552,14 +552,14 @@ void analyse_cam_bis(void)
 
 
 	// calcul du centre de la ligne et detection ligne d'arrivee
-	centre_et_arrivee();
+	centre_et_arrivee(print);
    
 }
 
 
 
 
-void centre_et_arrivee(void){
+void centre_et_arrivee(uint8_t print){
    int16_t i = 0;
    int16_t pos = 0;
    int16_t ecart = 128;
@@ -578,12 +578,19 @@ void centre_et_arrivee(void){
    ecart_old = 128;
    for (i=0;i<nb_bandes_1;i++){
       if (bandes_1[i][0]==0){
-         ecart_old = ecart;
-         ecart = abs(pos+bandes_1[i][1]/2 - milieu1);
+         
+         ecart = (pos + (bandes_1[i][1]/2)) - old_milieu1;
+		 ecart = abs(ecart);         
+         if (print)
+         {
+         	TransmitData("\nEcart ");
+         	printfloat(ecart);
+         }
          // si on a ecart < ecart_old et ecart < seuil1
-         if (ecart<ecart_old && ecart<seuil1 && bandes_1[i][1]>15){
+         if ((ecart<ecart_old) && (ecart<seuil1) && (bandes_1[i][1]>13)){
             milieu1_temp = pos+bandes_1[i][1]/2;
             bande_milieu1_indice = i;
+            ecart_old = ecart;
          }
       }
       // maj de pos : ajout de la largeur de la bande actuelle
@@ -598,11 +605,13 @@ void centre_et_arrivee(void){
    pos = 0;
    for (i=0;i<nb_bandes_2;i++){
       if (bandes_2[i][0]==0){
-         ecart_old = ecart;
-         ecart = abs(pos+bandes_2[i][1]/2 - milieu2);
+         
+         ecart = pos+bandes_2[i][1]/2 - old_milieu2;
+         ecart = abs(ecart);
          // si on a ecart < ecart_old et ecart < seuil2
          if (ecart<ecart_old && ecart<seuil2 && bandes_2[i][1]>8){
             milieu2_temp = pos+bandes_2[i][1]/2;
+            ecart_old = ecart;
          }
       }
       // maj de pos : ajout de la largeur de la bande actuelle
@@ -620,5 +629,7 @@ void centre_et_arrivee(void){
             bandes_1[i-1][1] <= 25 &&
             bandes_1[i+1][0] <= 25 &&
             bandes_1[i+2][0] == 0 );
+	//if (ligne_arrivee)
+	//	TransmitData("\nligne detecte\n");          
    }
 }

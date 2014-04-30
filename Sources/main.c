@@ -185,12 +185,12 @@ void main (void)
 			retranche_courbe();
 			set_led(3,0);
 			
-			analyse_cam_bis();
+			analyse_cam_bis((toto == 130) && mode_spam);
 			
-			Asserv_Vitesse(autor_vitesse * calcul_consigne_vitesse());
+			Asserv_Vitesse(autor_vitesse * calcul_consigne_vitesse(toto == 131 && mode_spam));
 			
 			Controle_Direction(0);
-		/*	Asserv_Vitesse(bidule/30.0);*/
+		
 
 			toto++;
 			if (toto == 255)
@@ -264,6 +264,9 @@ void main (void)
 						printfloat(bandes_1[i][1]);
 						TransmitData(" pixels");
 					}
+					
+					if (ligne_arrivee)
+						TransmitData("\nligne d'arrivée detectée");
 				}
 				else
 					TransmitData("\nErreur Cam 1\n");
