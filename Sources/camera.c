@@ -622,3 +622,5 @@ void centre_et_arrivee(void){
             bandes_1[i+2][0] == 0 );
    }
 }
+
+

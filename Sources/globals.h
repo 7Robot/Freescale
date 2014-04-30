@@ -52,6 +52,7 @@ int16_t mode_spam = 0;
 uint16_t controle_kp = CONTROLE_KP;
 uint16_t controle_kd = CONTROLE_KD;
 uint16_t controle_ki = CONTROLE_KI;
+float coeff_modif_commande = 1/64;
 
 uint8_t autor_controle = 0;
 uint8_t mode_controle = 0;
