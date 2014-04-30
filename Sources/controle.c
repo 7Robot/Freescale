@@ -15,30 +15,41 @@ void Controle_Direction(uint8_t print)
     uint8_t incertitude;
     uint8_t pos_milieu_loin;
     uint8_t incertitude_loin;
-	int8_t erreur;
-	int8_t derivee;
-	int16_t commande;
+	//int8_t erreur;
+	
+	float commande;
 	float commande_finale;
-	int16_t commande_bornee;
 
-
-
+	static float derivee = 0.0;
+	static float erreur = 0.0;
+	float aerreur;
     
+    static float erreur2 = 0.0;
 
     
     // PID pour la direction
     // zieger-nicols
-    erreur = 64 - (milieu1);
-
-	derivee = erreur - controle_derniere_erreur;
+    //erreur = 0.5 * (64 - (milieu1)) + 0.5 * erreur;
+	
+	erreur = 64-milieu1;
+	
+	derivee = 0.2*(erreur - controle_derniere_erreur) + 0.8 * derivee;
 	controle_integrale += erreur;
 
     controle_derniere_erreur = erreur;
+    aerreur = abs(erreur);
+    commande = -controle_kp * erreur * aerreur /60.0 - controle_kd*derivee + controle_ki*controle_integrale;
     
-    commande = -controle_kp * erreur + controle_kd*derivee + controle_ki*controle_integrale;
+   // erreur2 = 0.25 * (64-milieu2) + 0.75 * erreur2;
+   // erreur2 = abs(erreur2);
+    
+    //erreur2 = max(erreur2, 1);
+    //if(!pb_aquiz2)
+   	// 	commande = commande * (erreur2/3.0);
+    
 
-    commande_finale = modif_camera2((float)commande);
-    
+    //commande_finale = modif_camera2((float)commande);
+    commande_finale = commande;
     
 	Set_Dir_Servo(commande_finale * autor_controle);
 }

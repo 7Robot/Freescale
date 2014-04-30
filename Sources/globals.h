@@ -66,7 +66,7 @@ float moteur_kp_pos = MOTEUR_KP_POS;
 float moteur_ki_pos = MOTEUR_KI_POS;
 float moteur_kd_pos = MOTEUR_KD_POS;
 
-float consigne_vitesse_min = 0.5;
+float consigne_vitesse_min = 1.5;
 float consigne_vitesse_max = 2.0;
 float pente_consigne_vitesse = 0.05;
 uint8_t autor_vitesse = 0;

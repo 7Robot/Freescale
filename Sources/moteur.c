@@ -158,6 +158,7 @@ void Asserv_Vitesse(float consigne)
 	
 
 	// envoie de la commande aux moteurs
+	commande = autor_vitesse * commande;
 	Commande_Moteur(commande, commande);
 }
 
@@ -245,7 +246,7 @@ float calcul_consigne_vitesse(uint8_t print)
 	
 	if(print)
 	{
-		TransmitData("consigne_vitesse ");
+		TransmitData("\nconsigne_vitesse ");
 		printfloat(consigne);
 		TransmitData("     ");
 	}

@@ -8,7 +8,7 @@
 #define MOTEUR_KD_POS 0
 #define MOTEUR_KI_POS 10
 
-#define MOTEUR_KP_VIT 10
+#define MOTEUR_KP_VIT 100
 #define MOTEUR_KD_VIT 0
 #define MOTEUR_KI_VIT 0.1
 
@@ -34,8 +34,8 @@
 
 #define CONTROLE_MILIEU_SERVO 1330 
 
-#define CONTROLE_KP 3
-#define CONTROLE_KD 0
+#define CONTROLE_KP 2
+#define CONTROLE_KD 5
 #define CONTROLE_KI 0
 
 
