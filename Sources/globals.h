@@ -52,7 +52,7 @@ int16_t mode_spam = 0;
 uint16_t controle_kp = CONTROLE_KP;
 uint16_t controle_kd = CONTROLE_KD;
 uint16_t controle_ki = CONTROLE_KI;
-float coeff_modif_commande = 1/64;
+float coeff_modif_commande = 1/64.0;
 
 uint8_t autor_controle = 1;
 uint8_t mode_controle = 0;
@@ -66,8 +66,8 @@ float moteur_kp_pos = MOTEUR_KP_POS;
 float moteur_ki_pos = MOTEUR_KI_POS;
 float moteur_kd_pos = MOTEUR_KD_POS;
 
-float consigne_vitesse_min = 0.05;
-float consigne_vitesse_max = 1.0;
+float consigne_vitesse_min = 0.5;
+float consigne_vitesse_max = 2.0;
 float pente_consigne_vitesse = 0.05;
 uint8_t autor_vitesse = 0;
 

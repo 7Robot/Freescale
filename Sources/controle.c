@@ -64,10 +64,11 @@ void Set_Dir_Servo(float consigne)
 
 float modif_camera2(float commande)
 {
-	uint16_t ecart_milieu = abs(64-milieu2);
-
-	if (!pb_aquiz2)
-		return commande*coeff_modif_commande*(ecart_milieu+1);
-	else
+	int16_t ecart_milieu = 64-milieu2;
+	ecart_milieu = abs(ecart_milieu);
+	
+//	if (!pb_aquiz2)
+//		return commande*coeff_modif_commande*(ecart_milieu+1);
+//	else
 		return commande;
 }

@@ -51,7 +51,7 @@ extern int16_t mode_spam;
 extern uint16_t controle_kp ;
 extern uint16_t controle_kd ;
 extern uint16_t controle_ki ;
-extern float coeff_modif_commande = 1/64;
+extern float coeff_modif_commande;
 
 extern uint8_t autor_controle;
 extern uint8_t mode_controle;

@@ -544,6 +544,11 @@ void SwIrq4ISR(void)
 							printfloat(pente_consigne_vitesse);
 							TransmitCharacter('\n');
 						break;
+					case 'a' : autor_vitesse = !autor_vitesse;
+							TransmitData("\nautorisation vitesse: ");
+							printhex8(autor_vitesse);
+							TransmitCharacter('\n');
+						break;
 					}
 				break;
 				

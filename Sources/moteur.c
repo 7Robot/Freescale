@@ -233,15 +233,24 @@ float calcul_consigne_vitesse(uint8_t print)
 		ecart = - ecart;
 	
 	if (pb_aquiz2)
-		return consigne_vitesse_min;
+		consigne = consigne_vitesse_min;
 	else
 	{
 		if (ecart < 10)
-			return consigne_vitesse_max;
+			consigne = consigne_vitesse_max;
 		else
-			return max(consigne_vitesse_min, consigne_vitesse_max - (ecart - 10) * pente_consigne_vitesse);
+			consigne = max(consigne_vitesse_min, consigne_vitesse_max - (ecart - 10) * pente_consigne_vitesse);
 					// ne pas aller plus bas que la vitesse min, 
 	}
+	
+	if(print)
+	{
+		TransmitData("consigne_vitesse ");
+		printfloat(consigne);
+		TransmitData("     ");
+	}
+	
+	return consigne;
 
 }
 
