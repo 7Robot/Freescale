@@ -4,4 +4,6 @@
 void Controle_Direction(uint8_t print);
 void Set_Dir_Servo(float consigne);
 
+float modif_camera2(float commande);
+
 #endif
