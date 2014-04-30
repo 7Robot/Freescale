@@ -617,8 +617,8 @@ void centre_et_arrivee(void){
    if (nb_bandes_1>=5 && i-2 >= 0 && i+2<nb_bandes_1){
       ligne_arrivee = (
             bandes_1[i-2][0] == 0 &&
-            bandes_1[i-1][0] == 1 &&
-            bandes_1[i+1][0] == 1 &&
+            bandes_1[i-1][1] <= 25 &&
+            bandes_1[i+1][0] <= 25 &&
             bandes_1[i+2][0] == 0 );
    }
 }
