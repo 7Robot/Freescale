@@ -108,42 +108,42 @@ void moy_cam (uint8_t do_moy)
 	{
 		// passage pour la caméra 1
 		// moyenne par circulaire sur 5 pixels
-		moy = 3*camera1_valeurs[8] + camera1_valeurs[9] + camera1_valeurs[10];
+		moy = 3*camera1_valeurs[0] + camera1_valeurs[1] + camera1_valeurs[2];
 
 		camera1_valeurs_m[0] = moy;
 		max_moy1 = moy;
 		min_moy1 = moy;
 		
-		moy = moy - camera1_valeurs[8] + camera1_valeurs[11];
+		moy = moy - camera1_valeurs[0] + camera1_valeurs[3];
 
 		camera1_valeurs_m[1] = moy;
 		max_moy1 = max(max_moy1, moy);
 		min_moy1 = min(min_moy1, moy);
 		
-		moy = moy - camera1_valeurs[8] + camera1_valeurs[12];
+		moy = moy - camera1_valeurs[0] + camera1_valeurs[4];
 
 		camera1_valeurs_m[2] = moy;
 		max_moy1 = max(max_moy1, moy);
 		min_moy1 = min(min_moy1, moy);
 		
-		for (i = 3+8; i <= 125; i ++)
+		for (i = 3; i <= 125; i ++)
 		{
 			moy = moy - camera1_valeurs[i-3] + camera1_valeurs[i+2];
 
-			camera1_valeurs_m[i-8] = moy;
+			camera1_valeurs_m[i] = moy;
 			max_moy1 = max(max_moy1, moy);
 			min_moy1 = min(min_moy1, moy);
 		}
 		
 		moy = moy - camera1_valeurs[123] + camera1_valeurs[127];
 
-		camera1_valeurs_m[118] = moy;
+		camera1_valeurs_m[126] = moy;
 		max_moy1 = max(max_moy1, moy);
 		min_moy1 = min(min_moy1, moy);
 		
 		moy = moy - camera1_valeurs[124] + camera1_valeurs[127];
 
-		camera1_valeurs_m[119] = moy;
+		camera1_valeurs_m[127] = moy;
 		max_moy1 = max(max_moy1, moy);
 		min_moy1 = min(min_moy1, moy);
 		
@@ -153,38 +153,38 @@ void moy_cam (uint8_t do_moy)
 
 
 		// camera 2
-		moy = 3*camera2_valeurs[8] + camera2_valeurs[9] + camera2_valeurs[10];
+		moy = 3*camera2_valeurs[0] + camera2_valeurs[1] + camera2_valeurs[2];
 		
 		camera2_valeurs_m[0] = moy;
 		max_moy2 = moy;
 		min_moy2 = moy;
 		
-		moy = moy - camera2_valeurs[8] + camera2_valeurs[11];
+		moy = moy - camera2_valeurs[0] + camera2_valeurs[3];
 		
 		camera2_valeurs_m[1] = moy;
 		max_moy2 = max(max_moy2, moy);
 		min_moy2 = min(min_moy2, moy);
 		
-		moy = moy - camera2_valeurs[8] + camera2_valeurs[12];
+		moy = moy - camera2_valeurs[0] + camera2_valeurs[4];
 		camera2_valeurs_m[2] = moy;
 		max_moy2 = max(max_moy2, moy);
 		min_moy2 = min(min_moy2, moy);
 		
-		for (i = 3+8; i <= 125; i ++)
+		for (i = 3; i <= 125; i ++)
 		{
 			moy = moy - camera2_valeurs[i-3] + camera2_valeurs[i+2];
-			camera2_valeurs_m[i-8] = moy;
+			camera2_valeurs_m[i] = moy;
 			max_moy2 = max(max_moy2, moy);
 			min_moy2 = min(min_moy2, moy);
 		}
 		
 		moy = moy - camera2_valeurs[123] + camera2_valeurs[127];
-		camera2_valeurs_m[118] = moy;
+		camera2_valeurs_m[126] = moy;
 		max_moy2 = max(max_moy2, moy);
 		min_moy2 = min(min_moy2, moy);
 		
 		moy = moy - camera2_valeurs[124] + camera2_valeurs[127];
-		camera2_valeurs_m[119] = moy;
+		camera2_valeurs_m[127] = moy;
 		max_moy2 = max(max_moy2, moy);
 		min_moy2 = min(min_moy2, moy);
 	}
@@ -196,9 +196,9 @@ void moy_cam (uint8_t do_moy)
 		min_moy2 = 6000;
 		// fonction qui ne fait pas la moyenne
 		// recopie en mutlipliant par 5 (pour garder une cohérence avec la moyenne)
-		for (i = 0; i < 120; i++)
+		for (i = 0; i < 128; i++)
 		{
-			moy = 5 * camera1_valeurs[i+8];
+			moy = 5 * camera1_valeurs[i];
 			camera1_valeurs_m[i] = moy;
 			max_moy1 = max(max_moy1, moy);
 			min_moy1 = min(min_moy1, moy);
@@ -238,7 +238,7 @@ void calcul_courbe(void)
 	index = 1;
 	i = 2;
 	
-	while(i < 120)
+	while(i < 128)
 	{
 		if (index != 0)
 		{
@@ -290,7 +290,7 @@ void calcul_courbe(void)
 		}
 		index++;
 	}
-	camera1_courbe[119] = yb;
+	camera1_courbe[127] = yb;
 	
 	
 	
@@ -306,7 +306,7 @@ void calcul_courbe(void)
 	index = 1;
 	i = 2;
 	
-	while(i < 120)
+	while(i < 128)
 	{
 		if (index != 0)
 		{
@@ -358,7 +358,7 @@ void calcul_courbe(void)
 		}
 		index++;
 	}
-	camera2_courbe[119] = yb;
+	camera2_courbe[127] = yb;
 	
 }
 
@@ -372,7 +372,7 @@ void retranche_courbe(void)
 	pos_max_p1 = 0;
 	pos_max_p2 = 0;
 	
-	for (i = 0; i < 120; i++)
+	for (i = 0; i < 128; i++)
 	{
 		a = camera1_courbe[i] - camera1_valeurs_m[i];
 		b = camera2_courbe[i] - camera2_valeurs_m[i];
@@ -493,7 +493,7 @@ void analyse_cam_bis(void)
 		nb_bandes_1 = 1;
 		bandes_1[0][0] = etat_bande;
 		bandes_1[0][1] = 1;
-		for (i=1; i<120; i++)
+		for (i=1; i<128; i++)
 		{
 			etat_bande_old = etat_bande;
 			if (etat_bande_old==1)
@@ -524,7 +524,7 @@ void analyse_cam_bis(void)
 		nb_bandes_2 = 1;
 		bandes_2[0][0] = etat_bande;
 		bandes_2[0][1] = 1;
-		for (i=1; i<120; i++)
+		for (i=1; i<128; i++)
 		{
 			etat_bande_old = etat_bande;
 

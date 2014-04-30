@@ -17,27 +17,26 @@ void Controle_Direction(uint8_t print)
     uint8_t incertitude_loin;
 	int8_t erreur;
 	int8_t derivee;
-	int16_t commande;
-	int16_t commande_bornee;
+	float commande;
 
 
-    if (mode_controle)
+
     
 
     
     // PID pour la direction
     // zieger-nicols
-    erreur = 64 - ((int16_t)pos_milieu);
+    erreur = 64 - (milieu1);
 
 	derivee = erreur - controle_derniere_erreur;
 	controle_integrale += erreur;
 
     controle_derniere_erreur = erreur;
     
-    commande = -controle_kp * erreur + controle_kd*derivee + controle_ki*controle_integrale;
+    commande = - controle_kp * erreur + controle_kd*derivee + controle_ki*controle_integrale;
     
     
-	Set_Dir_Servo((float)commande * autor_controle);
+	Set_Dir_Servo(commande * autor_controle);
 }
 
 
@@ -52,7 +51,7 @@ void Set_Dir_Servo(float consigne)
 	if (consigne > 100.0)
 		consigne = 100;
 	else if (consigne < -100.0)
-		consigne = 100;
+		consigne = -100;
 	
 	EMIOS_0.CH[4].CBDR.R = pos_milieu_servo + (int16_t)((amplitude_servo * consigne)/100.0);
 }

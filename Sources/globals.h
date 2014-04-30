@@ -4,14 +4,14 @@
 uint16_t camera1_valeurs[128];
 uint16_t camera2_valeurs[128];
 
-uint16_t camera1_valeurs_m[120];
-uint16_t camera2_valeurs_m[120];
+uint16_t camera1_valeurs_m[128];
+uint16_t camera2_valeurs_m[128];
 
-uint16_t camera1_courbe[120];
-uint16_t camera2_courbe[120];
+uint16_t camera1_courbe[128];
+uint16_t camera2_courbe[128];
 
-uint16_t camera1_p[120];
-uint16_t camera2_p[120];
+uint16_t camera1_p[128];
+uint16_t camera2_p[128];
 
 uint16_t max_moy1;
 uint16_t min_moy1;
@@ -53,7 +53,7 @@ uint16_t controle_kp = CONTROLE_KP;
 uint16_t controle_kd = CONTROLE_KD;
 uint16_t controle_ki = CONTROLE_KI;
 
-uint8_t autor_controle = 0;
+uint8_t autor_controle = 1;
 uint8_t mode_controle = 0;
 
 
@@ -82,7 +82,7 @@ float k_lum = 0.05;
 
 float consigne_led = 0;
 
-uint8_t milieu1, milieu2, milieu1_ok, milieu2_ok, old_milieu1, old_milieu2;
+uint8_t milieu1 = 64, milieu2 = 64, milieu1_ok, milieu2_ok, old_milieu1, old_milieu2;
 uint8_t pb_aquiz1 = 0, pb_aquiz2 = 0;
 	
 uint16_t old_btn[3] = {0};

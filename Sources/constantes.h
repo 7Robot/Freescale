@@ -34,7 +34,7 @@
 
 #define CONTROLE_MILIEU_SERVO 1330 
 
-#define CONTROLE_KP 5
+#define CONTROLE_KP 3
 #define CONTROLE_KD 0
 #define CONTROLE_KI 0
 
