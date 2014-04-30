@@ -243,7 +243,7 @@ void main (void)
 				
 				
 			}
-			else if (toto == 150 && mode_spam)
+			else if (toto == 129 && mode_spam)
 			{
 				TransmitData("\nmilieu1 ");
 				printfloat(milieu1);

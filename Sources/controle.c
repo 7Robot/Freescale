@@ -22,13 +22,13 @@ void Controle_Direction(uint8_t print)
 	int16_t commande_bornee;
 
 
-    if (mode_controle)
+
     
 
     
     // PID pour la direction
     // zieger-nicols
-    erreur = 64 - ((int16_t)pos_milieu);
+    erreur = 64 - (milieu1);
 
 	derivee = erreur - controle_derniere_erreur;
 	controle_integrale += erreur;
@@ -55,7 +55,7 @@ void Set_Dir_Servo(float consigne)
 	if (consigne > 100.0)
 		consigne = 100;
 	else if (consigne < -100.0)
-		consigne = 100;
+		consigne = -100;
 	
 	EMIOS_0.CH[4].CBDR.R = pos_milieu_servo + (int16_t)((amplitude_servo * consigne)/100.0);
 }

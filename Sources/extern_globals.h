@@ -4,14 +4,14 @@
 extern uint16_t camera1_valeurs[128];
 extern uint16_t camera2_valeurs[128];
 
-extern uint16_t camera1_valeurs_m[120];
-extern uint16_t camera2_valeurs_m[120];
+extern uint16_t camera1_valeurs_m[128];
+extern uint16_t camera2_valeurs_m[128];
 
-extern uint16_t camera1_courbe[120];
-extern uint16_t camera2_courbe[120];
+extern uint16_t camera1_courbe[128];
+extern uint16_t camera2_courbe[128];
 
-extern uint16_t camera1_p[120];
-extern uint16_t camera2_p[120];
+extern uint16_t camera1_p[128];
+extern uint16_t camera2_p[128];
 
 extern uint16_t max_moy1;
 extern uint16_t min_moy1;
