@@ -38,7 +38,7 @@ void Controle_Direction(uint8_t print)
 
     controle_derniere_erreur = erreur;
     aerreur = abs(erreur);
-    commande = -controle_kp * erreur * aerreur /60.0 - controle_kd*derivee + controle_ki*controle_integrale;
+    commande = -controle_kp * erreur * aerreur /40.0 - controle_kd*derivee + controle_ki*controle_integrale;
     
    // erreur2 = 0.25 * (64-milieu2) + 0.75 * erreur2;
    // erreur2 = abs(erreur2);

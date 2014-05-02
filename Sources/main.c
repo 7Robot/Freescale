@@ -41,6 +41,8 @@ void main (void)
 	uint16_t nb_btn = 5; 
 	uint16_t raccourciAffichage;
 		
+	uint32_t arret_a_faire = 300;
+	
 	init();
 	
 	Set_PWM_Leds(0);
@@ -186,6 +188,24 @@ void main (void)
 			set_led(3,0);
 			
 			analyse_cam_bis((toto == 130) && mode_spam);
+			
+			if (!autor_vitesse)
+				arret_a_faire = 300;
+			
+			if (arret_a_faire >= 300)
+				arret_a_faire ++;
+			
+			if (arret_a_faire >= 1000)
+				arret_a_faire = 0;
+			
+			if (arret_a_faire == 0 && ligne_arrivee)
+				arret_a_faire ++;
+			
+			if (arret_a_faire < 100 && arret_a_faire != 0)
+				arret_a_faire ++;
+			
+			if (arret_a_faire == 100)
+				autor_vitesse = 0;
 			
 			Asserv_Vitesse(autor_vitesse * calcul_consigne_vitesse(toto == 131 && mode_spam));
 			

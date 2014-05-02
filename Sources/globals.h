@@ -69,7 +69,7 @@ float moteur_kd_pos = MOTEUR_KD_POS;
 float consigne_vitesse_min = 1.5;
 float consigne_vitesse_max = 2.0;
 float pente_consigne_vitesse = 0.05;
-uint8_t autor_vitesse = 0;
+uint8_t autor_vitesse = 1;
 
 
 uint8_t ecart_normal = 15;//valeur incertaine, a recalculer
