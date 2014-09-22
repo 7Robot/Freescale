@@ -166,172 +166,186 @@ void main (void)
 
 		if (autorisation_aquiz == 1)
 		{
-			
-			set_led(3,1);
-				for (i = 0; i < 1128; i++);
-			set_led(3,0);
-			
-			
-			autorisation_aquiz = 0;
-			max_lum = Acquisitions_Cameras();
-			asserv_leds(max_lum);
-			set_led(3,1);
-			moy_cam(1);
-			set_led(3,0);
-				for (i = 0; i < 1128; i++);
-			set_led(3,1);
-			calcul_courbe();
-			set_led(3,0);
-				for (i = 0; i < 1128; i++);
-			set_led(3,1);
-			retranche_courbe();
-			set_led(3,0);
-			
-			analyse_cam_bis((toto == 130) && mode_spam);
-			
-			if (!autor_vitesse)
-				arret_a_faire = 300;
-			
-			if (arret_a_faire >= 300)
-				arret_a_faire ++;
-			
-			if (arret_a_faire >= 1000)
-				arret_a_faire = 0;
-			
-			if (arret_a_faire == 0 && ligne_arrivee)
-				arret_a_faire ++;
-			
-			if (arret_a_faire < 100 && arret_a_faire != 0)
-				arret_a_faire ++;
-			
-			if (arret_a_faire == 100)
-				autor_vitesse = 0;
-			
-			Asserv_Vitesse(autor_vitesse * calcul_consigne_vitesse(toto == 131 && mode_spam));
-			
-			Controle_Direction(0);
-		
-
-			toto++;
-			if (toto == 255)
+			if (mode_manuel == 0)
 			{
-					
+				
+				set_led(3,1);
+					for (i = 0; i < 1128; i++);
+				set_led(3,0);
+				
+				
+				autorisation_aquiz = 0;
+				max_lum = Acquisitions_Cameras();
+				asserv_leds(max_lum);
+				set_led(3,1);
+				moy_cam(1);
+				set_led(3,0);
+					for (i = 0; i < 1128; i++);
+				set_led(3,1);
+				calcul_courbe();
+				set_led(3,0);
+					for (i = 0; i < 1128; i++);
+				set_led(3,1);
+				retranche_courbe();
+				set_led(3,0);
+				
+				analyse_cam_bis((toto == 130) && mode_spam);
+				
+				if (!autor_vitesse)
+					arret_a_faire = 300;
+				
+				if (arret_a_faire >= 300)
+					arret_a_faire ++;
+				
+				if (arret_a_faire >= 1000)
+					arret_a_faire = 0;
+				
+				if (arret_a_faire == 0 && ligne_arrivee)
+					arret_a_faire ++;
+				
+				if (arret_a_faire < 60 && arret_a_faire != 0)
+					arret_a_faire ++;
+				
+				if (arret_a_faire == 60)
+					autor_vitesse = 0;
+				
+				Asserv_Vitesse(autor_vitesse * calcul_consigne_vitesse(toto == 131 && mode_spam));
+				
+				Controle_Direction(0);
+			
+
+				toto++;
+				if (toto == 255)
+				{
 						
-				for (i = 0; i< 128; i++)
-				{
-					buff1[i] = 5*camera1_valeurs[i];
-					buff2[i] = 5*camera2_valeurs[i];
-					buff3[i] = camera1_valeurs_m[i];
-					buff4[i] = camera2_valeurs_m[i];
-					buff5[i] = camera1_courbe[i];
-					buff6[i] = camera2_courbe[i];
-					buff7[i] = camera1_p[i];
-					buff8[i] = camera2_p[i];
-					
+							
+					for (i = 0; i< 128; i++)
+					{
+						buff1[i] = 5*camera1_valeurs[i];
+						buff2[i] = 5*camera2_valeurs[i];
+						buff3[i] = camera1_valeurs_m[i];
+						buff4[i] = camera2_valeurs_m[i];
+						buff5[i] = camera1_courbe[i];
+						buff6[i] = camera2_courbe[i];
+						buff7[i] = camera1_p[i];
+						buff8[i] = camera2_p[i];
+						
+					}
+					if (mode_spam)
+						TransmitData("\n\n\nstart:\n\n");
+						
+					//toto = 0;
 				}
-				if (mode_spam)
-					TransmitData("\n\n\nstart:\n\n");
-					
-				//toto = 0;
-			}
-			else if (toto < 128 && mode_spam)
-			{
-				printhex16(buff1[toto]);
-				TransmitCharacter(' ');
-				printhex16(buff2[toto]);
-				TransmitCharacter(' ');
-				printhex16(buff3[toto]);
-				TransmitCharacter(' ');
-				printhex16(buff4[toto]);
-				TransmitCharacter(' ');
-				printhex16(buff5[toto]);
-				TransmitCharacter(' ');
-				printhex16(buff6[toto]);
-				TransmitCharacter(' ');
-				printhex16(buff7[toto]);
-				TransmitCharacter(' ');
-				printhex16(buff8[toto]);
-				TransmitCharacter('\n');
+				else if (toto < 128 && mode_spam)
+				{
+					printhex16(buff1[toto]);
+					TransmitCharacter(' ');
+					printhex16(buff2[toto]);
+					TransmitCharacter(' ');
+					printhex16(buff3[toto]);
+					TransmitCharacter(' ');
+					printhex16(buff4[toto]);
+					TransmitCharacter(' ');
+					printhex16(buff5[toto]);
+					TransmitCharacter(' ');
+					printhex16(buff6[toto]);
+					TransmitCharacter(' ');
+					printhex16(buff7[toto]);
+					TransmitCharacter(' ');
+					printhex16(buff8[toto]);
+					TransmitCharacter('\n');
 
-			}
-			else if (toto == 128 && mode_spam)
-			{
-				TransmitData("\nlum : ");
-				printhex16(max_lum);
-				TransmitData("    \n");
-				
-				
-				
-			}
-			else if (toto == 129 && mode_spam)
-			{
-				TransmitData("\nmilieu1 ");
-				printfloat(milieu1);
-				TransmitData("\nmilieu2 ");
-				printfloat(milieu2);
-				
-				
-				if (pb_aquiz1 == 0)
+				}
+				else if (toto == 128 && mode_spam)
 				{
-					TransmitData("\n\ncam1 :");
-					for (i = 0; i < nb_bandes_1; i++)
-					{
-						TransmitData("\nBande ");
-						if (bandes_1[i][0])
-							TransmitData("blanche de ");
-						else
-							TransmitData("noire de ");
-						printfloat(bandes_1[i][1]);
-						TransmitData(" pixels");
-					}
+					TransmitData("\nlum : ");
+					printhex16(max_lum);
+					TransmitData("    \n");
 					
-					if (ligne_arrivee)
-						TransmitData("\nligne d'arrivée detectée");
+					
+					
+				}
+				else if (toto == 129 && mode_spam)
+				{
+					TransmitData("\nmilieu1 ");
+					printfloat(milieu1);
+					TransmitData("\nmilieu2 ");
+					printfloat(milieu2);
+					
+					
+					if (pb_aquiz1 == 0)
+					{
+						TransmitData("\n\ncam1 :");
+						for (i = 0; i < nb_bandes_1; i++)
+						{
+							TransmitData("\nBande ");
+							if (bandes_1[i][0])
+								TransmitData("blanche de ");
+							else
+								TransmitData("noire de ");
+							printfloat(bandes_1[i][1]);
+							TransmitData(" pixels");
+						}
+						
+						if (ligne_arrivee)
+							TransmitData("\nligne d'arrivée detectée");
+					}
+					else
+						TransmitData("\nErreur Cam 1\n");
+					
+					if (pb_aquiz2 == 0)
+					{
+						TransmitData("\n\ncam2 :");
+						for (i = 0; i < nb_bandes_2; i++)
+						{
+							TransmitData("\nBande ");
+							if (bandes_2[i][0])
+								TransmitData("blanche de ");
+							else
+								TransmitData("noire de ");
+							printfloat(bandes_2[i][1]);
+							TransmitData(" pixels");
+						}
+					}
+					else
+						TransmitData("\nErreur Cam 2\n");
+					TransmitData("    \n");
+				}
+				else if (toto == 250 && mode_spam)
+				{
+					if (mode_spam != -1 && mode_spam != 0)
+						mode_spam --;
+					if (mode_spam == 0)
+						TransmitData("\nspam OFF   \n");
+				}
+						
+					
+				
+				if (autorisation_aquiz == 1)		// si l'autorisation de commencer les calculs a été donnée durant les calculs
+					pb_calculs = 500;	// 5 sec		// ça veut dire que la boucle prends plus de 10 ms pour se faire
+				
+				
+				if (pb_calculs)
+				{
+					set_led(2,1);
+					pb_calculs --;
 				}
 				else
-					TransmitData("\nErreur Cam 1\n");
-				
-				if (pb_aquiz2 == 0)
-				{
-					TransmitData("\n\ncam2 :");
-					for (i = 0; i < nb_bandes_2; i++)
-					{
-						TransmitData("\nBande ");
-						if (bandes_2[i][0])
-							TransmitData("blanche de ");
-						else
-							TransmitData("noire de ");
-						printfloat(bandes_2[i][1]);
-						TransmitData(" pixels");
-					}
-				}
-				else
-					TransmitData("\nErreur Cam 2\n");
-				TransmitData("    \n");
-			}
-			else if (toto == 250 && mode_spam)
-			{
-				if (mode_spam != -1 && mode_spam != 0)
-					mode_spam --;
-				if (mode_spam == 0)
-					TransmitData("\nspam OFF   \n");
-			}
+					set_led(2,0);
 					
-				
-			
-			if (autorisation_aquiz == 1)		// si l'autorisation de commencer les calculs a été donnée durant les calculs
-				pb_calculs = 500;	// 5 sec		// ça veut dire que la boucle prends plus de 10 ms pour se faire
-			
-			
-			if (pb_calculs)
+			}// fin mode automatique
+			else	// mode manuel, pilotage par ordi
 			{
-				set_led(2,1);
-				pb_calculs --;
+				Set_Dir_Servo(rotation_manuelle);
+				Commande_Moteur(vitesse_manuelle,vitesse_manuelle);
+				rotation_manuelle = 0.98 * rotation_manuelle;
+				vitesse_manuelle = 0.98 * vitesse_manuelle;
+				if (rotation_manuelle < 0.05 && rotation_manuelle > - 0.05)
+					rotation_manuelle = 0.0;
+				if (vitesse_manuelle < 0.05 && vitesse_manuelle > - 0.05)
+					vitesse_manuelle = 0.0;
+				
 			}
-			else
-				set_led(2,0);
-			
-			
 		}
 	}	
 }

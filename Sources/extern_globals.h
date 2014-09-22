@@ -90,3 +90,8 @@ extern uint8_t bandes_2[120][2]; // bandes (0,1 et leur largeur)
 extern uint8_t nb_bandes_1;
 extern uint8_t nb_bandes_2;
 extern uint8_t ligne_arrivee;
+
+
+extern uint8_t mode_manuel;
+extern float vitesse_manuelle;
+extern float rotation_manuelle;

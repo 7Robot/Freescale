@@ -360,28 +360,58 @@ void UART_RXI_ISR(void)
 		}
 		if (rx != 0x1b && rx != 0x7e && rx != 0x7f) // si le caractere reçu n'est ni echap, ni suppr, ni effacer....
 		{	
-			
-			buffer_rx[i_buffer_r] = rx;				// ajoute le dernier mot reçu à la fin du buffer
-			i_buffer_r ++;
-			//TransmitData("received\n");
-			
-			TransmitCharacter('r');
-			TransmitCharacter(':');
-			for (i = 0; i < i_buffer_r; i++)
-				TransmitCharacter(buffer_rx[i]);
-				
-			TransmitData("\n    ");
-			
-			if (rx == '\n' || rx == '\r')						// si le dernier caractère reçu est \n ça veut dire que normalement une commade est prete
+			if (mode_manuel == 0)		// si pilotage automatique ou off
 			{
-				i_buffer_r = 0;
-				for (i = 0; i < 6; i++)
-					buffer_rx_lecture[i] = buffer_rx[i];
-				INTC.SSCIR[4].B.SET = 1;			// Declenche l'interruption software 4
+				buffer_rx[i_buffer_r] = rx;				// ajoute le dernier mot reçu à la fin du buffer
+				i_buffer_r ++;
+				//TransmitData("received\n");
+				
+				TransmitCharacter('r');
+				TransmitCharacter(':');
+				for (i = 0; i < i_buffer_r; i++)
+					TransmitCharacter(buffer_rx[i]);
+					
+				TransmitData("\n    ");
+				
+				if (rx == '\n' || rx == '\r')						// si le dernier caractère reçu est \n ça veut dire que normalement une commade est prete
+				{
+					i_buffer_r = 0;
+					for (i = 0; i < 6; i++)
+						buffer_rx_lecture[i] = buffer_rx[i];
+					INTC.SSCIR[4].B.SET = 1;			// Declenche l'interruption software 4
+				}
+			}
+			else			// si pilotage manuel
+			{
+				if (rx == 'z' || rx == 'a' || rx == 'e')		// avancer
+				{
+					vitesse_manuelle += 10.0;
+					if (vitesse_manuelle > 100.0)
+						vitesse_manuelle = 100.0;
+				}
+				if (rx == 'q' || rx == 'a')		// gauche
+				{
+					rotation_manuelle += 10.0;
+					if (rotation_manuelle > 100.0)
+						rotation_manuelle = 100.0;
+				}
+				if (rx == 'd' || rx == 'e')		// droit
+				{
+					rotation_manuelle -= 10.0;
+					if (rotation_manuelle < -100.0)
+						rotation_manuelle = -100.0;
+				}
+				if (rx == 's')		// reculer/frein
+				{
+					vitesse_manuelle -= 10.0;
+					if (vitesse_manuelle < -100.0)
+						vitesse_manuelle = -100.0;
+				}
 			}
 		}
-		else
+		else		// si le caractere est echap/suppr/effacer...
 			i_buffer_r = 0;
+			mode_manuel = 0;
 	}
 		
 }

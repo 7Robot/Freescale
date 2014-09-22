@@ -94,3 +94,8 @@ uint8_t bandes_2[120][2]={0}; // bandes (0,1 et leur largeur)
 uint8_t nb_bandes_1=0;
 uint8_t nb_bandes_2=0;
 uint8_t ligne_arrivee=0;
+
+
+uint8_t mode_manuel = 0;
+float vitesse_manuelle = 0.0;
+float rotation_manuelle = 0.0;
