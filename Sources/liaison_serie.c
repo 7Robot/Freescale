@@ -411,7 +411,11 @@ void UART_RXI_ISR(void)
 		}
 		else		// si le caractere est echap/suppr/effacer...
 			i_buffer_r = 0;
-			mode_manuel = 0;
+			if (mode_manuel)
+			{
+				mode_manuel = 0;
+				TransmitData("\nPilotage Manuel désactivé\n");
+			}
 	}
 		
 }
@@ -448,6 +452,38 @@ void SwIrq4ISR(void)
 		
 		//printfloat(data);
 		//TransmitCharacter('\n');
+		
+		//	c	p		Controle	Kp
+		//		i		Controle	Ki
+		//		d		Controle	Kd
+		//		a		Controle	ON/OFF
+		//		m		Controle	Mode
+		
+		//	m	p		Moteur		Kp
+		//		i		Moteur		Ki
+		//		d		Moteur		Kd
+		
+		//	v	o		Vitesse		Objectif
+		//		m		Vitesse		Mode (pos/vit)
+		//		s		Vitesse		Moteur Status
+		//		t		Vitesse		Max
+		//		b		Vitesse		Min
+		//		p		Vitesse		Pente
+		//		a		Vitesse		ON/OFF
+		
+		//	l	p		Leds		Power
+		//		m		Leds		Mode
+		//		c		Leds		Consigne
+		//		k		Leds		K
+		//		s		Leds		Status
+		
+		//	s	p		SPAM		ON/OFF
+		
+		//	g	p		Get			Potar
+		
+		//	p	m		Pilotage	Manuel
+		
+		
 		
 		switch (buffer_rx_lecture[0])
 		{
@@ -663,6 +699,15 @@ void SwIrq4ISR(void)
 							printfloat((float)get_potar());
 							TransmitData("    \n");
 							
+						break;
+					}
+				break;
+			case 'p' :switch (buffer_rx_lecture[1])
+					{
+
+					case 'm' : 
+							mode_manuel = 1;
+							TransmitData("\nPilotage_Manuel activé\n");	
 						break;
 					}
 				break;
