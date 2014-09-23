@@ -344,7 +344,15 @@ void main (void)
 					rotation_manuelle = 0.0;
 				if (vitesse_manuelle < 0.05 && vitesse_manuelle > - 0.05)
 					vitesse_manuelle = 0.0;
-				
+				toto++;
+				if (toto == 255 && mode_spam)
+				{
+					TransmitData("Vitesse : ");
+					printfloat (vitesse_manuelle);
+					TransmitData("\nRotation : ");
+					printfloat(rotation_manuelle);
+					TransmitData("    \n");										
+				}
 			}
 		}
 	}	
